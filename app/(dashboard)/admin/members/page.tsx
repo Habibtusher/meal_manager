@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/Input';
 import AddMemberModal from '@/components/member/AddMemberModal';
 import EditMemberModal from '@/components/member/EditMemberModal';
 import DeleteMemberButton from '@/components/member/DeleteMemberButton';
+import { User } from '@prisma/client';
 
 export default async function MemberManagement({
     searchParams,
@@ -72,7 +73,7 @@ export default async function MemberManagement({
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
-                                {members.map((member) => (
+                                {members.map((member: User) => (
                                     <tr key={member.id} className="group hover:bg-gray-50 transition-colors">
                                         <td className="py-4 px-4">
                                             <div>
