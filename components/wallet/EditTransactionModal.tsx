@@ -3,59 +3,47 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { addWalletCredit } from '@/lib/actions';
+import { updateWalletTransaction } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
-import { Plus, X, User, IndianRupee, Info } from 'lucide-react';
+import { X, User, IndianRupee, Info, Edit2, Calendar } from 'lucide-react';
 
-interface Member {
-    id: string;
-    name: string;
-    email: string;
+interface EditTransactionModalProps {
+    transaction: {
+        id: string;
+        amount: number;
+        description: string;
+        createdAt: Date;
+        user: {
+            name: string;
+        };
+    };
 }
 
-interface AddDepositModalProps {
-    members: Member[];
-}
-
-export default function AddDepositModal({ members }: AddDepositModalProps) {
+export default function EditTransactionModal({ transaction }: EditTransactionModalProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [formData, setFormData] = useState({
-        userId: '',
-        amount: 0,
-        description: 'Cash Deposit',
-        date: new Date().toLocaleDateString('en-CA')
+        amount: Number(transaction.amount),
+        description: transaction.description,
+        date: new Date(transaction.createdAt).toISOString().split('T')[0]
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        if (!formData.userId) {
-            toast.error('Please select a member');
-            return;
-        }
-
         setIsPending(true);
 
         try {
-            const result = await addWalletCredit(
-                formData.userId,
-                Number(formData.amount),
-                formData.description,
-                new Date(formData.date)
-            );
+            const result = await updateWalletTransaction(transaction.id, {
+                amount: Number(formData.amount),
+                description: formData.description,
+                date: new Date(formData.date)
+            });
 
             if (result.success) {
-                toast.success('Deposit added successfully!');
+                toast.success('Transaction updated successfully!');
                 setIsOpen(false);
-                setFormData({
-                    userId: '',
-                    amount: 0,
-                    description: 'Cash Deposit',
-                    date: new Date().toLocaleDateString('en-CA')
-                });
             } else {
-                toast.error(result.error || 'Failed to add deposit');
+                toast.error(result.error || 'Failed to update transaction');
             }
         } catch (error) {
             toast.error('Something went wrong');
@@ -66,46 +54,35 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
 
     if (!isOpen) {
         return (
-            <Button onClick={() => setIsOpen(true)} className="flex items-center gap-2">
-                <Plus className="w-4 h-4" />
-                Add Deposit
-            </Button>
+            <button
+                onClick={() => setIsOpen(true)}
+                className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors inline-flex"
+                title="Edit Transaction"
+            >
+                <Edit2 className="w-4 h-4" />
+            </button>
         );
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-left">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
                 <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                    <h2 className="text-xl font-bold text-gray-900">Add Wallet Deposit</h2>
+                    <h2 className="text-xl font-bold text-gray-900">Edit Transaction</h2>
                     <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                    <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                            <User className="w-4 h-4" /> Select Member
-                        </label>
-                        <select
-                            required
-                            value={formData.userId}
-                            onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
-                            className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-sm text-black"
-                        >
-                            <option value="">Choose a member...</option>
-                            {members.map((member) => (
-                                <option key={member.id} value={member.id}>
-                                    {member.name} ({member.email})
-                                </option>
-                            ))}
-                        </select>
+                    <div className="p-3 bg-blue-50 rounded-xl border border-blue-100 mb-4">
+                        <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">Member</p>
+                        <p className="text-sm font-bold text-gray-900">{transaction.user.name}</p>
                     </div>
 
                     <div className="space-y-2">
                         <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                            Date
+                            <Calendar className="w-4 h-4" /> Date
                         </label>
                         <Input
                             required
@@ -158,7 +135,7 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
                             disabled={isPending}
                             className="flex-1 bg-gray-900 hover:bg-gray-800 text-white"
                         >
-                            {isPending ? 'Processing...' : 'Add Deposit'}
+                            {isPending ? 'Updating...' : 'Update Transaction'}
                         </Button>
                     </div>
                 </form>

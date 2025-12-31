@@ -2,11 +2,13 @@ import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { formatCurrency, formatDateTime } from '@/lib/utils';
+import { formatCurrency, formatDateTime, getToday, cn } from '@/lib/utils';
 import { Wallet, ArrowUpCircle, ArrowDownCircle, Search, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 
 import AddDepositModal from '@/components/wallet/AddDepositModal';
+import EditTransactionModal from '@/components/wallet/EditTransactionModal';
+import DeleteTransactionButton from '@/components/wallet/DeleteTransactionButton';
 import { MonthPicker } from '@/components/ui/MonthPicker';
 
 interface WalletManagementProps {
@@ -18,7 +20,7 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
     const organizationId = session?.user.organizationId!;
 
     const params = await searchParams;
-    const now = new Date();
+    const now = getToday();
     const selectedMonth = params.month ? parseInt(params.month) : now.getMonth() + 1;
     const selectedYear = params.year ? parseInt(params.year) : now.getFullYear();
 
@@ -122,11 +124,12 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
                                     <th className="pb-4 font-medium">Description</th>
                                     <th className="pb-4 font-medium text-right">Amount</th>
                                     <th className="pb-4 font-medium text-right">Balance After</th>
+                                    <th className="pb-4 font-medium text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
                                 {transactions.map((tx: any) => (
-                                    <tr key={tx.id} className="text-sm">
+                                    <tr key={tx.id} className="text-sm group">
                                         <td className="py-4">
                                             <div>
                                                 <p className="font-bold text-gray-900">{tx.user.name}</p>
@@ -153,6 +156,12 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
                                         <td className="py-4 text-right font-medium text-gray-400">
                                             {formatCurrency(tx.balanceAfter.toString())}
                                         </td>
+                                        <td className="py-4 text-right">
+                                            <div className="flex items-center justify-end gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <EditTransactionModal transaction={tx} />
+                                                <DeleteTransactionButton transactionId={tx.id} description={tx.description} userName={tx.user.name} />
+                                            </div>
+                                        </td>
                                     </tr>
                                 ))}
                                 {transactions.length === 0 && (
@@ -168,5 +177,3 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
         </div>
     );
 }
-
-import { cn } from '@/lib/utils';

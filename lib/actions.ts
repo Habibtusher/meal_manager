@@ -241,6 +241,53 @@ export async function addExpense(data: {
 }
 
 /**
+ * Admin: Update an expense
+ */
+export async function updateExpense(id: string, data: {
+  date: Date;
+  category: string;
+  description: string;
+  amount: number;
+}) {
+  const session = await auth();
+  if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
+
+  try {
+    await prisma.expense.update({
+      where: { id, organizationId: session.user.organizationId },
+      data: {
+        ...data,
+        amount: data.amount,
+      },
+    });
+    revalidatePath('/admin/expenses');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Failed to update expense:', error);
+    return { success: false, error: error.message || 'Failed to update expense' };
+  }
+}
+
+/**
+ * Admin: Delete an expense
+ */
+export async function deleteExpense(id: string): Promise<{ success: boolean; error?: string }> {
+  const session = await auth();
+  if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
+
+  try {
+    await prisma.expense.delete({
+      where: { id, organizationId: session.user.organizationId },
+    });
+    revalidatePath('/admin/expenses');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Failed to delete expense:', error);
+    return { success: false, error: error.message || 'Failed to delete expense' };
+  }
+}
+
+/**
  * Admin: Create a new member
  */
 export async function createMember(data: {
@@ -405,5 +452,119 @@ export async function changePassword(currentPassword: string, newPassword: strin
   } catch (error) {
     console.error('Failed to change password:', error);
     return { success: false, error: 'Failed to change password' };
+  }
+}
+
+/**
+ * Admin: Update a wallet transaction
+ */
+export async function updateWalletTransaction(id: string, data: {
+  amount: number;
+  description: string;
+  date: Date;
+}) {
+  const session = await auth();
+  if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
+
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const transaction = await tx.walletTransaction.findUnique({
+        where: { id, organizationId: session.user.organizationId },
+      });
+
+      if (!transaction) throw new Error('Transaction not found');
+
+      const user = await tx.user.findUnique({
+        where: { id: transaction.userId },
+        select: { walletBalance: true },
+      });
+
+      if (!user) throw new Error('User not found');
+
+      const amountDiff = data.amount - transaction.amount;
+      const newBalance = transaction.type === 'CREDIT' 
+        ? user.walletBalance + amountDiff 
+        : user.walletBalance - amountDiff;
+
+      // Update transaction
+      await tx.walletTransaction.update({
+        where: { id },
+        data: {
+          amount: data.amount,
+          description: data.description,
+          createdAt: data.date,
+          // Note: historically this makes balanceAfter inaccurate for this record if we don't update it,
+          // but we prioritize current balance consistency.
+          balanceAfter: transaction.type === 'CREDIT' 
+            ? transaction.balanceAfter + amountDiff
+            : transaction.balanceAfter - amountDiff
+        },
+      });
+
+      // Update user balance
+      await tx.user.update({
+        where: { id: transaction.userId },
+        data: { walletBalance: newBalance },
+      });
+
+      return { success: true, error: null };
+    });
+
+    revalidatePath('/admin/wallet');
+    revalidatePath('/admin/members');
+    return result as { success: boolean; error: string | null };
+  } catch (error: any) {
+    console.error('Failed to update transaction:', error);
+    return { success: false, error: error.message || 'Failed to update transaction' };
+  }
+}
+
+/**
+ * Admin: Delete a wallet transaction
+ */
+export async function deleteWalletTransaction(id: string): Promise<{ success: boolean; error: string | null }> {
+  const session = await auth();
+  if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
+
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const transaction = await tx.walletTransaction.findUnique({
+        where: { id, organizationId: session.user.organizationId },
+      });
+
+      if (!transaction) throw new Error('Transaction not found');
+
+      const user = await tx.user.findUnique({
+        where: { id: transaction.userId },
+        select: { walletBalance: true },
+      });
+
+      if (!user) throw new Error('User not found');
+
+      // Revert the balance
+      const newBalance = transaction.type === 'CREDIT'
+        ? user.walletBalance - transaction.amount
+        : user.walletBalance + transaction.amount;
+
+      // Delete transaction
+      await tx.walletTransaction.delete({
+        where: { id },
+      });
+
+      // Update user balance
+      await tx.user.update({
+        where: { id: transaction.userId },
+        data: { walletBalance: newBalance },
+      });
+
+      return { success: true, error: null };
+    });
+
+    revalidatePath('/admin/wallet');
+    revalidatePath('/admin/members');
+    return result as { success: boolean; error: string | null };
+  } catch (error: any) {
+    console.error('Failed to delete transaction:', error);
+    return { success: false, error: error.message || 'Failed to delete transaction' };
   }
 }

@@ -2,7 +2,7 @@ import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Users, Utensils, Wallet, TrendingUp, AlertCircle } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, getToday, cn } from '@/lib/utils';
 import { getMealParticipationStats, getLowBalanceUsers } from '@/lib/calculations';
 import { MonthPicker } from '@/components/ui/MonthPicker';
 
@@ -15,7 +15,7 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
     const organizationId = session?.user.organizationId!;
 
     const params = await searchParams;
-    const now = new Date();
+    const now = getToday();
     const selectedMonth = params.month ? parseInt(params.month) : now.getMonth() + 1;
     const selectedYear = params.year ? parseInt(params.year) : now.getFullYear();
 
@@ -30,7 +30,7 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
         totalStats
     ] = await Promise.all([
         prisma.user.count({ where: { organizationId, role: { in: ['MEMBER', 'ADMIN'] }, isActive: true } }),
-        getMealParticipationStats(organizationId, new Date()),
+        getMealParticipationStats(organizationId, getToday()),
         getLowBalanceUsers(organizationId, 200),
         // Group aggregations for efficiency
         prisma.$transaction([
@@ -206,6 +206,3 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
         </div>
     );
 }
-
-// Add cn import since I used it inside the component locally
-import { cn } from '@/lib/utils';

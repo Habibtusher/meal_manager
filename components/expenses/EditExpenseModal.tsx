@@ -3,18 +3,28 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { addExpense } from '@/lib/actions';
+import { updateExpense } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
-import { Plus, X, Calendar, Tag, Info, IndianRupee } from 'lucide-react';
+import { X, Calendar, Tag, Info, IndianRupee, Edit2 } from 'lucide-react';
 
-export default function AddExpenseModal() {
+interface EditExpenseModalProps {
+    expense: {
+        id: string;
+        date: Date;
+        category: string;
+        description: string;
+        amount: number;
+    };
+}
+
+export default function EditExpenseModal({ expense }: EditExpenseModalProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [formData, setFormData] = useState({
-        date: new Date().toLocaleDateString('en-CA'),
-        category: 'Food',
-        description: '',
-        amount: 0,
+        date: new Date(expense.date).toISOString().split('T')[0],
+        category: expense.category,
+        description: expense.description,
+        amount: Number(expense.amount),
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -22,23 +32,17 @@ export default function AddExpenseModal() {
         setIsPending(true);
 
         try {
-            const result = await addExpense({
+            const result = await updateExpense(expense.id, {
                 ...formData,
                 date: new Date(formData.date),
                 amount: Number(formData.amount),
             });
 
             if (result.success) {
-                toast.success('Expense logged successfully!');
+                toast.success('Expense updated successfully!');
                 setIsOpen(false);
-                setFormData({
-                    date: new Date().toLocaleDateString('en-CA'),
-                    category: 'Food',
-                    description: '',
-                    amount: 0,
-                });
             } else {
-                toast.error(result.error || 'Failed to log expense');
+                toast.error(result.error || 'Failed to update expense');
             }
         } catch (error) {
             toast.error('Something went wrong');
@@ -49,18 +53,21 @@ export default function AddExpenseModal() {
 
     if (!isOpen) {
         return (
-            <Button onClick={() => setIsOpen(true)} className="flex items-center gap-2">
-                <Plus className="w-4 h-4" />
-                Log New Expense
-            </Button>
+            <button
+                onClick={() => setIsOpen(true)}
+                className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                title="Edit Expense"
+            >
+                <Edit2 className="w-4 h-4" />
+            </button>
         );
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-left">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
                 <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                    <h2 className="text-xl font-bold text-gray-900">Log New Expense</h2>
+                    <h2 className="text-xl font-bold text-gray-900">Edit Expense</h2>
                     <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                         <X className="w-5 h-5" />
                     </button>
@@ -140,7 +147,7 @@ export default function AddExpenseModal() {
                             disabled={isPending}
                             className="flex-1 bg-gray-900 hover:bg-gray-800 text-white"
                         >
-                            {isPending ? 'Logging...' : 'Log Expense'}
+                            {isPending ? 'Updating...' : 'Update Expense'}
                         </Button>
                     </div>
                 </form>

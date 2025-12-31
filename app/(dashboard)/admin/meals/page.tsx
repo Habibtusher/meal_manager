@@ -16,8 +16,9 @@ export default async function MealManagement({
 
     const organizationId = session.user.organizationId;
     const { date: dateParam } = await searchParams;
+    const { getToday } = await import('@/lib/utils');
 
-    let selectedDate = new Date();
+    let selectedDate = getToday();
     if (dateParam) {
         // Parse "YYYY-MM-DD" explicitly as local parts to avoid timezone shifting
         const [year, month, day] = dateParam.split('-').map(Number);

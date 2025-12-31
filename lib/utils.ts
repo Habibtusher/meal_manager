@@ -32,3 +32,17 @@ export function formatDateTime(date: Date | string): string {
     minute: '2-digit',
   }).format(d);
 }
+
+/**
+ * Returns today's date adjusted for Bangladesh timezone (UTC+6)
+ * This ensures consistency between local development and global deployments (UTC)
+ */
+export function getToday(): Date {
+  const now = new Date();
+  // If we're on the server, adjust for UTC+6 (Bangladesh)
+  // This is a simple way to fix the "31st Dec instead of 1st Jan" issue
+  const offset = 6; // Bangladesh is UTC+6
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const localToday = new Date(utc + (3600000 * offset));
+  return localToday;
+}

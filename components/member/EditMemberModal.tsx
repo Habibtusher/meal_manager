@@ -75,7 +75,7 @@ export default function EditMemberModal({ member }: EditMemberModalProps) {
                             placeholder="John Doe"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="bg-gray-50 border-gray-200 focus:bg-white transition-all"
+                            className="bg-gray-50 border-gray-200 focus:bg-white transition-all text-black"
                         />
                     </div>
 
@@ -87,7 +87,7 @@ export default function EditMemberModal({ member }: EditMemberModalProps) {
                             placeholder="john@example.com"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="bg-gray-50 border-gray-200 focus:bg-white transition-all"
+                            className="bg-gray-50 border-gray-200 focus:bg-white transition-all text-black"
                         />
                     </div>
 

@@ -2,10 +2,12 @@ import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatCurrency, formatDate, getToday } from '@/lib/utils';
 import { Plus, Receipt, ShoppingCart, TrendingDown } from 'lucide-react';
 
 import AddExpenseModal from '@/components/expenses/AddExpenseModal';
+import EditExpenseModal from '@/components/expenses/EditExpenseModal';
+import DeleteExpenseButton from '@/components/expenses/DeleteExpenseButton';
 import { MonthPicker } from '@/components/ui/MonthPicker';
 
 interface ExpenseManagementProps {
@@ -17,7 +19,7 @@ export default async function ExpenseManagement({ searchParams }: ExpenseManagem
     const organizationId = session?.user.organizationId!;
 
     const params = await searchParams;
-    const now = new Date();
+    const now = getToday();
     const selectedMonth = params.month ? parseInt(params.month) : now.getMonth() + 1;
     const selectedYear = params.year ? parseInt(params.year) : now.getFullYear();
 
@@ -87,9 +89,12 @@ export default async function ExpenseManagement({ searchParams }: ExpenseManagem
                                         </div>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <p className="text-base font-bold text-gray-900">{formatCurrency(expense.amount.toString())}</p>
-                                    <button className="text-[10px] text-gray-400 hover:text-red-500 font-medium">Delete</button>
+                                <div className="flex items-center gap-1">
+                                    <p className="text-base font-bold text-gray-900 mr-2">{formatCurrency(expense.amount.toString())}</p>
+                                    <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <EditExpenseModal expense={expense} />
+                                        <DeleteExpenseButton expenseId={expense.id} description={expense.description} />
+                                    </div>
                                 </div>
                             </div>
                         ))}
