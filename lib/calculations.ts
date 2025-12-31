@@ -235,18 +235,26 @@ export async function getMealParticipationStats(
   dinner: number;
   total: number;
 }> {
-  const records = await prisma.mealRecord.findMany({
-    where: {
-      date,
-      status: 'CONFIRMED',
-      user: {
-        organizationId,
-      },
-    },
-    select: {
-      mealType: true,
-    },
-  });
+    const startOfDay = new Date(date);
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setUTCHours(23, 59, 59, 999);
+
+    const records = await prisma.mealRecord.findMany({
+        where: {
+            date: {
+                gte: startOfDay,
+                lte: endOfDay
+            },
+            status: 'CONFIRMED',
+            user: {
+                organizationId,
+            },
+        },
+        select: {
+            mealType: true,
+        },
+    });
 
   const stats = {
     breakfast: 0,

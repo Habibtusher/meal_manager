@@ -2,7 +2,7 @@ import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, getToday, cn } from '@/lib/utils';
 import { FileText, Download, TrendingUp, TrendingDown, Users } from 'lucide-react';
 import ExportReportsButton from '@/components/admin/ExportReportsButton';
 import { MonthPicker } from '@/components/ui/MonthPicker';
@@ -16,12 +16,12 @@ export default async function AdminReports({ searchParams }: ReportsProps) {
     const organizationId = session?.user.organizationId!;
 
     const params = await searchParams;
-    const now = new Date();
-    const selectedMonth = params.month ? parseInt(params.month) : now.getMonth() + 1;
-    const selectedYear = params.year ? parseInt(params.year) : now.getFullYear();
+    const now = getToday();
+    const selectedMonth = params.month ? parseInt(params.month) : now.getUTCMonth() + 1;
+    const selectedYear = params.year ? parseInt(params.year) : now.getUTCFullYear();
 
-    const startDate = new Date(selectedYear, selectedMonth - 1, 1);
-    const endDate = new Date(selectedYear, selectedMonth, 0, 23, 59, 59, 999);
+    const startDate = new Date(Date.UTC(selectedYear, selectedMonth - 1, 1));
+    const endDate = new Date(Date.UTC(selectedYear, selectedMonth, 0, 23, 59, 59, 999));
 
     // 1. Fetch expenses for the selected month
     // 2. Fetch all members with their CONFIRMED meal records for the selected month
@@ -176,5 +176,3 @@ export default async function AdminReports({ searchParams }: ReportsProps) {
         </div>
     );
 }
-
-import { cn } from '@/lib/utils';

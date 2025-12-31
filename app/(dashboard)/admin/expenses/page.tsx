@@ -20,11 +20,11 @@ export default async function ExpenseManagement({ searchParams }: ExpenseManagem
 
     const params = await searchParams;
     const now = getToday();
-    const selectedMonth = params.month ? parseInt(params.month) : now.getMonth() + 1;
-    const selectedYear = params.year ? parseInt(params.year) : now.getFullYear();
+    const selectedMonth = params.month ? parseInt(params.month) : now.getUTCMonth() + 1;
+    const selectedYear = params.year ? parseInt(params.year) : now.getUTCFullYear();
 
-    const startDate = new Date(selectedYear, selectedMonth - 1, 1);
-    const endDate = new Date(selectedYear, selectedMonth, 0, 23, 59, 59, 999);
+    const startDate = new Date(Date.UTC(selectedYear, selectedMonth - 1, 1));
+    const endDate = new Date(Date.UTC(selectedYear, selectedMonth, 0, 23, 59, 59, 999));
 
     const expenses = await prisma.expense.findMany({
         where: {
@@ -91,7 +91,7 @@ export default async function ExpenseManagement({ searchParams }: ExpenseManagem
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <p className="text-base font-bold text-gray-900 mr-2">{formatCurrency(expense.amount.toString())}</p>
-                                    <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="flex items-center gap-1">
                                         <EditExpenseModal expense={expense} />
                                         <DeleteExpenseButton expenseId={expense.id} description={expense.description} />
                                     </div>

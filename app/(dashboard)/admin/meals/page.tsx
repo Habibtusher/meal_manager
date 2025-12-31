@@ -20,11 +20,11 @@ export default async function MealManagement({
 
     let selectedDate = getToday();
     if (dateParam) {
-        // Parse "YYYY-MM-DD" explicitly as local parts to avoid timezone shifting
+        // Parse "YYYY-MM-DD" explicitly as UTC parts
         const [year, month, day] = dateParam.split('-').map(Number);
-        selectedDate = new Date(year, month - 1, day);
+        selectedDate = new Date(Date.UTC(year, month - 1, day));
     }
-    selectedDate.setHours(0, 0, 0, 0);
+    selectedDate.setUTCHours(0, 0, 0, 0);
 
     const [members, confirmedRecords] = await Promise.all([
         prisma.user.findMany({

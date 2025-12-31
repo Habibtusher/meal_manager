@@ -16,11 +16,11 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
 
     const params = await searchParams;
     const now = getToday();
-    const selectedMonth = params.month ? parseInt(params.month) : now.getMonth() + 1;
-    const selectedYear = params.year ? parseInt(params.year) : now.getFullYear();
+    const selectedMonth = params.month ? parseInt(params.month) : now.getUTCMonth() + 1;
+    const selectedYear = params.year ? parseInt(params.year) : now.getUTCFullYear();
 
-    const startDate = new Date(selectedYear, selectedMonth - 1, 1);
-    const endDate = new Date(selectedYear, selectedMonth, 0, 23, 59, 59, 999);
+    const startDate = new Date(Date.UTC(selectedYear, selectedMonth - 1, 1));
+    const endDate = new Date(Date.UTC(selectedYear, selectedMonth, 0, 23, 59, 59, 999));
 
     // Fetch stats
     const [

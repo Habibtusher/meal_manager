@@ -87,7 +87,7 @@ export async function batchMarkAttendance(
 
   const organizationId = session.user.organizationId;
   const startOfDay = new Date(date);
-  startOfDay.setHours(0, 0, 0, 0);
+  startOfDay.setUTCHours(0, 0, 0, 0);
 
   try {
     // Optimization: Ensure all needed schedules exist efficiently

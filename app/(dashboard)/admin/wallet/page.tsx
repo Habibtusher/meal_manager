@@ -21,11 +21,11 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
 
     const params = await searchParams;
     const now = getToday();
-    const selectedMonth = params.month ? parseInt(params.month) : now.getMonth() + 1;
-    const selectedYear = params.year ? parseInt(params.year) : now.getFullYear();
+    const selectedMonth = params.month ? parseInt(params.month) : now.getUTCMonth() + 1;
+    const selectedYear = params.year ? parseInt(params.year) : now.getUTCFullYear();
 
-    const startDate = new Date(selectedYear, selectedMonth - 1, 1);
-    const endDate = new Date(selectedYear, selectedMonth, 0, 23, 59, 59, 999);
+    const startDate = new Date(Date.UTC(selectedYear, selectedMonth - 1, 1));
+    const endDate = new Date(Date.UTC(selectedYear, selectedMonth, 0, 23, 59, 59, 999));
 
     const [transactions, members, stats] = await Promise.all([
         prisma.walletTransaction.findMany({
@@ -157,7 +157,7 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
                                             {formatCurrency(tx.balanceAfter.toString())}
                                         </td>
                                         <td className="py-4 text-right">
-                                            <div className="flex items-center justify-end gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="flex items-center justify-end gap-1">
                                                 <EditTransactionModal transaction={tx} />
                                                 <DeleteTransactionButton transactionId={tx.id} description={tx.description} userName={tx.user.name} />
                                             </div>

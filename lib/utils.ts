@@ -35,14 +35,30 @@ export function formatDateTime(date: Date | string): string {
 
 /**
  * Returns today's date adjusted for Bangladesh timezone (UTC+6)
- * This ensures consistency between local development and global deployments (UTC)
+ * Normalized to UTC so that UTC getters (getUTCFullYear, etc.) return BD time parts.
  */
 export function getToday(): Date {
   const now = new Date();
-  // If we're on the server, adjust for UTC+6 (Bangladesh)
-  // This is a simple way to fix the "31st Dec instead of 1st Jan" issue
-  const offset = 6; // Bangladesh is UTC+6
-  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-  const localToday = new Date(utc + (3600000 * offset));
-  return localToday;
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Dhaka',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: false
+  });
+  
+  const parts: any = {};
+  formatter.formatToParts(now).forEach(p => parts[p.type] = p.value);
+  
+  return new Date(Date.UTC(
+    parseInt(parts.year),
+    parseInt(parts.month) - 1,
+    parseInt(parts.day),
+    parseInt(parts.hour),
+    parseInt(parts.minute),
+    parseInt(parts.second)
+  ));
 }
