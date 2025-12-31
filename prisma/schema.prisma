@@ -1,0 +1,156 @@
+// Multi-Tenant Meal Manager SaaS - Prisma Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+// ===== ORGANIZATION (TENANT) =====
+model Organization {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  type        String   @default("mess") // mess, hostel, restaurant
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users              User[]
+  mealSchedules      MealSchedule[]
+  expenses           Expense[]
+  walletTransactions WalletTransaction[]
+
+  @@map("organizations")
+}
+
+// ===== USER MODEL =====
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String
+  role          Role      @default(MEMBER)
+  emailVerified DateTime?
+  walletBalance Float   @default(0)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  mealRecords        MealRecord[]
+  walletTransactions WalletTransaction[]
+
+  @@index([organizationId])
+  @@index([email])
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+// ===== MEAL SCHEDULE =====
+model MealSchedule {
+  id          String   @id @default(cuid())
+  date        DateTime
+  mealType    MealType
+  menu        String
+  description String?
+  price       Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  mealRecords MealRecord[]
+
+  @@unique([organizationId, date, mealType])
+  @@index([organizationId, date])
+  @@map("meal_schedules")
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+}
+
+// ===== MEAL PARTICIPATION RECORD =====
+model MealRecord {
+  id         String     @id @default(cuid())
+  date       DateTime  
+  mealType   MealType
+  count      Float      @default(0)
+  status     MealStatus @default(PENDING)
+  markedBy   String // "admin" or "self"
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  mealScheduleId String
+  mealSchedule   MealSchedule @relation(fields: [mealScheduleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, mealScheduleId])
+  @@index([userId, date])
+  @@index([mealScheduleId])
+  @@map("meal_records")
+}
+
+enum MealStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+// ===== EXPENSES =====
+model Expense {
+  id          String   @id @default(cuid())
+  date        DateTime
+  category    String
+  description String
+  amount      Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, date])
+  @@map("expenses")
+}
+
+// ===== WALLET TRANSACTIONS =====
+model WalletTransaction {
+  id            String          @id @default(cuid())
+  type          TransactionType
+  amount        Float
+  description   String
+  balanceAfter  Float
+  createdAt     DateTime        @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([organizationId])
+  @@map("wallet_transactions")
+}
+
+enum TransactionType {
+  CREDIT // Money added to wallet
+  DEBIT // Money deducted for meals
+}
