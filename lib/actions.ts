@@ -4,8 +4,7 @@ import { auth } from './auth';
 import prisma from './prisma';
 import { MealStatus, MealType } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-import { deductMealCost, creditWallet } from './calculations';
-import { Prisma } from '@prisma/client';
+import { creditWallet } from './calculations';
 import bcrypt from 'bcryptjs';
 
 /**
@@ -21,7 +20,6 @@ export async function markParticipation(
   }
 
   const userId = session.user.id;
-  const organizationId = session.user.organizationId;
   const schedule = await prisma.mealSchedule.findUnique({
     where: { id: mealScheduleId },
   });
@@ -93,7 +91,7 @@ export async function batchMarkAttendance(
     // Optimization: Ensure all needed schedules exist efficiently
     const distinctTypes = Array.from(new Set(records.map(r => r.mealType)));
 
-    await prisma.$transaction(async (tx:any) => {
+    await prisma.$transaction(async (tx) => {
       // 1. Fetch existing schedules for this date
       const existingSchedules = await tx.mealSchedule.findMany({
         where: {
@@ -104,7 +102,7 @@ export async function batchMarkAttendance(
       });
 
       const scheduleMap = new Map<MealType, string>();
-      existingSchedules.forEach((s:any) => scheduleMap.set(s.mealType, s.id));
+      existingSchedules.forEach((s) => scheduleMap.set(s.mealType, s.id));
 
       // 2. Create missing schedules
       for (const type of distinctTypes) {
@@ -262,9 +260,9 @@ export async function updateExpense(id: string, data: {
     });
     revalidatePath('/admin/expenses');
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error('Failed to update expense:', error);
-    return { success: false, error: error.message || 'Failed to update expense' };
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to update expense' };
   }
 }
 
@@ -281,9 +279,9 @@ export async function deleteExpense(id: string): Promise<{ success: boolean; err
     });
     revalidatePath('/admin/expenses');
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error('Failed to delete expense:', error);
-    return { success: false, error: error.message || 'Failed to delete expense' };
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to delete expense' };
   }
 }
 
@@ -314,8 +312,8 @@ export async function createMember(data: {
 
     revalidatePath('/admin/members');
     return { success: true, user: { id: user.id, email: user.email } };
-  } catch (error: any) {
-    if (error.code === 'P2002') {
+  } catch (error) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
       return { success: false, error: 'Email already exists' };
     }
     console.error('Failed to create member:', error);
@@ -386,7 +384,7 @@ export async function deleteMember(userId: string) {
 
     revalidatePath('/admin/members');
     return { success: true };
-  } catch (error) {
+  } catch {
     return { success: false, error: 'Failed to delete member' };
   }
 }
@@ -513,9 +511,9 @@ export async function updateWalletTransaction(id: string, data: {
     revalidatePath('/admin/wallet');
     revalidatePath('/admin/members');
     return result as { success: boolean; error: string | null };
-  } catch (error: any) {
+  } catch (error) {
     console.error('Failed to update transaction:', error);
-    return { success: false, error: error.message || 'Failed to update transaction' };
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to update transaction' };
   }
 }
 
@@ -563,15 +561,15 @@ export async function deleteWalletTransaction(id: string): Promise<{ success: bo
     revalidatePath('/admin/wallet');
     revalidatePath('/admin/members');
     return result as { success: boolean; error: string | null };
-  } catch (error: any) {
+  } catch (error) {
     console.error('Failed to delete transaction:', error);
-    return { success: false, error: error.message || 'Failed to delete transaction' };
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to delete transaction' };
   }
 }
 /**
  * Admin: Transfer admin role to another member
  */
-export async function transferAdminRole(targetUserId: string) {
+export async function transferAdminRole(targetUserId: string): Promise<{ success: boolean; error?: string }> {
   const session = await auth();
   if (!session?.user?.id || !session?.user?.organizationId || session.user.role !== 'ADMIN') {
     throw new Error('Unauthorized');
@@ -611,8 +609,8 @@ export async function transferAdminRole(targetUserId: string) {
 
     revalidatePath('/admin/members');
     return result;
-  } catch (error: any) {
+  } catch (error) {
     console.error('Failed to transfer admin role:', error);
-    return { success: false, error: error.message || 'Failed to transfer role' };
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to transfer role' };
   }
 }

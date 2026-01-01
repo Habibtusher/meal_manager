@@ -1,10 +1,8 @@
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { formatCurrency, formatDateTime, getToday, cn } from '@/lib/utils';
-import { Wallet, ArrowUpCircle, ArrowDownCircle, Search, Plus } from 'lucide-react';
-import { Input } from '@/components/ui/Input';
+import { Wallet, ArrowUpCircle } from 'lucide-react';
 import DebouncedSearch from '@/components/ui/DebouncedSearch';
 
 import AddDepositModal from '@/components/wallet/AddDepositModal';
@@ -18,7 +16,8 @@ interface WalletManagementProps {
 
 export default async function WalletManagement({ searchParams }: WalletManagementProps) {
     const session = await auth();
-    const organizationId = session?.user.organizationId!;
+    if (!session?.user?.organizationId) return null;
+    const organizationId = session.user.organizationId;
 
     const params = await searchParams;
     const now = getToday();
@@ -136,7 +135,7 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
-                                {transactions.map((tx: any) => (
+                                {transactions.map((tx) => (
                                     <tr key={tx.id} className="text-sm group">
                                         <td className="py-4">
                                             <div>

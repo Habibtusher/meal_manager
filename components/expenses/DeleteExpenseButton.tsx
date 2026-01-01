@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { deleteExpense } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
-import { Trash2, AlertTriangle, X } from 'lucide-react';
+import { Trash2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 interface DeleteExpenseButtonProps {
@@ -51,7 +51,7 @@ export default function DeleteExpenseButton({ expenseId, description }: DeleteEx
                             </div>
                             <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Expense?</h3>
                             <p className="text-gray-500 mb-6">
-                                Are you sure you want to delete <span className="font-bold text-gray-700">"{description}"</span>? This action cannot be undone.
+                                Are you sure you want to delete <span className="font-bold text-gray-700">&quot;{description}&quot;</span>? This action cannot be undone.
                             </p>
                             <div className="flex gap-3">
                                 <Button

@@ -1,10 +1,9 @@
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Wallet, Utensils, History, CreditCard } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
-import { getRemainingBalance, calculateMonthlyUserCost } from '@/lib/calculations';
-import { Button } from '@/components/ui/Button';
+import { getRemainingBalance } from '@/lib/calculations';
 import { MonthPicker } from '@/components/ui/MonthPicker';
 
 // Member Dashboard with Month Filter and Dynamic Stats
@@ -14,8 +13,9 @@ export default async function MemberDashboard({
     searchParams: Promise<{ month?: string; year?: string }>;
 }) {
     const session = await auth();
-    const userId = session?.user.id!;
-    const organizationId = session?.user.organizationId!;
+    if (!session?.user?.id || !session?.user?.organizationId) return null;
+    const userId = session.user.id;
+    const organizationId = session.user.organizationId;
 
     const params = await searchParams;
     const now = new Date();
@@ -31,8 +31,8 @@ export default async function MemberDashboard({
     // Fetch data in parallel
     const [
         userBalance,
-        todayMenu,
-        myTodayRecords,
+        ,
+        ,
         orgStats,
         userStats
     ] = await Promise.all([
@@ -59,7 +59,7 @@ export default async function MemberDashboard({
                     date: { gte: startDate, lte: endDate }
                 },
                 _sum: { count: true }
-            } as any)
+            })
         ]),
         // User specific stats for Filtered Month
         prisma.mealRecord.aggregate({
@@ -69,12 +69,12 @@ export default async function MemberDashboard({
                 date: { gte: startDate, lte: endDate }
             },
             _sum: { count: true }
-        } as any)
+        })
     ]);
 
     const totalOrgExpenses = orgStats[0]._sum.amount || 0;
-    const totalOrgMeals = (orgStats[1] as any)._sum.count || 0;
-    const userTotalMeals = (userStats as any)._sum.count || 0;
+    const totalOrgMeals = orgStats[1]._sum.count || 0;
+    const userTotalMeals = userStats._sum.count || 0;
 
     // Calculate Meal Rate (Avoid division by zero)
     const mealRate = totalOrgMeals > 0 ? totalOrgExpenses / totalOrgMeals : 0;
@@ -210,5 +210,4 @@ export default async function MemberDashboard({
 }
 
 import { cn } from '@/lib/utils';
-import { ParticipationButton } from '@/components/member/ParticipationButton';
 import { AlertCircle } from 'lucide-react';

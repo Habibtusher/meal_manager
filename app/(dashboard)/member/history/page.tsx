@@ -11,8 +11,11 @@ interface MemberHistoryProps {
 // Member History with Dynamic Meal Rate
 export default async function MemberHistory({ searchParams }: MemberHistoryProps) {
     const session = await auth();
-    const userId = session?.user.id!;
-    const organizationId = session?.user.organizationId!;
+    if (!session?.user?.id || !session?.user?.organizationId) {
+        return null;
+    }
+    const userId = session.user.id;
+    const organizationId = session.user.organizationId;
 
     const params = await searchParams;
     const now = new Date();
@@ -50,12 +53,12 @@ export default async function MemberHistory({ searchParams }: MemberHistoryProps
                     date: { gte: startDate, lte: endDate }
                 },
                 _sum: { count: true }
-            } as any)
+            })
         ])
     ]);
 
     const totalOrgExpenses = orgStats[0]._sum.amount || 0;
-    const totalOrgMeals = (orgStats[1] as any)._sum.count || 0;
+    const totalOrgMeals = orgStats[1]._sum.count || 0;
 
     // Calculate Meal Rate
     const mealRate = totalOrgMeals > 0 ? totalOrgExpenses / totalOrgMeals : 0;

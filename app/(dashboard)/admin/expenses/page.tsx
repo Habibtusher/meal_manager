@@ -1,9 +1,8 @@
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { formatCurrency, formatDate, getToday } from '@/lib/utils';
-import { Plus, Receipt, ShoppingCart, TrendingDown } from 'lucide-react';
+import { Receipt, ShoppingCart, TrendingDown } from 'lucide-react';
 
 import AddExpenseModal from '@/components/expenses/AddExpenseModal';
 import EditExpenseModal from '@/components/expenses/EditExpenseModal';
@@ -17,7 +16,8 @@ interface ExpenseManagementProps {
 
 export default async function ExpenseManagement({ searchParams }: ExpenseManagementProps) {
     const session = await auth();
-    const organizationId = session?.user.organizationId!;
+    if (!session?.user?.organizationId) return null;
+    const organizationId = session.user.organizationId;
 
     const params = await searchParams;
     const now = getToday();
@@ -44,7 +44,7 @@ export default async function ExpenseManagement({ searchParams }: ExpenseManagem
         orderBy: { date: 'desc' },
     });
 
-    const totalExpenses = expenses.reduce((sum: number, exp: any) => sum + Number(exp.amount), 0);
+    const totalExpenses = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
 
     return (
         <div className="space-y-6">
@@ -102,7 +102,7 @@ export default async function ExpenseManagement({ searchParams }: ExpenseManagem
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
-                                {expenses.map((expense: any) => (
+                                {expenses.map((expense) => (
                                     <tr key={expense.id} className="group hover:bg-gray-50 transition-colors">
                                         <td className="py-4 px-4 text-sm text-gray-500 whitespace-nowrap">
                                             {formatDate(expense.date)}

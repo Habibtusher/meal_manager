@@ -15,10 +15,10 @@ export async function calculateUserTotalMeals(
       status: 'CONFIRMED',
       date: { gte: startDate, lte: endDate },
     },
-    select: { count: true } as any,
+    select: { count: true },
   });
 
-  return (records as any).reduce((sum: number, r: any) => sum + (r.count || 0), 0);
+  return records.reduce((sum: number, r) => sum + (r.count || 0), 0);
 }
 
 /**
@@ -41,7 +41,7 @@ export async function calculateMonthlyUserCost(
         status: 'CONFIRMED',
       },
       _sum: { count: true },
-    } as any),
+    }),
     prisma.expense.aggregate({
       where: {
         date: { gte: startDate, lte: endDate },
@@ -50,7 +50,7 @@ export async function calculateMonthlyUserCost(
     }),
   ]);
 
-  const totalMealCount = (totalMeals as any)._sum.count || 0;
+  const totalMealCount = totalMeals._sum.count || 0;
   const totalExp = totalExpenses._sum.amount || 0;
   const rate = totalMealCount > 0 ? totalExp / totalMealCount : 0;
 

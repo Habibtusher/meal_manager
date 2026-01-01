@@ -12,7 +12,8 @@ interface DashboardProps {
 
 export default async function AdminDashboard({ searchParams }: DashboardProps) {
     const session = await auth();
-    const organizationId = session?.user.organizationId!;
+    if (!session?.user?.organizationId) return null;
+    const organizationId = session.user.organizationId;
 
     const params = await searchParams;
     const now = getToday();
@@ -25,7 +26,7 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
     // Fetch stats
     const [
         memberCount,
-        participationStats,
+        ,
         lowBalanceUsers,
         totalStats
     ] = await Promise.all([
@@ -54,7 +55,7 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
                     }
                 },
                 _sum: { count: true }
-            } as any),
+            }),
             prisma.walletTransaction.aggregate({
                 where: {
                     organizationId,
@@ -70,7 +71,7 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
     ]);
 
     const totalExpenses = totalStats[0]._sum.amount || 0;
-    const totalMeals = (totalStats[1] as any)._sum.count || 0;
+    const totalMeals = totalStats[1]._sum.count || 0;
     const totalDeposits = totalStats[2]._sum.amount || 0;
 
     // Balance = (Total Deposits - Total Expenses) for the selected period

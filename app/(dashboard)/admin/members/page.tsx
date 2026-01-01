@@ -1,10 +1,7 @@
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { Card, CardContent, CardHeader } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { formatCurrency, formatDate, cn } from '@/lib/utils';
-import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/Input';
 import AddMemberModal from '@/components/member/AddMemberModal';
 import EditMemberModal from '@/components/member/EditMemberModal';
 import DeleteMemberButton from '@/components/member/DeleteMemberButton';
@@ -18,7 +15,8 @@ export default async function MemberManagement({
     searchParams: Promise<{ query?: string }>;
 }) {
     const session = await auth();
-    const organizationId = session?.user.organizationId!;
+    if (!session?.user?.organizationId) return null;
+    const organizationId = session.user.organizationId;
     const { query } = await searchParams;
 
     const members = await prisma.user.findMany({
