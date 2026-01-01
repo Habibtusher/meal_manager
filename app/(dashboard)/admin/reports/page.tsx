@@ -90,13 +90,13 @@ export default async function AdminReports({ searchParams }: ReportsProps) {
                     <h1 className="text-3xl font-bold text-gray-900">Reports & Analytics</h1>
                     <p className="text-gray-500 mt-1">Shared Scaling Billing: Rate = Total Expenses / Total Meals</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <MonthPicker defaultMonth={selectedMonth} defaultYear={selectedYear} />
                     <ExportReportsButton data={reportData} mealRate={mealRate} />
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card className="bg-white border-blue-100">
                     <CardHeader className="pb-2">
                         <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Expenses</CardDescription>
@@ -141,11 +141,11 @@ export default async function AdminReports({ searchParams }: ReportsProps) {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-gray-100 italic text-gray-400 text-xs">
-                                    <th className="pb-4 font-medium uppercase tracking-widest">User</th>
-                                    <th className="pb-4 font-medium text-center uppercase tracking-widest">Meals</th>
-                                    <th className="pb-4 font-medium text-right uppercase tracking-widest">Calculated Cost</th>
-                                    <th className="pb-4 font-medium text-right uppercase tracking-widest">Total Deposited</th>
-                                    <th className="pb-4 font-medium text-right uppercase tracking-widest">Adjusted Balance</th>
+                                    <th className="pb-4 font-medium uppercase tracking-widest px-4">User</th>
+                                    <th className="pb-4 font-medium text-center uppercase tracking-widest px-4">Meals</th>
+                                    <th className="pb-4 font-medium text-right uppercase tracking-widest px-4">Calculated Cost</th>
+                                    <th className="pb-4 font-medium text-right uppercase tracking-widest px-4">Total Deposited</th>
+                                    <th className="pb-4 font-medium text-right uppercase tracking-widest px-4">Adjusted Balance</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50 text-sm">
@@ -153,11 +153,11 @@ export default async function AdminReports({ searchParams }: ReportsProps) {
                                     const adjustedBalance = data.totalDeposited - data.totalMealCost;
                                     return (
                                         <tr key={data.id} className="hover:bg-blue-50/30 transition-colors">
-                                            <td className="py-4 font-bold text-gray-900">{data.name}</td>
-                                            <td className="py-4 text-center font-medium text-gray-600">{data.mealsConsumed}</td>
-                                            <td className="py-4 text-right font-bold text-red-500">{formatCurrency(data.totalMealCost)}</td>
-                                            <td className="py-4 text-right font-bold text-green-600">{formatCurrency(data.totalDeposited)}</td>
-                                            <td className="py-4 text-right">
+                                            <td className="py-4 px-4 font-bold text-gray-900 whitespace-nowrap">{data.name}</td>
+                                            <td className="py-4 px-4 text-center font-medium text-gray-600">{data.mealsConsumed}</td>
+                                            <td className="py-4 px-4 text-right font-bold text-red-500 whitespace-nowrap">{formatCurrency(data.totalMealCost)}</td>
+                                            <td className="py-4 px-4 text-right font-bold text-green-600 whitespace-nowrap">{formatCurrency(data.totalDeposited)}</td>
+                                            <td className="py-4 px-4 text-right whitespace-nowrap">
                                                 <span className={cn(
                                                     'font-black',
                                                     adjustedBalance < 0 ? 'text-red-600 underline' : 'text-gray-900'

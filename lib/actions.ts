@@ -568,3 +568,51 @@ export async function deleteWalletTransaction(id: string): Promise<{ success: bo
     return { success: false, error: error.message || 'Failed to delete transaction' };
   }
 }
+/**
+ * Admin: Transfer admin role to another member
+ */
+export async function transferAdminRole(targetUserId: string) {
+  const session = await auth();
+  if (!session?.user?.id || !session?.user?.organizationId || session.user.role !== 'ADMIN') {
+    throw new Error('Unauthorized');
+  }
+
+  const currentAdminId = session.user.id;
+  const organizationId = session.user.organizationId;
+
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. Ensure target user belongs to the same organization and is a MEMBER
+      const targetUser = await tx.user.findFirst({
+        where: {
+          id: targetUserId,
+          organizationId,
+          role: 'MEMBER',
+          isActive: true
+        }
+      });
+
+      if (!targetUser) throw new Error('Valid target member not found');
+
+      // 2. Make target user ADMIN
+      await tx.user.update({
+        where: { id: targetUserId },
+        data: { role: 'ADMIN' }
+      });
+
+      // 3. Make current admin MEMBER
+      await tx.user.update({
+        where: { id: currentAdminId },
+        data: { role: 'MEMBER' }
+      });
+
+      return { success: true };
+    });
+
+    revalidatePath('/admin/members');
+    return result;
+  } catch (error: any) {
+    console.error('Failed to transfer admin role:', error);
+    return { success: false, error: error.message || 'Failed to transfer role' };
+  }
+}

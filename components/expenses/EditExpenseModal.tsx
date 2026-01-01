@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { updateExpense } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
-import { X, Calendar, Tag, Info, IndianRupee, Edit2 } from 'lucide-react';
+import { X, Calendar, Tag, Info, Banknote, Edit2 } from 'lucide-react';
 
 interface EditExpenseModalProps {
     expense: {
@@ -106,7 +106,7 @@ export default function EditExpenseModal({ expense }: EditExpenseModalProps) {
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                <IndianRupee className="w-4 h-4" /> Amount (৳)
+                                <Banknote className="w-4 h-4" /> Amount (৳)
                             </label>
                             <Input
                                 required

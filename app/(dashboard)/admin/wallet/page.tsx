@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { formatCurrency, formatDateTime, getToday, cn } from '@/lib/utils';
 import { Wallet, ArrowUpCircle, ArrowDownCircle, Search, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
+import DebouncedSearch from '@/components/ui/DebouncedSearch';
 
 import AddDepositModal from '@/components/wallet/AddDepositModal';
 import EditTransactionModal from '@/components/wallet/EditTransactionModal';
@@ -12,7 +13,7 @@ import DeleteTransactionButton from '@/components/wallet/DeleteTransactionButton
 import { MonthPicker } from '@/components/ui/MonthPicker';
 
 interface WalletManagementProps {
-    searchParams: Promise<{ month?: string; year?: string }>;
+    searchParams: Promise<{ month?: string; year?: string; query?: string }>;
 }
 
 export default async function WalletManagement({ searchParams }: WalletManagementProps) {
@@ -34,9 +35,15 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
                 createdAt: {
                     gte: startDate,
                     lte: endDate
-                }
+                },
+                ...(params.query ? {
+                    OR: [
+                        { description: { contains: params.query, mode: 'insensitive' } },
+                        { user: { name: { contains: params.query, mode: 'insensitive' } } },
+                    ]
+                } : {})
             },
-            orderBy: { createdAt: 'desc' },
+            orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
             include: { user: { select: { name: true, email: true } } },
         }),
         prisma.user.findMany({
@@ -108,10 +115,11 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
                             <CardTitle>Recent Transactions</CardTitle>
                             <CardDescription>Comprehensive log of all money moves.</CardDescription>
                         </div>
-                        <div className="relative w-full md:w-64">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                            <Input placeholder="Search logs..." className="pl-10 h-9 text-sm" />
-                        </div>
+                        <DebouncedSearch
+                            defaultValue={params.query}
+                            placeholder="Search logs..."
+                            className="w-full md:w-64"
+                        />
                     </div>
                 </CardHeader>
                 <CardContent>
