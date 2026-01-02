@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { addWalletCredit } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
-import { Plus, X, User, IndianRupee, Info } from 'lucide-react';
+import { Plus, X, User, Banknote, Info } from 'lucide-react';
 
 interface Member {
     id: string;
@@ -38,11 +38,18 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
         setIsPending(true);
 
         try {
+            const now = new Date();
+            const [year, month, day] = formData.date.split('-').map(Number);
+            const dateObj = new Date();
+            dateObj.setFullYear(year, month - 1, day);
+            // If it's not today, we might want to reset time to midnight or keep "now" time.
+            // Keeping "now" time is usually better for ordering even if it's a past date.
+
             const result = await addWalletCredit(
                 formData.userId,
                 Number(formData.amount),
                 formData.description,
-                new Date(formData.date)
+                dateObj
             );
 
             if (result.success) {
@@ -118,7 +125,7 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
 
                     <div className="space-y-2">
                         <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                            <IndianRupee className="w-4 h-4" /> Amount (৳)
+                            <Banknote className="w-4 h-4" /> Amount (৳)
                         </label>
                         <Input
                             required

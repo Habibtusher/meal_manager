@@ -1,14 +1,14 @@
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { User, Mail, Shield, Smartphone } from 'lucide-react';
+import { Mail, Shield } from 'lucide-react';
 import ProfileForm from '@/components/member/ProfileForm';
 import PasswordForm from '@/components/member/PasswordForm';
 
 export default async function MemberProfile() {
     const session = await auth();
-    const userId = session?.user.id!;
+    if (!session?.user?.id) return null;
+    const userId = session.user.id;
 
     const user = await prisma.user.findUnique({
         where: { id: userId },

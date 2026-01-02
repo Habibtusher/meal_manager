@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { deleteWalletTransaction } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
-import { Trash2, AlertTriangle, X } from 'lucide-react';
+import { Trash2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 interface DeleteTransactionButtonProps {
@@ -54,9 +54,9 @@ export default function DeleteTransactionButton({ transactionId, description, us
                             <p className="text-gray-500 mb-6 text-sm">
                                 Are you sure you want to delete this transaction for <span className="font-bold text-gray-700">{userName}</span>?
                                 <br />
-                                <span className="italic font-medium">"{description}"</span>
+                                <span className="italic font-medium">&quot;{description}&quot;</span>
                                 <br /><br />
-                                <span className="text-red-500 font-bold">This will revert the member's wallet balance!</span>
+                                <span className="text-red-500 font-bold">This will revert the member&apos;s wallet balance!</span>
                             </p>
                             <div className="flex gap-3">
                                 <Button

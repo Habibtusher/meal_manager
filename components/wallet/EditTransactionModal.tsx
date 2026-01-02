@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { updateWalletTransaction } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
-import { X, User, IndianRupee, Info, Edit2, Calendar } from 'lucide-react';
+import { X, User, Banknote, Info, Edit2, Calendar } from 'lucide-react';
 
 interface EditTransactionModalProps {
     transaction: {
@@ -33,10 +33,14 @@ export default function EditTransactionModal({ transaction }: EditTransactionMod
         setIsPending(true);
 
         try {
+            const [year, month, day] = formData.date.split('-').map(Number);
+            const dateObj = new Date(transaction.createdAt);
+            dateObj.setFullYear(year, month - 1, day);
+
             const result = await updateWalletTransaction(transaction.id, {
                 amount: Number(formData.amount),
                 description: formData.description,
-                date: new Date(formData.date)
+                date: dateObj
             });
 
             if (result.success) {
@@ -95,7 +99,7 @@ export default function EditTransactionModal({ transaction }: EditTransactionMod
 
                     <div className="space-y-2">
                         <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                            <IndianRupee className="w-4 h-4" /> Amount (৳)
+                            <Banknote className="w-4 h-4" /> Amount (৳)
                         </label>
                         <Input
                             required

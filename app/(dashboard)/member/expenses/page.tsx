@@ -1,153 +1,156 @@
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { formatCurrency, formatDate, getToday } from '@/lib/utils';
-import { Receipt, ShoppingCart, TrendingDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { ShoppingCart, Receipt } from 'lucide-react';
+import { formatCurrency, formatDate } from '@/lib/utils';
 import { MonthPicker } from '@/components/ui/MonthPicker';
-import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
+import Link from 'next/link';
 
-interface MemberExpensesProps {
+export default async function MemberExpenses({
+    searchParams,
+}: {
     searchParams: Promise<{ month?: string; year?: string; page?: string }>;
-}
-
-export default async function MemberExpenses({ searchParams }: MemberExpensesProps) {
+}) {
     const session = await auth();
-    const organizationId = session?.user.organizationId!;
+    if (!session?.user?.organizationId) return null;
+    const organizationId = session.user.organizationId;
 
     const params = await searchParams;
-    const now = getToday();
-    const selectedMonth = params.month ? parseInt(params.month) : now.getUTCMonth() + 1;
-    const selectedYear = params.year ? parseInt(params.year) : now.getUTCFullYear();
+    const now = new Date();
+    const selectedMonth = params.month ? parseInt(params.month) : now.getMonth() + 1;
+    const selectedYear = params.year ? parseInt(params.year) : now.getFullYear();
     const currentPage = params.page ? parseInt(params.page) : 1;
     const pageSize = 10;
 
-    const startDate = new Date(Date.UTC(selectedYear, selectedMonth - 1, 1));
-    const endDate = new Date(Date.UTC(selectedYear, selectedMonth, 0, 23, 59, 59, 999));
+    const startDate = new Date(selectedYear, selectedMonth - 1, 1);
+    const endDate = new Date(selectedYear, selectedMonth, 0, 23, 59, 59, 999);
 
-    // Fetch total count for pagination
-    const totalCount = await prisma.expense.count({
-        where: {
-            organizationId,
-            date: {
-                gte: startDate,
-                lte: endDate
-            }
-        }
-    });
+    // Fetch data in parallel
+    const [expenses, totalCount, stats] = await Promise.all([
+        prisma.expense.findMany({
+            where: {
+                organizationId,
+                date: { gte: startDate, lte: endDate },
+            },
+            orderBy: { date: 'desc' },
+            skip: (currentPage - 1) * pageSize,
+            take: pageSize,
+        }),
+        prisma.expense.count({
+            where: {
+                organizationId,
+                date: { gte: startDate, lte: endDate },
+            },
+        }),
+        prisma.expense.aggregate({
+            where: {
+                organizationId,
+                date: { gte: startDate, lte: endDate },
+            },
+            _sum: { amount: true },
+        }),
+    ]);
 
+    const totalSpent = stats._sum.amount || 0;
     const totalPages = Math.ceil(totalCount / pageSize);
 
-    const expenses = await prisma.expense.findMany({
-        where: {
-            organizationId,
-            date: {
-                gte: startDate,
-                lte: endDate
-            }
-        },
-        orderBy: { date: 'desc' },
-        skip: (currentPage - 1) * pageSize,
-        take: pageSize
-    });
-
-    const totalExpenses = await prisma.expense.aggregate({
-        where: {
-            organizationId,
-            date: {
-                gte: startDate,
-                lte: endDate
-            }
-        },
-        _sum: { amount: true }
-    });
-
-    const totalSpent = totalExpenses._sum.amount || 0;
-
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Organization Expenses</h1>
-                    <p className="text-gray-500 mt-1">View daily mess costs and expenditures for your organization.</p>
+                    <p className="text-gray-500 mt-1">View the latest expenditures for your organization.</p>
                 </div>
                 <MonthPicker defaultMonth={selectedMonth} defaultYear={selectedYear} />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card className="md:col-span-1">
                     <CardContent className="pt-6">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-red-100 rounded-lg">
-                                <TrendingDown className="w-5 h-5 text-red-600" />
+                        <div className="flex items-center gap-4">
+                            <div className="p-4 bg-blue-50 rounded-2xl">
+                                <Receipt className="w-8 h-8 text-blue-600" />
                             </div>
                             <div>
-                                <p className="text-xs text-gray-500 font-medium tracking-wide uppercase">Total Organization Spent</p>
-                                <p className="text-xl font-bold text-gray-900">{formatCurrency(totalSpent)}</p>
+                                <p className="text-sm font-medium text-gray-500">Total Organization Spent</p>
+                                <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalSpent)}</p>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
-            </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Expense History</CardTitle>
-                    <CardDescription>Records for {new Date(selectedYear, selectedMonth - 1).toLocaleString('default', { month: 'long', year: 'numeric' })}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                        {expenses.map((expense: any) => (
-                            <div key={expense.id} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl hover:shadow-sm transition-all group">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
-                                        {expense.category.toLowerCase().includes('food') ? <ShoppingCart className="w-5 h-5" /> : <Receipt className="w-5 h-5" />}
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-bold text-gray-900">{expense.description}</p>
-                                        <div className="flex items-center gap-2 mt-0.5">
-                                            <span className="text-[10px] font-bold uppercase tracking-widest text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded">{expense.category}</span>
-                                            <span className="text-xs text-gray-400">{formatDate(expense.date)}</span>
+                <Card className="md:col-span-2">
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <CardTitle className="text-lg">Recent Expenses</CardTitle>
+                        <span className="text-xs font-medium px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
+                            Page {currentPage} of {totalPages || 1}
+                        </span>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            {expenses.map((expense) => (
+                                <div key={expense.id} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl hover:border-blue-100 transition-colors">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
+                                            <ShoppingCart className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-bold text-gray-900">{expense.description}</p>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded font-medium uppercase">
+                                                    {expense.category}
+                                                </span>
+                                                <p className="text-[10px] text-gray-400">{formatDate(expense.date)}</p>
+                                            </div>
                                         </div>
                                     </div>
+                                    <p className="text-sm font-bold text-gray-900">{formatCurrency(expense.amount)}</p>
                                 </div>
-                                <p className="text-base font-bold text-gray-900">{formatCurrency(expense.amount)}</p>
-                            </div>
-                        ))}
-                        {expenses.length === 0 && (
-                            <div className="py-20 text-center text-gray-400 italic">No expenses found for this period.</div>
-                        )}
-                    </div>
+                            ))}
+                            {expenses.length === 0 && (
+                                <div className="text-center py-12">
+                                    <Receipt className="w-12 h-12 text-gray-200 mx-auto mb-4" />
+                                    <p className="text-gray-500">No expenses found for this period.</p>
+                                </div>
+                            )}
 
-                    {totalPages > 1 && (
-                        <div className="flex items-center justify-center gap-2 mt-8">
-                            <Link href={`/member/expenses?month=${selectedMonth}&year=${selectedYear}&page=${Math.max(1, currentPage - 1)}`}>
-                                <Button variant="ghost" size="sm" disabled={currentPage <= 1}>
-                                    <ChevronLeft className="w-4 h-4 mr-1" /> Previous
-                                </Button>
-                            </Link>
-                            <div className="flex items-center gap-1">
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                                    <Link key={p} href={`/member/expenses?month=${selectedMonth}&year=${selectedYear}&page=${p}`}>
-                                        <Button
-                                            variant={p === currentPage ? 'primary' : 'ghost'}
-                                            size="sm"
-                                            className="w-8 h-8 p-0"
-                                        >
-                                            {p}
-                                        </Button>
+                            {totalPages > 1 && (
+                                <div className="flex items-center justify-center gap-2 mt-6">
+                                    <Link 
+                                        href={`/member/expenses?month=${selectedMonth}&year=${selectedYear}&page=${currentPage - 1}`}
+                                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                                    >
+                                        <Button variant="outline" size="sm">Previous</Button>
                                     </Link>
-                                ))}
-                            </div>
-                            <Link href={`/member/expenses?month=${selectedMonth}&year=${selectedYear}&page=${Math.min(totalPages, currentPage + 1)}`}>
-                                <Button variant="ghost" size="sm" disabled={currentPage >= totalPages}>
-                                    Next <ChevronRight className="w-4 h-4 ml-1" />
-                                </Button>
-                            </Link>
+                                    <div className="flex items-center gap-1">
+                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                                            <Link 
+                                                key={p} 
+                                                href={`/member/expenses?month=${selectedMonth}&year=${selectedYear}&page=${p}`}
+                                            >
+                                                <Button 
+                                                    variant={p === currentPage ? 'default' : 'outline'} 
+                                                    size="sm"
+                                                    className="w-8"
+                                                >
+                                                    {p}
+                                                </Button>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                    <Link 
+                                        href={`/member/expenses?month=${selectedMonth}&year=${selectedYear}&page=${currentPage + 1}`}
+                                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                                    >
+                                        <Button variant="outline" size="sm">Next</Button>
+                                    </Link>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     );
 }

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { addExpense } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
-import { Plus, X, Calendar, Tag, Info, IndianRupee } from 'lucide-react';
+import { Plus, X, Calendar, Tag, Info, Banknote } from 'lucide-react';
 
 export default function AddExpenseModal() {
     const [isOpen, setIsOpen] = useState(false);
@@ -99,7 +99,7 @@ export default function AddExpenseModal() {
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                <IndianRupee className="w-4 h-4" /> Amount (৳)
+                                <Banknote className="w-4 h-4" /> Amount (৳)
                             </label>
                             <Input
                                 required
