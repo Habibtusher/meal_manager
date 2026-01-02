@@ -1,10 +1,12 @@
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Wallet, Utensils, History, CreditCard } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
+import { Wallet, Utensils, History, CreditCard, AlertCircle, ShoppingCart } from 'lucide-react';
+import { formatCurrency, cn, formatDate } from '@/lib/utils';
 import { getRemainingBalance } from '@/lib/calculations';
 import { MonthPicker } from '@/components/ui/MonthPicker';
+import Link from 'next/link';
+import { Button } from '@/components/ui/Button';
 
 // Member Dashboard with Month Filter and Dynamic Stats
 export default async function MemberDashboard({
@@ -181,7 +183,7 @@ export default async function MemberDashboard({
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {latestExpenses.map((expense: any) => (
+                            {latestExpenses.map((expense) => (
                                 <div key={expense.id} className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-lg hover:border-blue-100 transition-colors">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
@@ -205,10 +207,3 @@ export default async function MemberDashboard({
         </div>
     );
 }
-
-import { cn, formatDate } from '@/lib/utils';
-import { ParticipationButton } from '@/components/member/ParticipationButton';
-import { AlertCircle, ShoppingCart, Receipt } from 'lucide-react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/Button';
-import { CardDescription } from '@/components/ui/Card';

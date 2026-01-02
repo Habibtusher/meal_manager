@@ -44,7 +44,7 @@ export default function EditExpenseModal({ expense }: EditExpenseModalProps) {
             } else {
                 toast.error(result.error || 'Failed to update expense');
             }
-        } catch (error) {
+        } catch {
             toast.error('Something went wrong');
         } finally {
             setIsPending(false);

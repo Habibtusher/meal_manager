@@ -50,7 +50,7 @@ export function getToday(): Date {
     hour12: false
   });
   
-  const parts: any = {};
+  const parts: Record<string, string> = {};
   formatter.formatToParts(now).forEach(p => parts[p.type] = p.value);
   
   return new Date(Date.UTC(

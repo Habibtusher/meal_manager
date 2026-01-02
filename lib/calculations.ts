@@ -1,5 +1,5 @@
 import prisma from './prisma';
-import { Prisma, TransactionType } from '@prisma/client';
+import { TransactionType } from '@prisma/client';
 
 /**
  * Calculate total meal count (sum of partial/full meals) for a user in a range

@@ -40,7 +40,7 @@ export default function AddExpenseModal() {
             } else {
                 toast.error(result.error || 'Failed to log expense');
             }
-        } catch (error) {
+        } catch {
             toast.error('Something went wrong');
         } finally {
             setIsPending(false);

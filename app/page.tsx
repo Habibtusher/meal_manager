@@ -9,7 +9,6 @@ import {
   Zap,
   TrendingUp,
   Users,
-  CheckCircle,
   ArrowRight,
   ChefHat,
   Wallet,

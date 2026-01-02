@@ -42,11 +42,11 @@ export default async function MealManagement({
                 userId: true,
                 mealType: true,
                 count: true
-            } as any
+            }
         })
     ]);
 
-    const initialCounts = confirmedRecords.map((r: any) => ({
+    const initialCounts = confirmedRecords.map((r) => ({
         userId: r.userId,
         mealType: r.mealType,
         count: r.count

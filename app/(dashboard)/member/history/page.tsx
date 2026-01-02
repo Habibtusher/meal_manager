@@ -77,11 +77,11 @@ export default async function MemberHistory({ searchParams }: MemberHistoryProps
 
     // Group records by date
     const historyData = days.map(day => {
-        const dayRecords = records.filter((r: any) => r.date.toISOString().split('T')[0] === day.dateString);
+        const dayRecords = records.filter((r) => r.date.toISOString().split('T')[0] === day.dateString);
 
-        const breakfast = dayRecords.find((r: any) => r.mealType === 'BREAKFAST');
-        const lunch = dayRecords.find((r: any) => r.mealType === 'LUNCH');
-        const dinner = dayRecords.find((r: any) => r.mealType === 'DINNER');
+        const breakfast = dayRecords.find((r) => r.mealType === 'BREAKFAST');
+        const lunch = dayRecords.find((r) => r.mealType === 'LUNCH');
+        const dinner = dayRecords.find((r) => r.mealType === 'DINNER');
 
         const dailyCount = (breakfast?.count || 0) + (lunch?.count || 0) + (dinner?.count || 0);
         // Use dynamic meal rate for daily cost
@@ -97,7 +97,7 @@ export default async function MemberHistory({ searchParams }: MemberHistoryProps
         };
     });
 
-    const totalMonthlyConsumed = records.reduce((sum: number, r: any) => sum + (r.count || 0), 0);
+    const totalMonthlyConsumed = records.reduce((sum: number, r) => sum + (r.count || 0), 0);
     // Use dynamic meal rate for total cost
     const totalMonthlyCost = totalMonthlyConsumed * mealRate;
 

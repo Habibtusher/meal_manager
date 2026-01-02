@@ -26,7 +26,7 @@ export default function DeleteTransactionButton({ transactionId, description, us
             } else {
                 toast.error(result.error || 'Failed to delete transaction');
             }
-        } catch (error) {
+        } catch {
             toast.error('Something went wrong');
         } finally {
             setIsPending(false);

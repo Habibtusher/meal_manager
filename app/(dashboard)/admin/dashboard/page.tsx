@@ -1,7 +1,7 @@
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Users, Utensils, Wallet, TrendingUp, AlertCircle, ShoppingCart, Receipt } from 'lucide-react';
+import { Users, Utensils, Wallet, TrendingUp, AlertCircle, ShoppingCart } from 'lucide-react';
 import { formatCurrency, getToday, cn, formatDate } from '@/lib/utils';
 import { getMealParticipationStats, getLowBalanceUsers } from '@/lib/calculations';
 import { MonthPicker } from '@/components/ui/MonthPicker';
@@ -229,7 +229,7 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {latestExpenses.map((expense: any) => (
+                            {latestExpenses.map((expense) => (
                                 <div key={expense.id} className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-lg hover:border-blue-100 transition-colors">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400 group-hover:text-blue-500">

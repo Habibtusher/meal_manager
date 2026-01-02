@@ -126,7 +126,7 @@ export async function batchMarkAttendance(
         if (!scheduleId) continue;
 
         // Upsert meal record with explicit count
-        await (tx.mealRecord as any).upsert({
+        await tx.mealRecord.upsert({
           where: {
             userId_mealScheduleId: {
               userId: record.userId,

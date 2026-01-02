@@ -117,7 +117,7 @@ export default async function MemberExpenses({
 
                             {totalPages > 1 && (
                                 <div className="flex items-center justify-center gap-2 mt-6">
-                                    <Link 
+                                    <Link
                                         href={`/member/expenses?month=${selectedMonth}&year=${selectedYear}&page=${currentPage - 1}`}
                                         className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                                     >
@@ -125,12 +125,12 @@ export default async function MemberExpenses({
                                     </Link>
                                     <div className="flex items-center gap-1">
                                         {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                                            <Link 
-                                                key={p} 
+                                            <Link
+                                                key={p}
                                                 href={`/member/expenses?month=${selectedMonth}&year=${selectedYear}&page=${p}`}
                                             >
-                                                <Button 
-                                                    variant={p === currentPage ? 'default' : 'outline'} 
+                                                <Button
+                                                    variant={p === currentPage ? 'primary' : 'outline'}
                                                     size="sm"
                                                     className="w-8"
                                                 >
@@ -139,7 +139,7 @@ export default async function MemberExpenses({
                                             </Link>
                                         ))}
                                     </div>
-                                    <Link 
+                                    <Link
                                         href={`/member/expenses?month=${selectedMonth}&year=${selectedYear}&page=${currentPage + 1}`}
                                         className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
                                     >

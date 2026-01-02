@@ -25,7 +25,7 @@ export default function DeleteExpenseButton({ expenseId, description }: DeleteEx
             } else {
                 toast.error(result.error || 'Failed to delete expense');
             }
-        } catch (error) {
+        } catch {
             toast.error('Something went wrong');
         } finally {
             setIsPending(false);
