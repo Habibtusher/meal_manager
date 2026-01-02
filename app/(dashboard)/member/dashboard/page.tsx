@@ -34,7 +34,8 @@ export default async function MemberDashboard({
         todayMenu,
         myTodayRecords,
         orgStats,
-        userStats
+        userStats,
+        latestExpenses
     ] = await Promise.all([
         getRemainingBalance(userId),
         prisma.mealSchedule.findMany({
@@ -69,7 +70,12 @@ export default async function MemberDashboard({
                 date: { gte: startDate, lte: endDate }
             },
             _sum: { count: true }
-        } as any)
+        } as any),
+        prisma.expense.findMany({
+            where: { organizationId },
+            orderBy: { date: 'desc' },
+            take: 10
+        })
     ]);
 
     const totalOrgExpenses = orgStats[0]._sum.amount || 0;
@@ -188,27 +194,66 @@ export default async function MemberDashboard({
                 </Card> */}
 
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-lg">Notifications</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {userBalance < 200 && (
-                            <div className="flex items-start gap-3 p-3 bg-red-50 text-red-700 rounded-lg text-sm border border-red-100">
-                                <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                                <p>Your wallet balance is low. Please deposit cash to continue tracking meals smoothly.</p>
+                <div className="space-y-8">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-lg">Notifications</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {userBalance < 200 && (
+                                <div className="flex items-start gap-3 p-3 bg-red-50 text-red-700 rounded-lg text-sm border border-red-100">
+                                    <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                                    <p>Your wallet balance is low. Please deposit cash to continue tracking meals smoothly.</p>
+                                </div>
+                            )}
+                            <div className="p-3 bg-blue-50 text-blue-700 rounded-lg text-sm border border-blue-100">
+                                Welcome to your new Meal Manager dashboard!
                             </div>
-                        )}
-                        <div className="p-3 bg-blue-50 text-blue-700 rounded-lg text-sm border border-blue-100">
-                            Welcome to your new Meal Manager dashboard!
-                        </div>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
+
+                    {/* Latest Expenses */}
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle className="text-lg">Latest Expenses</CardTitle>
+                                <CardDescription>Recent organization expenditures</CardDescription>
+                            </div>
+                            <Link href="/member/expenses">
+                                <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 font-bold">
+                                    View More
+                                </Button>
+                            </Link>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-4">
+                                {latestExpenses.map((expense: any) => (
+                                    <div key={expense.id} className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-lg hover:border-blue-100 transition-colors">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
+                                                <ShoppingCart className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-bold text-gray-900">{expense.description}</p>
+                                                <p className="text-[10px] text-gray-400">{formatDate(expense.date)}</p>
+                                            </div>
+                                        </div>
+                                        <p className="text-sm font-bold text-gray-900">{formatCurrency(expense.amount)}</p>
+                                    </div>
+                                ))}
+                                {latestExpenses.length === 0 && (
+                                    <p className="text-sm text-gray-500 text-center py-4">No recent expenses.</p>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     );
 }
 
-import { cn } from '@/lib/utils';
+import { cn, formatDate } from '@/lib/utils';
 import { ParticipationButton } from '@/components/member/ParticipationButton';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, ShoppingCart, Receipt } from 'lucide-react';
+import Link from 'next/link';

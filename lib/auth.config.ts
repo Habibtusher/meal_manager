@@ -28,8 +28,9 @@ export const authConfig = {
       // Role-based protection
       const isAdminRoute = pathname.startsWith('/admin');
       const isMemberRoute = pathname.startsWith('/member');
+      const isAllowedForAdmin = ['/member/profile', '/member/history', '/member/expenses'].some(route => pathname === route);
 
-      if (auth.user.role === 'ADMIN' && isMemberRoute) {
+      if (auth.user.role === 'ADMIN' && isMemberRoute && !isAllowedForAdmin) {
         return Response.redirect(new URL('/admin/dashboard', nextUrl));
       }
 

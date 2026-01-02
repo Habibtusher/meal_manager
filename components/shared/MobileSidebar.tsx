@@ -16,6 +16,7 @@ import {
     Menu,
     X,
     ChevronRight,
+    History,
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
@@ -35,12 +36,15 @@ export function MobileSidebar({ role }: MobileSidebarProps) {
         { href: '/admin/expenses', label: 'Expenses', icon: Receipt },
         { href: '/admin/wallet', label: 'Wallet Transactions', icon: Wallet },
         { href: '/admin/reports', label: 'Reports', icon: FileText },
+        { href: '/member/history', label: 'Meal History', icon: History },
+        { href: '/member/profile', label: 'Profile', icon: Settings },
     ];
 
     const memberLinks = [
         { href: '/member/dashboard', label: 'My Dashboard', icon: LayoutDashboard },
         // { href: '/member/meals', label: 'Meal Participation', icon: Utensils },
         { href: '/member/history', label: 'Meal History', icon: FileText },
+        { href: '/member/expenses', label: 'Expenses', icon: Receipt },
         { href: '/member/profile', label: 'Profile', icon: Settings },
     ];
 

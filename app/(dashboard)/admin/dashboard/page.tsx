@@ -1,10 +1,12 @@
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Users, Utensils, Wallet, TrendingUp, AlertCircle } from 'lucide-react';
-import { formatCurrency, getToday, cn } from '@/lib/utils';
+import { Users, Utensils, Wallet, TrendingUp, AlertCircle, ShoppingCart, Receipt } from 'lucide-react';
+import { formatCurrency, getToday, cn, formatDate } from '@/lib/utils';
 import { getMealParticipationStats, getLowBalanceUsers } from '@/lib/calculations';
 import { MonthPicker } from '@/components/ui/MonthPicker';
+import { Button } from '@/components/ui/Button';
+import Link from 'next/link';
 
 interface DashboardProps {
     searchParams: Promise<{ month?: string; year?: string }>;
@@ -27,7 +29,8 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
         memberCount,
         participationStats,
         lowBalanceUsers,
-        totalStats
+        totalStats,
+        latestExpenses
     ] = await Promise.all([
         prisma.user.count({ where: { organizationId, role: { in: ['MEMBER', 'ADMIN'] }, isActive: true } }),
         getMealParticipationStats(organizationId, getToday()),
@@ -66,7 +69,12 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
                 },
                 _sum: { amount: true }
             })
-        ])
+        ]),
+        prisma.expense.findMany({
+            where: { organizationId },
+            orderBy: { date: 'desc' },
+            take: 10
+        })
     ]);
 
     const totalExpenses = totalStats[0]._sum.amount || 0;
@@ -171,33 +179,71 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
                 </Card> */}
 
                 {/* Low Balance Warning */}
+                <div className="space-y-8">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle className="flex items-center gap-2">
+                                    <AlertCircle className="w-5 h-5 text-red-500" />
+                                    Low Balance Alerts
+                                </CardTitle>
+                                <CardDescription>Users with balance below ৳200</CardDescription>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-4">
+                                {lowBalanceUsers.length > 0 ? (
+                                    lowBalanceUsers.map((user) => (
+                                        <div key={user.id} className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                                                <p className="text-xs text-gray-500">{user.email}</p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-sm font-bold text-red-600">{formatCurrency(user.walletBalance)}</p>
+                                                <button className="text-[10px] text-blue-600 hover:underline font-medium">Inform User</button>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-gray-500 text-center py-4">No users with low balance.</p>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Latest Expenses */}
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <div>
-                            <CardTitle className="flex items-center gap-2">
-                                <AlertCircle className="w-5 h-5 text-red-500" />
-                                Low Balance Alerts
-                            </CardTitle>
-                            <CardDescription>Users with balance below ৳200</CardDescription>
+                            <CardTitle>Latest Expenses</CardTitle>
+                            <CardDescription>Recent organization expenditures</CardDescription>
                         </div>
+                        <Link href="/admin/expenses">
+                            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 font-bold">
+                                View More
+                            </Button>
+                        </Link>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {lowBalanceUsers.length > 0 ? (
-                                lowBalanceUsers.map((user) => (
-                                    <div key={user.id} className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
-                                        <div>
-                                            <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                                            <p className="text-xs text-gray-500">{user.email}</p>
+                            {latestExpenses.map((expense: any) => (
+                                <div key={expense.id} className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-lg hover:border-blue-100 transition-colors">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400 group-hover:text-blue-500">
+                                            <ShoppingCart className="w-4 h-4" />
                                         </div>
-                                        <div className="text-right">
-                                            <p className="text-sm font-bold text-red-600">{formatCurrency(user.walletBalance)}</p>
-                                            <button className="text-[10px] text-blue-600 hover:underline font-medium">Inform User</button>
+                                        <div>
+                                            <p className="text-sm font-bold text-gray-900">{expense.description}</p>
+                                            <p className="text-[10px] text-gray-400">{formatDate(expense.date)}</p>
                                         </div>
                                     </div>
-                                ))
-                            ) : (
-                                <p className="text-sm text-gray-500 text-center py-4">No users with low balance.</p>
+                                    <p className="text-sm font-bold text-gray-900">{formatCurrency(expense.amount)}</p>
+                                </div>
+                            ))}
+                            {latestExpenses.length === 0 && (
+                                <p className="text-sm text-gray-500 text-center py-4">No recent expenses.</p>
                             )}
                         </div>
                     </CardContent>
@@ -206,3 +252,5 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
         </div>
     );
 }
+
+
