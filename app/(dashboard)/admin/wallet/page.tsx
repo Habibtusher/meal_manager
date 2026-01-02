@@ -8,11 +8,14 @@ import DebouncedSearch from '@/components/ui/DebouncedSearch';
 import AddDepositModal from '@/components/wallet/AddDepositModal';
 import EditTransactionModal from '@/components/wallet/EditTransactionModal';
 import DeleteTransactionButton from '@/components/wallet/DeleteTransactionButton';
+import { Pagination } from '@/components/ui/Pagination';
 import { MonthPicker } from '@/components/ui/MonthPicker';
 
 interface WalletManagementProps {
-    searchParams: Promise<{ month?: string; year?: string; query?: string }>;
+    searchParams: Promise<{ month?: string; year?: string; query?: string; page?: string }>;
 }
+
+const ITEMS_PER_PAGE = 10;
 
 export default async function WalletManagement({ searchParams }: WalletManagementProps) {
     const session = await auth();
@@ -23,27 +26,33 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
     const now = getToday();
     const selectedMonth = params.month ? parseInt(params.month) : now.getUTCMonth() + 1;
     const selectedYear = params.year ? parseInt(params.year) : now.getUTCFullYear();
+    const currentPage = Math.max(1, parseInt(params.page || '1') || 1);
 
     const startDate = new Date(Date.UTC(selectedYear, selectedMonth - 1, 1));
     const endDate = new Date(Date.UTC(selectedYear, selectedMonth, 0, 23, 59, 59, 999));
 
-    const [transactions, members, stats] = await Promise.all([
+    const whereClause = {
+        organizationId,
+        createdAt: {
+            gte: startDate,
+            lte: endDate
+        },
+        ...(params.query ? {
+            OR: [
+                { description: { contains: params.query, mode: 'insensitive' as const } },
+                { user: { name: { contains: params.query, mode: 'insensitive' as const } } },
+            ]
+        } : {})
+    };
+
+    const [totalCount, transactions, members, stats] = await Promise.all([
+        prisma.walletTransaction.count({ where: whereClause }),
         prisma.walletTransaction.findMany({
-            where: {
-                organizationId,
-                createdAt: {
-                    gte: startDate,
-                    lte: endDate
-                },
-                ...(params.query ? {
-                    OR: [
-                        { description: { contains: params.query, mode: 'insensitive' } },
-                        { user: { name: { contains: params.query, mode: 'insensitive' } } },
-                    ]
-                } : {})
-            },
+            where: whereClause,
             orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
             include: { user: { select: { name: true, email: true } } },
+            skip: (currentPage - 1) * ITEMS_PER_PAGE,
+            take: ITEMS_PER_PAGE,
         }),
         prisma.user.findMany({
             where: { organizationId, role: { in: ['MEMBER', 'ADMIN'] }, isActive: true },
@@ -61,6 +70,8 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
             })
         ])
     ]);
+
+    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
     const totalDeposits = stats[0]._sum.amount || 0;
     const systemLiability = stats[1]._sum.walletBalance || 0;
@@ -179,6 +190,12 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
                             </tbody>
                         </table>
                     </div>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        totalItems={totalCount}
+                        itemsPerPage={ITEMS_PER_PAGE}
+                    />
                 </CardContent>
             </Card>
         </div>

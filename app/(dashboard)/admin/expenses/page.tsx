@@ -9,10 +9,13 @@ import EditExpenseModal from '@/components/expenses/EditExpenseModal';
 import DeleteExpenseButton from '@/components/expenses/DeleteExpenseButton';
 import { MonthPicker } from '@/components/ui/MonthPicker';
 import DebouncedSearch from '@/components/ui/DebouncedSearch';
+import { Pagination } from '@/components/ui/Pagination';
 
 interface ExpenseManagementProps {
-    searchParams: Promise<{ month?: string; year?: string; query?: string }>;
+    searchParams: Promise<{ month?: string; year?: string; query?: string; page?: string }>;
 }
+
+const ITEMS_PER_PAGE = 10;
 
 export default async function ExpenseManagement({ searchParams }: ExpenseManagementProps) {
     const session = await auth();
@@ -23,28 +26,42 @@ export default async function ExpenseManagement({ searchParams }: ExpenseManagem
     const now = getToday();
     const selectedMonth = params.month ? parseInt(params.month) : now.getUTCMonth() + 1;
     const selectedYear = params.year ? parseInt(params.year) : now.getUTCFullYear();
+    const currentPage = Math.max(1, parseInt(params.page || '1') || 1);
 
     const startDate = new Date(Date.UTC(selectedYear, selectedMonth - 1, 1));
     const endDate = new Date(Date.UTC(selectedYear, selectedMonth, 0, 23, 59, 59, 999));
 
-    const expenses = await prisma.expense.findMany({
-        where: {
-            organizationId,
-            date: {
-                gte: startDate,
-                lte: endDate
-            },
-            ...(params.query ? {
-                OR: [
-                    { description: { contains: params.query, mode: 'insensitive' } },
-                    { category: { contains: params.query, mode: 'insensitive' } },
-                ]
-            } : {})
+    const whereClause = {
+        organizationId,
+        date: {
+            gte: startDate,
+            lte: endDate
         },
-        orderBy: { date: 'desc' },
-    });
+        ...(params.query ? {
+            OR: [
+                { description: { contains: params.query, mode: 'insensitive' as const } },
+                { category: { contains: params.query, mode: 'insensitive' as const } },
+            ]
+        } : {})
+    };
 
-    const totalExpenses = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
+    // Get stats, total count and expenses in parallel
+    const [totalStats, totalCount, expenses] = await Promise.all([
+        prisma.expense.aggregate({
+            where: whereClause,
+            _sum: { amount: true }
+        }),
+        prisma.expense.count({ where: whereClause }),
+        prisma.expense.findMany({
+            where: whereClause,
+            orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
+            skip: (currentPage - 1) * ITEMS_PER_PAGE,
+            take: ITEMS_PER_PAGE,
+        })
+    ]);
+
+    const totalExpenses = totalStats._sum.amount || 0;
+    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
     return (
         <div className="space-y-6">
@@ -141,6 +158,13 @@ export default async function ExpenseManagement({ searchParams }: ExpenseManagem
                             </tbody>
                         </table>
                     </div>
+
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        totalItems={totalCount}
+                        itemsPerPage={ITEMS_PER_PAGE}
+                    />
                 </CardContent>
             </Card>
         </div>

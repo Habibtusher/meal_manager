@@ -213,7 +213,7 @@ export async function getLowBalanceUsers(
       walletBalance: true,
     },
     orderBy: {
-      walletBalance: 'asc',
+      walletBalance: 'desc',
     },
   });
 

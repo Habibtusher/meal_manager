@@ -75,7 +75,7 @@ export default async function MemberDashboard({
         }),
         prisma.expense.findMany({
             where: { organizationId },
-            orderBy: { date: 'desc' },
+            orderBy: { createdAt: 'desc' },
             take: 10
         })
     ]);
