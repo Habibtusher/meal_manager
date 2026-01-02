@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/Button';
 import { batchMarkAttendance } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
 import { Save, Plus, Minus, User as UserIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 type MealType = 'BREAKFAST' | 'LUNCH' | 'DINNER';
 
@@ -69,7 +68,7 @@ export default function AttendanceBoard({ members, initialCounts, date }: Attend
             } else {
                 toast.error(result.error || 'Failed to save attendance');
             }
-        } catch (error) {
+        } catch {
             toast.error('Something went wrong');
         } finally {
             setIsSaving(false);

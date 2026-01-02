@@ -1,10 +1,12 @@
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Wallet, Utensils, History, CreditCard } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
+import { Wallet, Utensils, History, CreditCard, AlertCircle, ShoppingCart } from 'lucide-react';
+import { formatCurrency, cn, formatDate } from '@/lib/utils';
 import { getRemainingBalance } from '@/lib/calculations';
 import { MonthPicker } from '@/components/ui/MonthPicker';
+import Link from 'next/link';
+import { Button } from '@/components/ui/Button';
 
 // Member Dashboard with Month Filter and Dynamic Stats
 export default async function MemberDashboard({
@@ -34,7 +36,8 @@ export default async function MemberDashboard({
         ,
         ,
         orgStats,
-        userStats
+        userStats,
+        latestExpenses
     ] = await Promise.all([
         getRemainingBalance(userId),
         prisma.mealSchedule.findMany({
@@ -69,6 +72,11 @@ export default async function MemberDashboard({
                 date: { gte: startDate, lte: endDate }
             },
             _sum: { count: true }
+        }),
+        prisma.expense.findMany({
+            where: { organizationId },
+            orderBy: { date: 'desc' },
+            take: 10
         })
     ]);
 
@@ -142,53 +150,8 @@ export default async function MemberDashboard({
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-                {/* <Card className="lg:col-span-2">
-                    <CardHeader>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <CardTitle>Today&apos;s Menu</CardTitle>
-                                <CardDescription>{now.toLocaleDateString('en-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</CardDescription>
-                            </div>
-                            <Utensils className="w-6 h-6 text-blue-500" />
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            {['BREAKFAST', 'LUNCH', 'DINNER'].map((type) => {
-                                const schedule = todayMenu.find(s => s.mealType === type);
-                                const record = myTodayRecords.find(r => r.mealType === type);
-
-                                return (
-                                    <div key={type} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl hover:border-blue-200 transition-colors">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center font-bold text-gray-400 text-xs">
-                                                {type[0]}
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-bold text-gray-900">{type}</p>
-                                                <p className="text-sm text-gray-600">{schedule?.menu || 'Menu not updated'}</p>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            {schedule ? (
-                                                <ParticipationButton
-                                                    mealScheduleId={schedule.id}
-                                                    currentStatus={record?.status as any}
-                                                />
-                                            ) : (
-                                                <span className="text-xs text-gray-400 italic">No schedule</span>
-                                            )}
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </CardContent>
-                </Card> */}
-
-
-                <Card>
+                {/* Notifications */}
+                <Card className="h-full">
                     <CardHeader>
                         <CardTitle className="text-lg">Notifications</CardTitle>
                     </CardHeader>
@@ -204,10 +167,43 @@ export default async function MemberDashboard({
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Latest Expenses */}
+                <Card className="lg:col-span-2">
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                            <CardTitle className="text-lg">Latest Expenses</CardTitle>
+                            <CardDescription>Recent organization expenditures</CardDescription>
+                        </div>
+                        <Link href="/member/expenses">
+                            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 font-bold">
+                                View More
+                            </Button>
+                        </Link>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            {latestExpenses.map((expense) => (
+                                <div key={expense.id} className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-lg hover:border-blue-100 transition-colors">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
+                                            <ShoppingCart className="w-4 h-4" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-bold text-gray-900">{expense.description}</p>
+                                            <p className="text-[10px] text-gray-400">{formatDate(expense.date)}</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-sm font-bold text-gray-900">{formatCurrency(expense.amount)}</p>
+                                </div>
+                            ))}
+                            {latestExpenses.length === 0 && (
+                                <p className="text-sm text-gray-500 text-center py-4">No recent expenses.</p>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );
 }
-
-import { cn } from '@/lib/utils';
-import { AlertCircle } from 'lucide-react';

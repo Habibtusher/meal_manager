@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { updateWalletTransaction } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
-import { X, User, Banknote, Info, Edit2, Calendar } from 'lucide-react';
+import { X, Banknote, Info, Edit2, Calendar } from 'lucide-react';
 
 interface EditTransactionModalProps {
     transaction: {
@@ -49,7 +49,7 @@ export default function EditTransactionModal({ transaction }: EditTransactionMod
             } else {
                 toast.error(result.error || 'Failed to update transaction');
             }
-        } catch (error) {
+        } catch {
             toast.error('Something went wrong');
         } finally {
             setIsPending(false);

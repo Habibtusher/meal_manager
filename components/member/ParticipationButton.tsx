@@ -23,7 +23,7 @@ export function ParticipationButton({ mealScheduleId, currentStatus }: Participa
             } else {
                 toast.error(res.error || 'Failed to update');
             }
-        } catch (e) {
+        } catch {
             toast.error('Something went wrong');
         } finally {
             setLoading(false);

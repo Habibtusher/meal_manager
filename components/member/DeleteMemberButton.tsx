@@ -24,7 +24,7 @@ export default function DeleteMemberButton({ memberId, memberName }: DeleteMembe
             } else {
                 toast.error(result.error || 'Failed to delete member');
             }
-        } catch (error) {
+        } catch {
             toast.error('Something went wrong');
         } finally {
             setIsPending(false);

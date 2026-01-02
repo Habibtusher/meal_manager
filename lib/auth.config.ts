@@ -1,4 +1,4 @@
-import type { NextAuthConfig, User } from 'next-auth';
+import type { NextAuthConfig, User, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 
 export const authConfig = {
@@ -28,8 +28,9 @@ export const authConfig = {
       // Role-based protection
       const isAdminRoute = pathname.startsWith('/admin');
       const isMemberRoute = pathname.startsWith('/member');
+      const isAllowedForAdmin = ['/member/profile', '/member/history', '/member/expenses'].some(route => pathname === route);
 
-      if (auth.user.role === 'ADMIN' && isMemberRoute) {
+      if (auth.user.role === 'ADMIN' && isMemberRoute && !isAllowedForAdmin) {
         return Response.redirect(new URL('/admin/dashboard', nextUrl));
       }
 
@@ -47,7 +48,7 @@ export const authConfig = {
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: JWT }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (token && session.user) {
         session.user.id = token.id;
         session.user.role = token.role;

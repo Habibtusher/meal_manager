@@ -38,7 +38,6 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
         setIsPending(true);
 
         try {
-            const now = new Date();
             const [year, month, day] = formData.date.split('-').map(Number);
             const dateObj = new Date();
             dateObj.setFullYear(year, month - 1, day);
@@ -64,7 +63,7 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
             } else {
                 toast.error(result.error || 'Failed to add deposit');
             }
-        } catch (error) {
+        } catch {
             toast.error('Something went wrong');
         } finally {
             setIsPending(false);

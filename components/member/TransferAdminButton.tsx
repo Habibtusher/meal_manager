@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { transferAdminRole } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
-import { ShieldAlert, X, ShieldCheck } from 'lucide-react';
+import { ShieldAlert, ShieldCheck } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
 interface TransferAdminButtonProps {
@@ -31,7 +31,7 @@ export default function TransferAdminButton({ targetUserId, targetUserName }: Tr
             } else {
                 toast.error(result.error || 'Failed to transfer role');
             }
-        } catch (error) {
+        } catch {
             toast.error('Something went wrong');
         } finally {
             setIsPending(false);

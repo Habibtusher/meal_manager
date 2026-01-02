@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { createMember } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
-import { UserPlus, Loader2 } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 
 export default function AddMemberModal() {
     const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +28,7 @@ export default function AddMemberModal() {
             } else {
                 toast.error(result.error || 'Failed to add member');
             }
-        } catch (error) {
+        } catch {
             toast.error('Something went wrong');
         } finally {
             setIsPending(false);
