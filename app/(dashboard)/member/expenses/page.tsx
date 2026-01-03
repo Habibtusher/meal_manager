@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { ShoppingCart, Receipt } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { MonthPicker } from '@/components/ui/MonthPicker';
-import { Button } from '@/components/ui/Button';
-import Link from 'next/link';
+import { Pagination } from '@/components/ui/Pagination';
+
+const ITEMS_PER_PAGE = 10;
 
 export default async function MemberExpenses({
     searchParams,
@@ -20,40 +21,35 @@ export default async function MemberExpenses({
     const now = new Date();
     const selectedMonth = params.month ? parseInt(params.month) : now.getMonth() + 1;
     const selectedYear = params.year ? parseInt(params.year) : now.getFullYear();
-    const currentPage = params.page ? parseInt(params.page) : 1;
-    const pageSize = 10;
+    const currentPage = Math.max(1, parseInt(params.page || '1') || 1);
 
     const startDate = new Date(selectedYear, selectedMonth - 1, 1);
     const endDate = new Date(selectedYear, selectedMonth, 0, 23, 59, 59, 999);
 
+    const whereClause = {
+        organizationId,
+        date: { gte: startDate, lte: endDate },
+    };
+
     // Fetch data in parallel
     const [expenses, totalCount, stats] = await Promise.all([
         prisma.expense.findMany({
-            where: {
-                organizationId,
-                date: { gte: startDate, lte: endDate },
-            },
-            orderBy: { date: 'desc' },
-            skip: (currentPage - 1) * pageSize,
-            take: pageSize,
+            where: whereClause,
+            orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
+            skip: (currentPage - 1) * ITEMS_PER_PAGE,
+            take: ITEMS_PER_PAGE,
         }),
         prisma.expense.count({
-            where: {
-                organizationId,
-                date: { gte: startDate, lte: endDate },
-            },
+            where: whereClause,
         }),
         prisma.expense.aggregate({
-            where: {
-                organizationId,
-                date: { gte: startDate, lte: endDate },
-            },
+            where: whereClause,
             _sum: { amount: true },
         }),
     ]);
 
     const totalSpent = stats._sum.amount || 0;
-    const totalPages = Math.ceil(totalCount / pageSize);
+    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
     return (
         <div className="space-y-8">
@@ -83,9 +79,6 @@ export default async function MemberExpenses({
                 <Card className="md:col-span-2">
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle className="text-lg">Recent Expenses</CardTitle>
-                        <span className="text-xs font-medium px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
-                            Page {currentPage} of {totalPages || 1}
-                        </span>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
@@ -114,43 +107,18 @@ export default async function MemberExpenses({
                                     <p className="text-gray-500">No expenses found for this period.</p>
                                 </div>
                             )}
-
-                            {totalPages > 1 && (
-                                <div className="flex items-center justify-center gap-2 mt-6">
-                                    <Link
-                                        href={`/member/expenses?month=${selectedMonth}&year=${selectedYear}&page=${currentPage - 1}`}
-                                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-                                    >
-                                        <Button variant="outline" size="sm">Previous</Button>
-                                    </Link>
-                                    <div className="flex items-center gap-1">
-                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                                            <Link
-                                                key={p}
-                                                href={`/member/expenses?month=${selectedMonth}&year=${selectedYear}&page=${p}`}
-                                            >
-                                                <Button
-                                                    variant={p === currentPage ? 'primary' : 'outline'}
-                                                    size="sm"
-                                                    className="w-8"
-                                                >
-                                                    {p}
-                                                </Button>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                    <Link
-                                        href={`/member/expenses?month=${selectedMonth}&year=${selectedYear}&page=${currentPage + 1}`}
-                                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-                                    >
-                                        <Button variant="outline" size="sm">Next</Button>
-                                    </Link>
-                                </div>
-                            )}
                         </div>
+
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={totalCount}
+                            itemsPerPage={ITEMS_PER_PAGE}
+                        />
                     </CardContent>
                 </Card>
             </div>
         </div>
     );
 }
+

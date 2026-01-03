@@ -7,30 +7,45 @@ import EditMemberModal from '@/components/member/EditMemberModal';
 import DeleteMemberButton from '@/components/member/DeleteMemberButton';
 import TransferAdminButton from '@/components/member/TransferAdminButton';
 import DebouncedSearch from '@/components/ui/DebouncedSearch';
+import { Pagination } from '@/components/ui/Pagination';
 import { User } from '@prisma/client';
+
+const ITEMS_PER_PAGE = 10;
 
 export default async function MemberManagement({
     searchParams,
 }: {
-    searchParams: Promise<{ query?: string }>;
+    searchParams: Promise<{ query?: string; page?: string }>;
 }) {
     const session = await auth();
     if (!session?.user?.organizationId) return null;
     const organizationId = session.user.organizationId;
-    const { query } = await searchParams;
 
-    const members = await prisma.user.findMany({
-        where: {
-            organizationId,
-            ...(query ? {
-                OR: [
-                    { name: { contains: query, mode: 'insensitive' } },
-                    { email: { contains: query, mode: 'insensitive' } },
-                ]
-            } : {})
-        },
-        orderBy: [{ role: 'asc' }, { name: 'asc' }],
-    });
+    const params = await searchParams;
+    const query = params.query;
+    const currentPage = Math.max(1, parseInt(params.page || '1') || 1);
+
+    const whereClause = {
+        organizationId,
+        ...(query ? {
+            OR: [
+                { name: { contains: query, mode: 'insensitive' as const } },
+                { email: { contains: query, mode: 'insensitive' as const } },
+            ]
+        } : {})
+    };
+
+    const [totalCount, members] = await Promise.all([
+        prisma.user.count({ where: whereClause }),
+        prisma.user.findMany({
+            where: whereClause,
+            orderBy: [{ role: 'asc' }, { name: 'asc' }],
+            skip: (currentPage - 1) * ITEMS_PER_PAGE,
+            take: ITEMS_PER_PAGE,
+        })
+    ]);
+
+    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
     return (
         <div className="space-y-6">
@@ -121,6 +136,15 @@ export default async function MemberManagement({
                     </div>
                 </CardContent>
             </Card>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-2">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={totalCount}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                />
+            </div>
         </div>
     );
 }

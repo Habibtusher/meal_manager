@@ -73,7 +73,7 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
         ]),
         prisma.expense.findMany({
             where: { organizationId },
-            orderBy: { date: 'desc' },
+            orderBy: { createdAt: 'desc' },
             take: 10
         })
     ]);
