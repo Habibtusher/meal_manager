@@ -19,7 +19,7 @@ import {
 import { signOut } from 'next-auth/react';
 
 interface SidebarProps {
-    role: 'ADMIN' | 'MEMBER';
+    role: string;
 }
 
 export function Sidebar({ role }: SidebarProps) {
@@ -43,7 +43,13 @@ export function Sidebar({ role }: SidebarProps) {
         { href: '/member/profile', label: 'Profile', icon: Settings },
     ];
 
-    const links = role === 'ADMIN' ? adminLinks : memberLinks;
+    const superAdminLinks = [
+        { href: '/super-admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { href: '/super-admin/organizations', label: 'Organizations', icon: Users },
+        { href: '/super-admin/tickets', label: 'Support Tickets', icon: FileText },
+    ];
+
+    const links = (role as any) === 'SUPER_ADMIN' ? superAdminLinks : (role === 'ADMIN' ? adminLinks : memberLinks);
 
     return (
         <aside className="fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 hidden md:flex flex-col z-30">
