@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Skip the cache conformance check which often causes blob upload issues
+  NETLIFY_SKIP_NEXTJS_CACHE_CONFORMANCE_CHECK = "true"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
