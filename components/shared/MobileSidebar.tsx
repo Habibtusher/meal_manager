@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
@@ -78,8 +79,14 @@ export function MobileSidebar({ role }: MobileSidebarProps) {
             >
                 <div className="p-4 flex items-center justify-between border-b border-gray-100">
                     <Link href="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <Utensils className="w-5 h-5 text-white" />
+                        <div className="relative w-8 h-8">
+                            <Image
+                                src="/icons/icon-512x512.png"
+                                alt="MealManager Logo"
+                                width={32}
+                                height={32}
+                                className="rounded-lg"
+                            />
                         </div>
                         <span className="text-xl font-bold text-gray-900">MealManager</span>
                     </Link>

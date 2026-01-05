@@ -1,6 +1,5 @@
-const CACHE_NAME = 'meal-manager-v1';
+const CACHE_NAME = 'meal-manager-v2';
 const urlsToCache = [
-  '/',
   '/manifest.json',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png'
@@ -23,7 +22,9 @@ self.addEventListener('fetch', (event: any) => {
           return response;
         }
         return fetch(event.request);
-      }
-    )
+      })
+      .catch(() => {
+        return fetch(event.request);
+      })
   );
 });

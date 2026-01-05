@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import {
     LayoutDashboard,
@@ -48,9 +49,15 @@ export function Sidebar({ role }: SidebarProps) {
         <aside className="fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 hidden md:flex flex-col z-30">
             <div className="p-6 border-b border-gray-100">
                 <Link href="/" className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
-                        <Utensils className="w-6 h-6 text-white" />
-                    </div>
+            <div className="relative w-10 h-10 shadow-lg shadow-blue-200">
+                <Image
+                    src="/icons/icon-512x512.png"
+                    alt="MealManager Logo"
+                    width={40}
+                    height={40}
+                    className="rounded-xl"
+                />
+            </div>
                     <span className="text-xl font-bold text-gray-900 tracking-tight">MealManager</span>
                 </Link>
             </div>

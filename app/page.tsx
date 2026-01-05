@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import {
   Utensils,
@@ -26,8 +27,14 @@ export default function LandingPage() {
       {/* Navbar - Glassmorphism */}
       <header className="px-4 md:px-6 h-20 flex items-center border-b border-gray-100 bg-white/70 backdrop-blur-xl sticky top-0 z-50">
         <Link className="flex items-center gap-2 md:gap-3 group" href="/">
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-2 rounded-xl shadow-lg shadow-blue-200 group-hover:scale-105 transition-transform">
-            <Utensils className="h-5 w-5 md:h-6 md:w-6 text-white" />
+          <div className="relative h-10 w-10 md:h-12 md:w-12 group-hover:scale-105 transition-transform">
+            <Image
+              src="/icons/icon-512x512.png"
+              alt="MealManager Logo"
+              width={48}
+              height={48}
+              className="rounded-xl shadow-lg shadow-blue-200"
+            />
           </div>
           <div className="flex flex-col">
             <span className="font-extrabold text-xl md:text-2xl tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
@@ -158,13 +165,17 @@ export default function LandingPage() {
               </div>
 
               <div className="flex-1 w-full max-w-xl lg:max-w-none lg:relative animate-float mt-8 lg:mt-0">
-                <div className="relative z-10 p-2 md:p-4 bg-white/40 backdrop-blur-md border border-white/50 rounded-[24px] md:rounded-[40px] shadow-2xl">
-                  <div className="bg-gray-900 rounded-[18px] md:rounded-[32px] overflow-hidden shadow-inner aspect-[4/3] flex items-center justify-center text-white font-mono text-xs md:text-sm group">
-                    <div className="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="flex flex-col items-center gap-3 md:gap-4">
-                      <LayoutDashboard className="h-8 w-8 md:h-12 md:w-12 text-blue-400" />
-                      <p className="text-gray-400 font-bold tracking-widest uppercase text-[10px] md:text-sm">Admin Dashboard Preview</p>
-                    </div>
+                <div className="relative z-10 p-1 md:p-2 bg-white/40 backdrop-blur-md border border-white/50 rounded-[24px] md:rounded-[40px] shadow-2xl overflow-hidden">
+                  <div className="relative rounded-[18px] md:rounded-[32px] overflow-hidden shadow-2xl aspect-[16/10] bg-gray-900 group">
+                    <Image
+                      src="/assets/admin-dashboard.png"
+                      alt="MealManager Admin Dashboard"
+                      className="object-cover object-top w-full h-full transform transition-transform duration-700 group-hover:scale-105"
+                      width={1200}
+                      height={750}
+                      priority
+                    />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-[18px] md:rounded-[32px]"></div>
                   </div>
                 </div>
                 {/* Decorative elements */}
@@ -259,8 +270,14 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 mb-12 md:mb-20">
             <div className="sm:col-span-2 space-y-4 md:space-y-6">
               <Link className="flex items-center gap-3" href="/">
-                <div className="bg-blue-600 p-1.5 rounded-lg shadow-lg">
-                  <Utensils className="h-5 w-5 text-white" />
+                <div className="relative h-8 w-8 shadow-lg">
+                  <Image
+                    src="/icons/icon-512x512.png"
+                    alt="MealManager Logo"
+                    width={32}
+                    height={32}
+                    className="rounded-lg"
+                  />
                 </div>
                 <span className="font-bold text-xl tracking-tight text-gray-900">MealManager</span>
               </Link>
