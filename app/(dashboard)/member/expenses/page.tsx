@@ -1,10 +1,8 @@
 import { auth } from '@/lib/auth';
-import prisma from '@/lib/prisma';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { ShoppingCart, Receipt } from 'lucide-react';
-import { formatCurrency, formatDate } from '@/lib/utils';
 import { MonthPicker } from '@/components/ui/MonthPicker';
-import { Pagination } from '@/components/ui/Pagination';
+import { Suspense } from 'react';
+import { ExpensesSkeleton } from '@/components/expenses/ExpensesSkeleton';
+import { ExpensesContent } from '@/components/expenses/ExpensesContent';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -26,31 +24,6 @@ export default async function MemberExpenses({
     const startDate = new Date(selectedYear, selectedMonth - 1, 1);
     const endDate = new Date(selectedYear, selectedMonth, 0, 23, 59, 59, 999);
 
-    const whereClause = {
-        organizationId,
-        date: { gte: startDate, lte: endDate },
-    };
-
-    // Fetch data in parallel
-    const [expenses, totalCount, stats] = await Promise.all([
-        prisma.expense.findMany({
-            where: whereClause,
-            orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
-            skip: (currentPage - 1) * ITEMS_PER_PAGE,
-            take: ITEMS_PER_PAGE,
-        }),
-        prisma.expense.count({
-            where: whereClause,
-        }),
-        prisma.expense.aggregate({
-            where: whereClause,
-            _sum: { amount: true },
-        }),
-    ]);
-
-    const totalSpent = stats._sum.amount || 0;
-    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-
     return (
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -61,63 +34,15 @@ export default async function MemberExpenses({
                 <MonthPicker defaultMonth={selectedMonth} defaultYear={selectedYear} />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="md:col-span-1">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center gap-4">
-                            <div className="p-4 bg-blue-50 rounded-2xl">
-                                <Receipt className="w-8 h-8 text-blue-600" />
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium text-gray-500">Total Organization Spent</p>
-                                <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalSpent)}</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="md:col-span-2">
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle className="text-lg">Recent Expenses</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            {expenses.map((expense) => (
-                                <div key={expense.id} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl hover:border-blue-100 transition-colors">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
-                                            <ShoppingCart className="w-5 h-5" />
-                                        </div>
-                                        <div>
-                                            <p className="text-sm font-bold text-gray-900">{expense.description}</p>
-                                            <div className="flex items-center gap-2 mt-1">
-                                                <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded font-medium uppercase">
-                                                    {expense.category}
-                                                </span>
-                                                <p className="text-[10px] text-gray-400">{formatDate(expense.date)}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <p className="text-sm font-bold text-gray-900">{formatCurrency(expense.amount)}</p>
-                                </div>
-                            ))}
-                            {expenses.length === 0 && (
-                                <div className="text-center py-12">
-                                    <Receipt className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                                    <p className="text-gray-500">No expenses found for this period.</p>
-                                </div>
-                            )}
-                        </div>
-
-                        <Pagination
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            totalItems={totalCount}
-                            itemsPerPage={ITEMS_PER_PAGE}
-                        />
-                    </CardContent>
-                </Card>
-            </div>
+            <Suspense key={`${selectedMonth}-${selectedYear}-${currentPage}`} fallback={<ExpensesSkeleton />}>
+                <ExpensesContent
+                    organizationId={organizationId}
+                    startDate={startDate}
+                    endDate={endDate}
+                    currentPage={currentPage}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                />
+            </Suspense>
         </div>
     );
 }

@@ -240,7 +240,8 @@ export async function getMealParticipationStats(
     const endOfDay = new Date(date);
     endOfDay.setUTCHours(23, 59, 59, 999);
 
-    const records = await prisma.mealRecord.findMany({
+    const stats = await prisma.mealRecord.groupBy({
+        by: ['mealType'],
         where: {
             date: {
                 gte: startOfDay,
@@ -251,23 +252,23 @@ export async function getMealParticipationStats(
                 organizationId,
             },
         },
-        select: {
-            mealType: true,
-        },
+        _count: true,
     });
 
-  const stats = {
+  const participation = {
     breakfast: 0,
     lunch: 0,
     dinner: 0,
-    total: records.length,
+    total: 0,
   };
 
-  records.forEach((record) => {
-    if (record.mealType === 'BREAKFAST') stats.breakfast++;
-    else if (record.mealType === 'LUNCH') stats.lunch++;
-    else if (record.mealType === 'DINNER') stats.dinner++;
+  stats.forEach((stat) => {
+    const count = stat._count;
+    participation.total += count;
+    if (stat.mealType === 'BREAKFAST') participation.breakfast = count;
+    else if (stat.mealType === 'LUNCH') participation.lunch = count;
+    else if (stat.mealType === 'DINNER') participation.dinner = count;
   });
 
-  return stats;
+  return participation;
 }
