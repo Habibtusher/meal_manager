@@ -39,26 +39,51 @@ export function formatDateTime(date: Date | string): string {
  */
 export function getToday(): Date {
   const now = new Date();
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Asia/Dhaka',
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-    hour12: false
-  });
-  
-  const parts: Record<string, string> = {};
-  formatter.formatToParts(now).forEach(p => parts[p.type] = p.value);
-  
-  return new Date(Date.UTC(
-    parseInt(parts.year),
-    parseInt(parts.month) - 1,
-    parseInt(parts.day),
-    parseInt(parts.hour),
-    parseInt(parts.minute),
-    parseInt(parts.second)
-  ));
+  try {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Dhaka',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: false
+    });
+    
+    const parts: Record<string, string> = {};
+    formatter.formatToParts(now).forEach(p => parts[p.type] = p.value);
+    
+    const year = parseInt(parts.year);
+    const month = parseInt(parts.month);
+    const day = parseInt(parts.day);
+    const hour = parseInt(parts.hour);
+    const minute = parseInt(parts.minute);
+    const second = parseInt(parts.second);
+
+    if (isNaN(year) || isNaN(month) || isNaN(day)) {
+        throw new Error('Invalid date parts');
+    }
+
+    return new Date(Date.UTC(
+      year,
+      month - 1,
+      day,
+      isNaN(hour) ? 0 : hour,
+      isNaN(minute) ? 0 : minute,
+      isNaN(second) ? 0 : second
+    ));
+  } catch (error) {
+    console.error('Error in getToday:', error);
+    // Fallback block - add 6 hours to current UTC time for Asia/Dhaka
+    const fallback = new Date(now.getTime() + (6 * 60 * 60 * 1000));
+    return new Date(Date.UTC(
+        fallback.getUTCFullYear(),
+        fallback.getUTCMonth(),
+        fallback.getUTCDate(),
+        fallback.getUTCHours(),
+        fallback.getUTCMinutes(),
+        fallback.getUTCSeconds()
+    ));
+  }
 }

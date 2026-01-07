@@ -18,8 +18,16 @@ export default async function MemberDashboard({
 
     const params = await searchParams;
     const now = new Date();
-    const selectedMonth = params.month ? parseInt(params.month) : now.getMonth() + 1;
-    const selectedYear = params.year ? parseInt(params.year) : now.getFullYear();
+
+    let selectedMonth = params.month ? parseInt(params.month) : now.getMonth() + 1;
+    let selectedYear = params.year ? parseInt(params.year) : now.getFullYear();
+
+    if (isNaN(selectedMonth) || selectedMonth < 1 || selectedMonth > 12) {
+        selectedMonth = now.getMonth() + 1;
+    }
+    if (isNaN(selectedYear) || selectedYear < 2000 || selectedYear > 2100) {
+        selectedYear = now.getFullYear();
+    }
 
     return (
         <div className="space-y-8">
