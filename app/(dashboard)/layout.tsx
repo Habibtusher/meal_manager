@@ -22,7 +22,7 @@ export default async function DashboardLayout({
                     <div className="flex items-center gap-4">
                         <MobileSidebar role={session.user.role} />
                         <h2 className="text-lg font-semibold text-gray-800">
-                            {session.user.role === 'ADMIN' ? 'Admin Dashboard' : 'Member Dashboard'}
+                            {(session.user.role as any) === 'SUPER_ADMIN' ? 'Super Admin Panel' : (session.user.role === 'ADMIN' ? 'Admin Dashboard' : 'Member Dashboard')}
                         </h2>
                     </div>
                     <div className="flex items-center gap-4">

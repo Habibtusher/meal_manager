@@ -17,7 +17,12 @@ export const authConfig = {
 
       if (isPublicRoute) {
         if (isLoggedIn) {
-          const dashboardUrl = auth.user.role === 'ADMIN' ? '/admin/dashboard' : '/member/dashboard';
+          let dashboardUrl = '/member/dashboard';
+          if ((auth.user.role as any) === 'SUPER_ADMIN') {
+            dashboardUrl = '/super-admin/dashboard';
+          } else if (auth.user.role === 'ADMIN') {
+            dashboardUrl = '/admin/dashboard';
+          }
           return Response.redirect(new URL(dashboardUrl, nextUrl));
         }
         return true;
@@ -26,16 +31,28 @@ export const authConfig = {
       if (!isLoggedIn) return false;
 
       // Role-based protection
+      const isSuperAdminRoute = pathname.startsWith('/super-admin');
       const isAdminRoute = pathname.startsWith('/admin');
       const isMemberRoute = pathname.startsWith('/member');
       const isAllowedForAdmin = ['/member/profile', '/member/history', '/member/expenses'].some(route => pathname === route);
+
+      if ((auth.user.role as any) === 'SUPER_ADMIN') {
+        if (!isSuperAdminRoute && !pathname.includes('profile')) {
+          return Response.redirect(new URL('/super-admin/dashboard', nextUrl));
+        }
+        return true;
+      }
 
       if (auth.user.role === 'ADMIN' && isMemberRoute && !isAllowedForAdmin) {
         return Response.redirect(new URL('/admin/dashboard', nextUrl));
       }
 
-      if (auth.user.role === 'MEMBER' && isAdminRoute) {
+      if (auth.user.role === 'MEMBER' && (isAdminRoute || isSuperAdminRoute)) {
         return Response.redirect(new URL('/member/dashboard', nextUrl));
+      }
+
+      if (auth.user.role === 'ADMIN' && isSuperAdminRoute) {
+        return Response.redirect(new URL('/admin/dashboard', nextUrl));
       }
 
       return true;

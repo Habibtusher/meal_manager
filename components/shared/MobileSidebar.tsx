@@ -23,7 +23,7 @@ import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
 
 interface MobileSidebarProps {
-    role: 'ADMIN' | 'MEMBER';
+    role: string;
 }
 
 export function MobileSidebar({ role }: MobileSidebarProps) {
@@ -49,7 +49,13 @@ export function MobileSidebar({ role }: MobileSidebarProps) {
         { href: '/member/profile', label: 'Profile', icon: Settings },
     ];
 
-    const links = role === 'ADMIN' ? adminLinks : memberLinks;
+    const superAdminLinks = [
+        { href: '/super-admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { href: '/super-admin/organizations', label: 'Organizations', icon: Users },
+        { href: '/super-admin/tickets', label: 'Support Tickets', icon: FileText },
+    ];
+
+    const links = (role as any) === 'SUPER_ADMIN' ? superAdminLinks : (role === 'ADMIN' ? adminLinks : memberLinks);
 
     return (
         <div className="md:hidden">

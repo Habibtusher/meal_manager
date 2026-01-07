@@ -110,13 +110,13 @@ export default function LandingPage() {
 
       <main className="flex-1">
         {/* Hero Section - High Impact */}
-        <section className="relative w-full py-12 md:py-20 lg:py-32 overflow-hidden bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50 via-white to-indigo-50">
+        <section className="relative w-full pt-8 pb-12 md:pt-10 md:pb-20 lg:pt-14 lg:pb-28 overflow-hidden bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50 via-white to-indigo-50">
           <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-blue-100/30 rounded-full blur-3xl -z-10 animate-pulse"></div>
           <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-100/30 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDelay: '2s' }}></div>
 
           <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-12">
-              <div className="flex-1 text-center lg:text-left space-y-6 md:space-y-8 max-w-2xl">
+              <div className="flex-1 text-center lg:text-left space-y-5 md:space-y-6 max-w-2xl">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs md:text-sm font-bold animate-fade-in mx-auto lg:mx-0">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>

@@ -66,6 +66,7 @@ export async function markParticipation(
 
     revalidatePath('/member/dashboard');
     revalidatePath('/admin/attendance');
+    revalidatePath('/admin/reports');
     return { success: true };
   } catch (error) {
     console.error('Failed to mark participation:', error);
@@ -156,6 +157,7 @@ export async function batchMarkAttendance(
 
     revalidatePath('/admin/meals');
     revalidatePath('/member/dashboard');
+    revalidatePath('/admin/reports');
     return { success: true };
   } catch (error) {
     console.error('Failed to batch mark attendance:', error);
@@ -174,6 +176,9 @@ export async function addWalletCredit(userId: string, amount: number, descriptio
     await creditWallet(userId, amount, description, session.user.organizationId, date);
     revalidatePath('/admin/wallet');
     revalidatePath('/admin/members');
+    revalidatePath('/admin/dashboard');
+    revalidatePath('/member/dashboard');
+    revalidatePath('/admin/reports');
     return { success: true };
   } catch (error) {
     console.error('Failed to add credit:', error);
@@ -231,6 +236,8 @@ export async function addExpense(data: {
       },
     });
     revalidatePath('/admin/expenses');
+    revalidatePath('/admin/dashboard');
+    revalidatePath('/member/dashboard');
     return { success: true };
   } catch (error) {
     console.error('Failed to add expense:', error);
@@ -259,6 +266,8 @@ export async function updateExpense(id: string, data: {
       },
     });
     revalidatePath('/admin/expenses');
+    revalidatePath('/admin/dashboard');
+    revalidatePath('/member/dashboard');
     return { success: true };
   } catch (error) {
     console.error('Failed to update expense:', error);
@@ -278,6 +287,8 @@ export async function deleteExpense(id: string): Promise<{ success: boolean; err
       where: { id, organizationId: session.user.organizationId },
     });
     revalidatePath('/admin/expenses');
+    revalidatePath('/admin/dashboard');
+    revalidatePath('/member/dashboard');
     return { success: true };
   } catch (error) {
     console.error('Failed to delete expense:', error);
@@ -467,7 +478,7 @@ export async function updateWalletTransaction(id: string, data: {
   try {
     const result = await prisma.$transaction(async (tx) => {
       const transaction = await tx.walletTransaction.findUnique({
-        where: { id, organizationId: session.user.organizationId },
+        where: { id, organizationId: session.user.organizationId as string },
       });
 
       if (!transaction) throw new Error('Transaction not found');
@@ -510,6 +521,8 @@ export async function updateWalletTransaction(id: string, data: {
 
     revalidatePath('/admin/wallet');
     revalidatePath('/admin/members');
+    revalidatePath('/admin/dashboard');
+    revalidatePath('/member/dashboard');
     return result as { success: boolean; error: string | null };
   } catch (error) {
     console.error('Failed to update transaction:', error);
@@ -527,7 +540,7 @@ export async function deleteWalletTransaction(id: string): Promise<{ success: bo
   try {
     const result = await prisma.$transaction(async (tx) => {
       const transaction = await tx.walletTransaction.findUnique({
-        where: { id, organizationId: session.user.organizationId },
+        where: { id, organizationId: session.user.organizationId as string },
       });
 
       if (!transaction) throw new Error('Transaction not found');
@@ -560,6 +573,8 @@ export async function deleteWalletTransaction(id: string): Promise<{ success: bo
 
     revalidatePath('/admin/wallet');
     revalidatePath('/admin/members');
+    revalidatePath('/admin/dashboard');
+    revalidatePath('/member/dashboard');
     return result as { success: boolean; error: string | null };
   } catch (error) {
     console.error('Failed to delete transaction:', error);

@@ -11,7 +11,7 @@ import { Role } from '@prisma/client';
 declare module 'next-auth' {
   interface User {
     role: Role;
-    organizationId: string;
+    organizationId?: string | null;
   }
   interface Session {
     user: User & DefaultSession['user'];
@@ -22,7 +22,7 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id: string;
     role: Role;
-    organizationId: string;
+    organizationId?: string | null;
   }
 }
 
@@ -74,7 +74,12 @@ export async function getCurrentUser() {
 
 export async function isAdmin() {
   const user = await getCurrentUser();
-  return user?.role === 'ADMIN';
+  return user?.role === 'ADMIN' || (user?.role as any) === 'SUPER_ADMIN';
+}
+
+export async function isSuperAdmin() {
+  const user = await getCurrentUser();
+  return (user?.role as any) === 'SUPER_ADMIN';
 }
 
 export async function getTenantContext() {
