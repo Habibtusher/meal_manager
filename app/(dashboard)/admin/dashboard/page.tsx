@@ -18,8 +18,16 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
 
     const params = await searchParams;
     const now = getToday();
-    const selectedMonth = params.month ? parseInt(params.month) : now.getUTCMonth() + 1;
-    const selectedYear = params.year ? parseInt(params.year) : now.getUTCFullYear();
+
+    let selectedMonth = params.month ? parseInt(params.month) : now.getUTCMonth() + 1;
+    let selectedYear = params.year ? parseInt(params.year) : now.getUTCFullYear();
+
+    if (isNaN(selectedMonth) || selectedMonth < 1 || selectedMonth > 12) {
+        selectedMonth = now.getUTCMonth() + 1;
+    }
+    if (isNaN(selectedYear) || selectedYear < 2000 || selectedYear > 2100) {
+        selectedYear = now.getUTCFullYear();
+    }
 
     return (
         <div className="space-y-8">

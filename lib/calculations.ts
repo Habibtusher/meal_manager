@@ -252,7 +252,9 @@ export async function getMealParticipationStats(
                 organizationId,
             },
         },
-        _count: true,
+        _count: {
+            id: true
+        },
     });
 
   const participation = {
@@ -263,7 +265,7 @@ export async function getMealParticipationStats(
   };
 
   stats.forEach((stat) => {
-    const count = stat._count;
+    const count = typeof stat._count === 'number' ? stat._count : (stat._count as any)?.id || 0;
     participation.total += count;
     if (stat.mealType === 'BREAKFAST') participation.breakfast = count;
     else if (stat.mealType === 'LUNCH') participation.lunch = count;
