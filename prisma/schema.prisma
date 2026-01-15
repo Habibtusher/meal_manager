@@ -23,6 +23,7 @@ model Organization {
   mealSchedules      MealSchedule[]
   expenses           Expense[]
   walletTransactions WalletTransaction[]
+  sharedCosts        SharedCost[]
 
   @@map("organizations")
 }
@@ -36,7 +37,8 @@ model User {
   role          Role      @default(MEMBER)
   emailVerified DateTime?
   walletBalance Float   @default(0)
-  isActive      Boolean   @default(true)
+  roomRent      Float   @default(0)
+  isActive      Boolean @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -44,8 +46,9 @@ model User {
   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   mealRecords        MealRecord[]
-  walletTransactions WalletTransaction[]
-  supportTickets     SupportTicket[]
+  walletTransactions    WalletTransaction[]
+  supportTickets        SupportTicket[]
+  sharedCostAllocations SharedCostAllocation[]
 
   @@index([organizationId])
   @@index([email])
@@ -171,4 +174,38 @@ model SupportTicket {
 
   @@index([userId])
   @@map("support_tickets")
+}
+
+// ===== SHARED COSTS =====
+model SharedCost {
+  id          String   @id @default(cuid())
+  amount      Float
+  description String
+  date        DateTime
+  category    String?  // "FIXED", "VARIABLE", "ROOM_RENT", etc.
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  allocations SharedCostAllocation[]
+
+  @@index([organizationId, date])
+  @@map("shared_costs")
+}
+
+model SharedCostAllocation {
+  id String @id @default(cuid())
+  amount Float
+  
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  sharedCostId String
+  sharedCost SharedCost @relation(fields: [sharedCostId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sharedCostId])
+  @@map("shared_cost_allocations")
 }

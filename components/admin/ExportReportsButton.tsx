@@ -7,6 +7,8 @@ interface ReportRow {
     name: string;
     mealsConsumed: number;
     totalMealCost: number;
+    totalSharedCost: number;
+    totalCost: number;
     totalDeposited: number;
     currentBalance: number;
 }
@@ -19,15 +21,17 @@ interface ExportReportsButtonProps {
 export default function ExportReportsButton({ data, mealRate }: ExportReportsButtonProps) {
     const handleExport = () => {
         // defined headers
-        const headers = ['Member Name', 'Meals Consumed', 'Calculated Cost', 'Total Deposited', 'Adjusted Balance'];
+        const headers = ['Member Name', 'Meals Consumed', 'Meal Cost', 'Shared/Room Cost', 'Total Cost', 'Total Deposited', 'Adjusted Balance'];
 
         // map data to rows
         const rows = data.map(row => {
-            const adjustedBalance = row.totalDeposited - row.totalMealCost;
+            const adjustedBalance = row.totalDeposited - row.totalCost;
             return [
                 `"${row.name}"`, // quote strings to handle commas
                 row.mealsConsumed.toFixed(1),
                 row.totalMealCost.toFixed(2),
+                row.totalSharedCost.toFixed(2),
+                row.totalCost.toFixed(2),
                 row.totalDeposited.toFixed(2),
                 adjustedBalance.toFixed(2)
             ].join(',');
@@ -35,12 +39,16 @@ export default function ExportReportsButton({ data, mealRate }: ExportReportsBut
 
         // Add summary rows at the bottom
         const totalConsumption = data.reduce((sum, r) => sum + r.mealsConsumed, 0);
-        const totalCost = data.reduce((sum, r) => sum + r.totalMealCost, 0);
+        const totalMealCost = data.reduce((sum, r) => sum + r.totalMealCost, 0);
+        const totalSharedCost = data.reduce((sum, r) => sum + r.totalSharedCost, 0);
+        const totalCost = data.reduce((sum, r) => sum + r.totalCost, 0);
         const totalDeposits = data.reduce((sum, r) => sum + r.totalDeposited, 0);
 
         const summaryRow = [
             'TOTALS',
             totalConsumption.toFixed(1),
+            totalMealCost.toFixed(2),
+            totalSharedCost.toFixed(2),
             totalCost.toFixed(2),
             totalDeposits.toFixed(2),
             (totalDeposits - totalCost).toFixed(2)

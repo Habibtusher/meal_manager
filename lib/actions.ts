@@ -302,6 +302,7 @@ export async function deleteExpense(id: string): Promise<{ success: boolean; err
 export async function createMember(data: {
   name: string;
   email: string;
+  roomRent?: number;
 }) {
   const session = await auth();
   if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
@@ -318,6 +319,7 @@ export async function createMember(data: {
         password: hashedPassword,
         organizationId: session.user.organizationId,
         role: 'MEMBER',
+        roomRent: data.roomRent || 0,
       },
     });
 
@@ -339,6 +341,7 @@ export async function updateMember(userId: string, data: {
   name: string;
   email: string;
   isActive: boolean;
+  roomRent?: number;
 }) {
   const session = await auth();
   if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
@@ -360,6 +363,7 @@ export async function updateMember(userId: string, data: {
         name: data.name,
         email: data.email,
         isActive: data.isActive,
+        roomRent: data.roomRent,
       },
     });
 
@@ -627,5 +631,33 @@ export async function transferAdminRole(targetUserId: string): Promise<{ success
   } catch (error) {
     console.error('Failed to transfer admin role:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Failed to transfer role' };
+  }
+}
+
+/**
+ * Get active members for cost allocation
+ */
+export async function getActiveMembers() {
+  const session = await auth();
+  if (!session?.user?.organizationId) return [];
+
+  try {
+    const members = await prisma.user.findMany({
+      where: {
+        organizationId: session.user.organizationId,
+        isActive: true,
+        role: { in: ['MEMBER', 'ADMIN'] }
+      },
+      select: {
+        id: true,
+        name: true,
+        roomRent: true
+      }
+    });
+
+    return members;
+  } catch (error) {
+    console.error('Failed to fetch active members:', error);
+    return [];
   }
 }

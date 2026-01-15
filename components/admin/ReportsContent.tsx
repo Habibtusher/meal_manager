@@ -79,19 +79,23 @@ export async function ReportsContent({
                                 <tr className="border-b border-gray-100 italic text-gray-400 text-xs">
                                     <th className="pb-4 font-medium uppercase tracking-widest px-4">User</th>
                                     <th className="pb-4 font-medium text-center uppercase tracking-widest px-4">Meals</th>
-                                    <th className="pb-4 font-medium text-right uppercase tracking-widest px-4">Calculated Cost</th>
+                                    <th className="pb-4 font-medium text-right uppercase tracking-widest px-4">Meal Cost</th>
+                                    <th className="pb-4 font-medium text-right uppercase tracking-widest px-4">Shared/Room</th>
+                                    <th className="pb-4 font-medium text-right uppercase tracking-widest px-4">Total Cost</th>
                                     <th className="pb-4 font-medium text-right uppercase tracking-widest px-4">Total Deposited</th>
                                     <th className="pb-4 font-medium text-right uppercase tracking-widest px-4">Adjusted Balance</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50 text-sm">
-                                {reportData.map((data) => {
-                                    const adjustedBalance = data.totalDeposited - data.totalMealCost;
+                                {reportData.map((data: any) => {
+                                    const adjustedBalance = data.totalDeposited - data.totalCost;
                                     return (
                                         <tr key={data.id} className="hover:bg-blue-50/30 transition-colors">
                                             <td className="py-4 px-4 font-bold text-gray-900 whitespace-nowrap">{data.name}</td>
                                             <td className="py-4 px-4 text-center font-medium text-gray-600">{data.mealsConsumed}</td>
-                                            <td className="py-4 px-4 text-right font-bold text-red-500 whitespace-nowrap">{formatCurrency(data.totalMealCost)}</td>
+                                            <td className="py-4 px-4 text-right font-medium text-gray-600 whitespace-nowrap">{formatCurrency(data.totalMealCost)}</td>
+                                            <td className="py-4 px-4 text-right font-medium text-gray-600 whitespace-nowrap">{formatCurrency(data.totalSharedCost)}</td>
+                                            <td className="py-4 px-4 text-right font-bold text-red-500 whitespace-nowrap">{formatCurrency(data.totalCost)}</td>
                                             <td className="py-4 px-4 text-right font-bold text-green-600 whitespace-nowrap">{formatCurrency(data.totalDeposited)}</td>
                                             <td className="py-4 px-4 text-right whitespace-nowrap">
                                                 <span className={cn(
