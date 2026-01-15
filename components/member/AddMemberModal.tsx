@@ -13,7 +13,6 @@ export default function AddMemberModal() {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        roomRent: '',
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -24,11 +23,10 @@ export default function AddMemberModal() {
             const result = await createMember({
                 name: formData.name,
                 email: formData.email,
-                roomRent: formData.roomRent ? Number(formData.roomRent) : 0
             });
             if (result.success) {
                 toast.success('Member added successfully! Default password: Member@123');
-                setFormData({ name: '', email: '', roomRent: '' });
+                setFormData({ name: '', email: '' });
                 setIsOpen(false);
             } else {
                 toast.error(result.error || 'Failed to add member');
@@ -67,18 +65,6 @@ export default function AddMemberModal() {
                             placeholder="John Doe"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="bg-gray-50 border-gray-200 focus:bg-white transition-all"
-                        />
-                    </div>
-                    
-                    <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">Room Rent (Default)</label>
-                        <Input
-                            type="number"
-                            min="0"
-                            placeholder="0"
-                            value={formData.roomRent}
-                            onChange={(e) => setFormData({ ...formData, roomRent: e.target.value })}
                             className="bg-gray-50 border-gray-200 focus:bg-white transition-all"
                         />
                     </div>

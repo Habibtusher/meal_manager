@@ -63,6 +63,15 @@ export const getOrganizationReports = cache(async (organizationId: string, start
         const totalMealCost = mealsConsumed * mealRate;
         // @ts-ignore: Stale Prisma types
         const totalSharedCost = member.sharedCostAllocations.reduce((sum: number, alloc: any) => sum + Number(alloc.amount), 0);
+        
+        // Build individual shared cost details
+        const sharedCostDetails = member.sharedCostAllocations.map((alloc: any) => ({
+            description: alloc.sharedCost.description,
+            category: alloc.sharedCost.category,
+            amount: Number(alloc.amount),
+            date: alloc.sharedCost.date
+        }));
+        
         const totalCost = totalMealCost + totalSharedCost;
         const totalDeposited = member.walletTransactions.reduce((sum: number, t: any) => sum + Number(t.amount), 0);
 
@@ -72,6 +81,7 @@ export const getOrganizationReports = cache(async (organizationId: string, start
             mealsConsumed,
             totalMealCost,
             totalSharedCost,
+            sharedCostDetails,
             totalCost,
             totalDeposited,
             currentBalance: Number(member.walletBalance)

@@ -302,7 +302,6 @@ export async function deleteExpense(id: string): Promise<{ success: boolean; err
 export async function createMember(data: {
   name: string;
   email: string;
-  roomRent?: number;
 }) {
   const session = await auth();
   if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
@@ -317,9 +316,8 @@ export async function createMember(data: {
         name: data.name,
         email: data.email,
         password: hashedPassword,
-        organizationId: session.user.organizationId,
+        organization: { connect: { id: session.user.organizationId } },
         role: 'MEMBER',
-        roomRent: data.roomRent || 0,
       },
     });
 
@@ -341,7 +339,6 @@ export async function updateMember(userId: string, data: {
   name: string;
   email: string;
   isActive: boolean;
-  roomRent?: number;
 }) {
   const session = await auth();
   if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
@@ -363,7 +360,6 @@ export async function updateMember(userId: string, data: {
         name: data.name,
         email: data.email,
         isActive: data.isActive,
-        roomRent: data.roomRent,
       },
     });
 
@@ -651,7 +647,6 @@ export async function getActiveMembers() {
       select: {
         id: true,
         name: true,
-        roomRent: true
       }
     });
 

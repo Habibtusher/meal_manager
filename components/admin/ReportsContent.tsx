@@ -2,6 +2,7 @@ import { getOrganizationReports } from "@/lib/services/reports";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { formatCurrency, cn } from "@/lib/utils";
 import ExportReportsButton from "@/components/admin/ExportReportsButton";
+import SharedCostTooltip from "@/components/admin/SharedCostTooltip";
 
 interface ReportsContentProps {
     organizationId: string;
@@ -75,7 +76,7 @@ export async function ReportsContent({
                 <CardContent>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
-                            <thead>
+                            <thead className="relative z-0">
                                 <tr className="border-b border-gray-100 italic text-gray-400 text-xs">
                                     <th className="pb-4 font-medium uppercase tracking-widest px-4">User</th>
                                     <th className="pb-4 font-medium text-center uppercase tracking-widest px-4">Meals</th>
@@ -90,11 +91,16 @@ export async function ReportsContent({
                                 {reportData.map((data: any) => {
                                     const adjustedBalance = data.totalDeposited - data.totalCost;
                                     return (
-                                        <tr key={data.id} className="hover:bg-blue-50/30 transition-colors">
+                                        <tr key={data.id} className="hover:bg-blue-50/30 transition-colors relative">
                                             <td className="py-4 px-4 font-bold text-gray-900 whitespace-nowrap">{data.name}</td>
                                             <td className="py-4 px-4 text-center font-medium text-gray-600">{data.mealsConsumed}</td>
                                             <td className="py-4 px-4 text-right font-medium text-gray-600 whitespace-nowrap">{formatCurrency(data.totalMealCost)}</td>
-                                            <td className="py-4 px-4 text-right font-medium text-gray-600 whitespace-nowrap">{formatCurrency(data.totalSharedCost)}</td>
+                                            <td className="py-4 px-4 text-right font-medium text-gray-600 whitespace-nowrap">
+                                                <SharedCostTooltip
+                                                    totalAmount={data.totalSharedCost}
+                                                    details={data.sharedCostDetails || []}
+                                                />
+                                            </td>
                                             <td className="py-4 px-4 text-right font-bold text-red-500 whitespace-nowrap">{formatCurrency(data.totalCost)}</td>
                                             <td className="py-4 px-4 text-right font-bold text-green-600 whitespace-nowrap">{formatCurrency(data.totalDeposited)}</td>
                                             <td className="py-4 px-4 text-right whitespace-nowrap">

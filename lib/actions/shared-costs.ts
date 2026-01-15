@@ -4,23 +4,6 @@ import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
-export async function updateMemberRoomRent(userId: string, roomRent: number) {
-  try {
-    const session = await auth();
-    if (!session?.user?.organizationId) return { success: false, error: 'Unauthorized' };
-
-    await prisma.user.update({
-      where: { id: userId, organizationId: session.user.organizationId },
-      data: { roomRent } as any,
-    });
-
-    revalidatePath('/admin/members');
-    return { success: true };
-  } catch (error) {
-    console.error('Failed to update room rent:', error);
-    return { success: false, error: 'Failed to update room rent' };
-  }
-}
 
 interface SharedCostAllocationInput {
   userId: string;
@@ -70,6 +53,9 @@ export async function addSharedCost(data: AddSharedCostInput) {
                 }))
             });
         }
+    }, {
+      maxWait: 5000, // default: 2000ms
+      timeout: 20000 // default: 5000ms
     });
 
     revalidatePath('/admin/expenses');
@@ -78,5 +64,84 @@ export async function addSharedCost(data: AddSharedCostInput) {
   } catch (error) {
     console.error('Failed to add shared cost:', error);
     return { success: false, error: 'Failed to add shared cost' };
+  }
+}
+
+export async function updateSharedCost(
+  id: string,
+  data: {
+    description: string;
+    date: Date;
+    category: string;
+    allocations: SharedCostAllocationInput[];
+  }
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.organizationId) return { success: false, error: 'Unauthorized' };
+
+    const { description, date, category, allocations } = data;
+    const totalAmount = allocations.reduce((sum, a) => sum + a.amount, 0);
+
+    await prisma.$transaction(async (tx) => {
+      // Update shared cost
+      // @ts-ignore: Stale Prisma types
+      await tx.sharedCost.update({
+        where: { id, organizationId: session.user.organizationId as string },
+        data: {
+          description,
+          date,
+          category,
+          amount: totalAmount,
+        } as any
+      });
+
+      // Delete existing allocations
+      // @ts-ignore: Stale Prisma types
+      await tx.sharedCostAllocation.deleteMany({
+        where: { sharedCostId: id }
+      });
+
+      // Create new allocations
+      if (allocations && allocations.length > 0) {
+        // @ts-ignore: Stale Prisma types
+        await tx.sharedCostAllocation.createMany({
+          data: allocations.map(a => ({
+            sharedCostId: id,
+            userId: a.userId,
+            amount: a.amount
+          }))
+        });
+      }
+    }, {
+      maxWait: 5000,
+      timeout: 20000
+    });
+
+    revalidatePath('/admin/expenses');
+    revalidatePath('/admin/reports');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to update shared cost:', error);
+    return { success: false, error: 'Failed to update shared cost' };
+  }
+}
+
+export async function deleteSharedCost(id: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.organizationId) return { success: false, error: 'Unauthorized' };
+
+    // @ts-ignore: Stale Prisma types
+    await prisma.sharedCost.delete({
+      where: { id, organizationId: session.user.organizationId as string }
+    });
+
+    revalidatePath('/admin/expenses');
+    revalidatePath('/admin/reports');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to delete shared cost:', error);
+    return { success: false, error: 'Failed to delete shared cost' };
   }
 }
