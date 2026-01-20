@@ -1,14 +1,16 @@
 import { getPlatformStats } from "@/lib/services/super-admin";
 import { Users, Building2, Utensils, MessageSquare } from "lucide-react";
+import { getTranslations } from 'next-intl/server';
 
 export async function SuperAdminStatsCards() {
     const stats = await getPlatformStats();
+    const t = await getTranslations('superAdmin');
 
     const data = [
-        { label: 'Total Organizations', value: stats.orgCount, icon: Building2, color: 'text-blue-600', bg: 'bg-blue-100' },
-        { label: 'Total Users', value: stats.userCount, icon: Users, color: 'text-green-600', bg: 'bg-green-100' },
-        { label: 'Meals Recorded', value: stats.mealCount, icon: Utensils, color: 'text-orange-600', bg: 'bg-orange-100' },
-        { label: 'Support Tickets', value: stats.ticketCount, icon: MessageSquare, color: 'text-purple-600', bg: 'bg-purple-100' },
+        { label: t('totalOrganizations'), value: stats.orgCount, icon: Building2, color: 'text-blue-600', bg: 'bg-blue-100' },
+        { label: t('totalUsers'), value: stats.userCount, icon: Users, color: 'text-green-600', bg: 'bg-green-100' },
+        { label: t('mealsRecorded'), value: stats.mealCount, icon: Utensils, color: 'text-orange-600', bg: 'bg-orange-100' },
+        { label: t('supportTickets'), value: stats.ticketCount, icon: MessageSquare, color: 'text-purple-600', bg: 'bg-purple-100' },
     ];
 
     return (

@@ -1,0 +1,65 @@
+{
+  "common": {
+    "meals": "Meals",
+    "currency": "৳"
+  },
+  "dashboard": {
+    "availableBalance": "Available Balance",
+    "totalExpenses": "Total Expenses",
+    "totalMeals": "Total Meals",
+    "currentMealRate": "Current Meal Rate",
+    "activeMembers": "Active Members"
+  },
+  "reports": {
+    "totalExpenses": "Total Expenses",
+    "totalConsumption": "Total Consumption",
+    "currentMealRate": "Current Meal Rate",
+    "activeMembers": "Active Members",
+    "memberSettlementSummary": "Member Settlement Summary",
+    "costsCalculatedInfo": "Costs calculated based on the current meal rate.",
+    "user": "User",
+    "meals": "Meals",
+    "mealCost": "Meal Cost",
+    "sharedRoom": "Shared/Room",
+    "totalCost": "Total Cost",
+    "totalDeposited": "Total Deposited",
+    "adjustedBalance": "Adjusted Balance",
+    "sharedCostBreakdown": "Shared Cost Breakdown"
+  },
+  "superAdmin": {
+    "totalOrganizations": "Total Organizations",
+    "totalUsers": "Total Users",
+    "mealsRecorded": "Meals Recorded",
+    "supportTickets": "Support Tickets"
+  },
+  "member": {
+    "totalMeals": "Total Meals",
+    "totalMonthlyCost": "Total Monthly Cost",
+    "dailyTotal": "Daily Total"
+  },
+  "expenses": {
+    "totalAmount": "Total Amount",
+    "totalAmountCalculated": "Total Amount (Calculated ৳)",
+    "totalSpent": "Total Spent",
+    "totalOrganizationSpent": "Total Organization Spent",
+    "totalSharedCosts": "Total Shared Costs"
+  },
+  "wallet": {
+    "totalDeposits": "Total Deposits"
+  },
+  "export": {
+    "memberName": "Member Name",
+    "mealsConsumed": "Meals Consumed",
+    "mealCost": "Meal Cost",
+    "sharedRoomCost": "Shared/Room Cost",
+    "sharedCostDetails": "Shared Cost Details",
+    "totalCost": "Total Cost",
+    "totalDeposited": "Total Deposited",
+    "adjustedBalance": "Adjusted Balance"
+  },
+  "language": {
+    "english": "English",
+    "bengali": "বাংলা",
+    "switchLanguage": "Switch Language"
+  }
+}

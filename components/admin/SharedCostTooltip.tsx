@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { formatCurrency } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface SharedCostDetail {
     description: string;
@@ -17,6 +18,7 @@ interface SharedCostTooltipProps {
 }
 
 export default function SharedCostTooltip({ totalAmount, details }: SharedCostTooltipProps) {
+    const t = useTranslations('reports');
     const [isVisible, setIsVisible] = useState(false);
     const [position, setPosition] = useState({ top: 0, left: 0 });
     const triggerRef = useRef<HTMLSpanElement>(null);
@@ -70,7 +72,7 @@ export default function SharedCostTooltip({ totalAmount, details }: SharedCostTo
                         {/* Down Arrow */}
                         <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
 
-                        <div className="font-bold mb-2 pb-2 border-b border-gray-700 text-sm">Shared Cost Breakdown</div>
+                        <div className="font-bold mb-2 pb-2 border-b border-gray-700 text-sm">{t('sharedCostBreakdown')}</div>
                         <div className="space-y-1.5 max-h-48 overflow-y-auto">
                             {details.map((detail, idx) => (
                                 <div key={idx} className="flex justify-between items-center gap-3 py-1">

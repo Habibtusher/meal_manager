@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
+import LanguageSwitcher from '@/components/shared/LanguageSwitcher';
 import {
   Utensils,
   Shield,
@@ -54,6 +55,7 @@ export default function LandingPage() {
           <Link className="text-sm font-semibold text-gray-600 hover:text-blue-600 transition-colors" href="#how-it-works">
             How it Works
           </Link>
+          <LanguageSwitcher />
           <div className="h-4 w-[1px] bg-gray-200"></div>
           <Link className="text-sm font-semibold text-gray-600 hover:text-blue-600 transition-colors" href="/login">
             Sign In
@@ -91,6 +93,10 @@ export default function LandingPage() {
             >
               How it Works
             </Link>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold text-gray-600">Language:</span>
+              <LanguageSwitcher />
+            </div>
             <hr className="border-gray-100" />
             <Link
               className="text-lg font-bold text-gray-900"

@@ -2,6 +2,7 @@ import { getAdminDashboardStats } from "@/lib/services/admin";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Wallet, Utensils, TrendingUp, Users } from "lucide-react";
 import { formatCurrency, cn } from "@/lib/utils";
+import { getTranslations } from 'next-intl/server';
 
 interface AdminStatsCardsProps {
     organizationId: string;
@@ -18,37 +19,39 @@ export async function AdminStatsCards({ organizationId, month, year }: AdminStat
         mealRate
     } = await getAdminDashboardStats(organizationId, month, year);
 
+    const t = await getTranslations('dashboard');
+
     const stats = [
         {
-            label: 'Available Balance',
+            label: t('availableBalance'),
             value: formatCurrency(availableBalance),
             icon: Wallet,
             color: availableBalance >= 0 ? 'text-green-600' : 'text-red-600',
             bg: availableBalance >= 0 ? 'bg-green-50' : 'bg-red-50',
         },
         {
-            label: 'Total Expenses',
+            label: t('totalExpenses'),
             value: formatCurrency(totalExpenses),
             icon: Wallet,
             color: 'text-red-600',
             bg: 'bg-red-50',
         },
         {
-            label: 'Total Meals',
+            label: t('totalMeals'),
             value: totalMeals.toFixed(1),
             icon: Utensils,
             color: 'text-blue-600',
             bg: 'bg-blue-50',
         },
         {
-            label: 'Current Meal Rate',
+            label: t('currentMealRate'),
             value: formatCurrency(mealRate),
             icon: TrendingUp,
             color: 'text-purple-600',
             bg: 'bg-purple-100',
         },
         {
-            label: 'Active Members',
+            label: t('activeMembers'),
             value: memberCount,
             icon: Users,
             color: 'text-gray-600',

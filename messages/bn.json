@@ -1,0 +1,65 @@
+{
+  "common": {
+    "meals": "খাবার",
+    "currency": "৳"
+  },
+  "dashboard": {
+    "availableBalance": "উপলব্ধ ব্যালেন্স",
+    "totalExpenses": "মোট খরচ",
+    "totalMeals": "মোট খাবার",
+    "currentMealRate": "বর্তমান খাবার রেট",
+    "activeMembers": "সক্রিয় সদস্য"
+  },
+  "reports": {
+    "totalExpenses": "মোট খরচ",
+    "totalConsumption": "মোট খরচ",
+    "currentMealRate": "বর্তমান খাবার রেট",
+    "activeMembers": "সক্রিয় সদস্য",
+    "memberSettlementSummary": "সদস্য নিষ্পত্তি সারাংশ",
+    "costsCalculatedInfo": "বর্তমান খাবার রেটের উপর ভিত্তি করে খরচ গণনা করা হয়েছে।",
+    "user": "ব্যবহারকারী",
+    "meals": "খাবার",
+    "mealCost": "খাবার খরচ",
+    "sharedRoom": "শেয়ার্ড/রুম",
+    "totalCost": "মোট খরচ",
+    "totalDeposited": "মোট জমা",
+    "adjustedBalance": "সমন্বিত ব্যালেন্স",
+    "sharedCostBreakdown": "শেয়ার্ড খরচ বিবরণ"
+  },
+  "superAdmin": {
+    "totalOrganizations": "মোট প্রতিষ্ঠান",
+    "totalUsers": "মোট ব্যবহারকারী",
+    "mealsRecorded": "রেকর্ডকৃত খাবার",
+    "supportTickets": "সাপোর্ট টিকেট"
+  },
+  "member": {
+    "totalMeals": "মোট খাবার",
+    "totalMonthlyCost": "মোট মাসিক খরচ",
+    "dailyTotal": "দৈনিক মোট"
+  },
+  "expenses": {
+    "totalAmount": "মোট পরিমাণ",
+    "totalAmountCalculated": "মোট পরিমাণ (গণনাকৃত ৳)",
+    "totalSpent": "মোট খরচ",
+    "totalOrganizationSpent": "মোট প্রতিষ্ঠান খরচ",
+    "totalSharedCosts": "মোট শেয়ার্ড খরচ"
+  },
+  "wallet": {
+    "totalDeposits": "মোট জমা"
+  },
+  "export": {
+    "memberName": "সদস্যের নাম",
+    "mealsConsumed": "খাওয়া খাবার",
+    "mealCost": "খাবার খরচ",
+    "sharedRoomCost": "শেয়ার্ড/রুম খরচ",
+    "sharedCostDetails": "শেয়ার্ড খরচ বিবরণ",
+    "totalCost": "মোট খরচ",
+    "totalDeposited": "মোট জমা",
+    "adjustedBalance": "সমন্বিত ব্যালেন্স"
+  },
+  "language": {
+    "english": "English",
+    "bengali": "বাংলা",
+    "switchLanguage": "ভাষা পরিবর্তন করুন"
+  }
+}

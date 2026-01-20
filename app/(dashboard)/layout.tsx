@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth';
 import { Sidebar } from '@/components/shared/Sidebar';
 import { MobileSidebar } from '@/components/shared/MobileSidebar';
+import LanguageSwitcher from '@/components/shared/LanguageSwitcher';
 import { redirect } from 'next/navigation';
 
 export default async function DashboardLayout({
@@ -26,6 +27,7 @@ export default async function DashboardLayout({
                         </h2>
                     </div>
                     <div className="flex items-center gap-4">
+                        <LanguageSwitcher />
                         <div className="text-right hidden md:block">
                             <p className="text-sm font-medium text-gray-900">{session.user.name}</p>
                             <p className="text-xs text-gray-500">{session.user.email}</p>
