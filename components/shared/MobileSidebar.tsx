@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
+import { useTranslations } from 'next-intl';
 
 interface MobileSidebarProps {
     role: string;
@@ -29,30 +30,31 @@ interface MobileSidebarProps {
 export function MobileSidebar({ role }: MobileSidebarProps) {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
+    const t = useTranslations('sidebar');
 
     const adminLinks = [
-        { href: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard },
-        { href: '/admin/meals', label: 'Meal Management', icon: Utensils },
-        { href: '/admin/members', label: 'Members', icon: Users },
-        { href: '/admin/expenses', label: 'Expenses', icon: Receipt },
-        { href: '/admin/wallet', label: 'Wallet Transactions', icon: Wallet },
-        { href: '/admin/reports', label: 'Reports', icon: FileText },
-        { href: '/member/history', label: 'Meal History', icon: History },
-        { href: '/member/profile', label: 'Profile', icon: Settings },
+        { href: '/admin/dashboard', label: t('overview'), icon: LayoutDashboard },
+        { href: '/admin/meals', label: t('mealManagement'), icon: Utensils },
+        { href: '/admin/members', label: t('members'), icon: Users },
+        { href: '/admin/expenses', label: t('expenses'), icon: Receipt },
+        { href: '/admin/wallet', label: t('walletTransactions'), icon: Wallet },
+        { href: '/admin/reports', label: t('reports'), icon: FileText },
+        { href: '/member/history', label: t('mealHistory'), icon: History },
+        { href: '/member/profile', label: t('profile'), icon: Settings },
     ];
 
     const memberLinks = [
-        { href: '/member/dashboard', label: 'My Dashboard', icon: LayoutDashboard },
+        { href: '/member/dashboard', label: t('myDashboard'), icon: LayoutDashboard },
         // { href: '/member/meals', label: 'Meal Participation', icon: Utensils },
-        { href: '/member/history', label: 'Meal History', icon: FileText },
-        { href: '/member/expenses', label: 'Expenses', icon: Receipt },
-        { href: '/member/profile', label: 'Profile', icon: Settings },
+        { href: '/member/history', label: t('mealHistory'), icon: FileText },
+        { href: '/member/expenses', label: t('expenses'), icon: Receipt },
+        { href: '/member/profile', label: t('profile'), icon: Settings },
     ];
 
     const superAdminLinks = [
-        { href: '/super-admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { href: '/super-admin/organizations', label: 'Organizations', icon: Users },
-        { href: '/super-admin/tickets', label: 'Support Tickets', icon: FileText },
+        { href: '/super-admin/dashboard', label: t('dashboard'), icon: LayoutDashboard },
+        { href: '/super-admin/organizations', label: t('organizations'), icon: Users },
+        { href: '/super-admin/tickets', label: t('supportTickets'), icon: FileText },
     ];
 
     const links = (role as any) === 'SUPER_ADMIN' ? superAdminLinks : (role === 'ADMIN' ? adminLinks : memberLinks);
@@ -135,11 +137,11 @@ export function MobileSidebar({ role }: MobileSidebarProps) {
                         className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     >
                         <LogOut className="w-5 h-5" />
-                        Sign Out
+                        {t('signOut')}
                     </button>
                     <div className="mt-4 pt-4 border-t border-gray-100 text-center">
                         <p className="text-xs text-gray-400">
-                            Develop by <span className="font-semibold text-gray-500">Habibur Rahman</span>
+                            {t('developedBy')} <span className="font-semibold text-gray-500">Habibur Rahman</span>
                         </p>
                         <a
                             href="https://www.facebook.com/habibur00.rahman/"
@@ -147,7 +149,7 @@ export function MobileSidebar({ role }: MobileSidebarProps) {
                             rel="noopener noreferrer"
                             className="text-[10px] text-blue-500 hover:underline mt-1 block"
                         >
-                            Facebook Profile
+                            {t('facebookProfile')}
                         </a>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import { Sidebar } from '@/components/shared/Sidebar';
 import { MobileSidebar } from '@/components/shared/MobileSidebar';
 import LanguageSwitcher from '@/components/shared/LanguageSwitcher';
 import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 export default async function DashboardLayout({
     children,
@@ -10,6 +11,7 @@ export default async function DashboardLayout({
     children: React.ReactNode;
 }) {
     const session = await auth();
+    const t = await getTranslations('sidebar');
 
     if (!session) {
         redirect('/login');
@@ -23,7 +25,7 @@ export default async function DashboardLayout({
                     <div className="flex items-center gap-4">
                         <MobileSidebar role={session.user.role} />
                         <h2 className="text-lg font-semibold text-gray-800">
-                            {(session.user.role as any) === 'SUPER_ADMIN' ? 'Super Admin Panel' : (session.user.role === 'ADMIN' ? 'Admin Dashboard' : 'Member Dashboard')}
+                            {(session.user.role as any) === 'SUPER_ADMIN' ? t('superAdminPanel') : (session.user.role === 'ADMIN' ? t('adminDashboard') : t('memberDashboard'))}
                         </h2>
                     </div>
                     <div className="flex items-center gap-4">

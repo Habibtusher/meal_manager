@@ -61,5 +61,25 @@
     "english": "English",
     "bengali": "বাংলা",
     "switchLanguage": "ভাষা পরিবর্তন করুন"
+  },
+  "sidebar": {
+    "overview": "সারসংক্ষেপ",
+    "mealManagement": "মিল ব্যবস্থাপনা",
+    "members": "সদস্য",
+    "expenses": "খরচ",
+    "walletTransactions": "ওয়ালেট লেনদেন",
+    "reports": "রিপোর্ট",
+    "mealHistory": "খাবারের ইতিহাস",
+    "profile": "প্রোফাইল",
+    "myDashboard": "আমার ড্যাশবোর্ড",
+    "dashboard": "ড্যাশবোর্ড",
+    "organizations": "প্রতিষ্ঠান",
+    "supportTickets": "সাপোর্ট টিকেট",
+    "signOut": "লগ আউট",
+    "developedBy": "ডেভেলপ করেছেন",
+    "facebookProfile": "ফেসবুক প্রোফাইল",
+    "superAdminPanel": "সুপার অ্যাডমিন প্যানেল",
+    "adminDashboard": "অ্যাডমিন ড্যাশবোর্ড",
+    "memberDashboard": "সদস্য ড্যাশবোর্ড"
   }
 }

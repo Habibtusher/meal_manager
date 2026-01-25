@@ -61,5 +61,25 @@
     "english": "English",
     "bengali": "বাংলা",
     "switchLanguage": "Switch Language"
+  },
+  "sidebar": {
+    "overview": "Overview",
+    "mealManagement": "Meal Management",
+    "members": "Members",
+    "expenses": "Expenses",
+    "walletTransactions": "Wallet Transactions",
+    "reports": "Reports",
+    "mealHistory": "Meal History",
+    "profile": "Profile",
+    "myDashboard": "My Dashboard",
+    "dashboard": "Dashboard",
+    "organizations": "Organizations",
+    "supportTickets": "Support Tickets",
+    "signOut": "Sign Out",
+    "developedBy": "Developed by",
+    "facebookProfile": "Facebook Profile",
+    "superAdminPanel": "Super Admin Panel",
+    "adminDashboard": "Admin Dashboard",
+    "memberDashboard": "Member Dashboard"
   }
 }
