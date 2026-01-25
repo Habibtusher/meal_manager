@@ -20,7 +20,10 @@ export default function AddMemberModal() {
         setIsPending(true);
 
         try {
-            const result = await createMember(formData);
+            const result = await createMember({
+                name: formData.name,
+                email: formData.email,
+            });
             if (result.success) {
                 toast.success('Member added successfully! Default password: Member@123');
                 setFormData({ name: '', email: '' });

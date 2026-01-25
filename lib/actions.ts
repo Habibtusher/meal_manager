@@ -316,7 +316,7 @@ export async function createMember(data: {
         name: data.name,
         email: data.email,
         password: hashedPassword,
-        organizationId: session.user.organizationId,
+        organization: { connect: { id: session.user.organizationId } },
         role: 'MEMBER',
       },
     });
@@ -627,5 +627,32 @@ export async function transferAdminRole(targetUserId: string): Promise<{ success
   } catch (error) {
     console.error('Failed to transfer admin role:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Failed to transfer role' };
+  }
+}
+
+/**
+ * Get active members for cost allocation
+ */
+export async function getActiveMembers() {
+  const session = await auth();
+  if (!session?.user?.organizationId) return [];
+
+  try {
+    const members = await prisma.user.findMany({
+      where: {
+        organizationId: session.user.organizationId,
+        isActive: true,
+        role: { in: ['MEMBER', 'ADMIN'] }
+      },
+      select: {
+        id: true,
+        name: true,
+      }
+    });
+
+    return members;
+  } catch (error) {
+    console.error('Failed to fetch active members:', error);
+    return [];
   }
 }

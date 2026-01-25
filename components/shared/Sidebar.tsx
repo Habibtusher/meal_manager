@@ -17,6 +17,7 @@ import {
     History,
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 
 interface SidebarProps {
     role: string;
@@ -24,29 +25,30 @@ interface SidebarProps {
 
 export function Sidebar({ role }: SidebarProps) {
     const pathname = usePathname();
+    const t = useTranslations('sidebar');
 
     const adminLinks = [
-        { href: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard },
-        { href: '/admin/meals', label: 'Meal Management', icon: Utensils },
-        { href: '/admin/members', label: 'Members', icon: Users },
-        { href: '/admin/expenses', label: 'Expenses', icon: Receipt },
-        { href: '/admin/wallet', label: 'Wallet Transactions', icon: Wallet },
-        { href: '/admin/reports', label: 'Reports', icon: FileText },
-        { href: '/member/history', label: 'Meal History', icon: History },
-        { href: '/member/profile', label: 'Profile', icon: Settings },
+        { href: '/admin/dashboard', label: t('overview'), icon: LayoutDashboard },
+        { href: '/admin/meals', label: t('mealManagement'), icon: Utensils },
+        { href: '/admin/members', label: t('members'), icon: Users },
+        { href: '/admin/expenses', label: t('expenses'), icon: Receipt },
+        { href: '/admin/wallet', label: t('walletTransactions'), icon: Wallet },
+        { href: '/admin/reports', label: t('reports'), icon: FileText },
+        { href: '/member/history', label: t('mealHistory'), icon: History },
+        { href: '/member/profile', label: t('profile'), icon: Settings },
     ];
 
     const memberLinks = [
-        { href: '/member/dashboard', label: 'My Dashboard', icon: LayoutDashboard },
-        { href: '/member/history', label: 'Meal History', icon: FileText },
-        { href: '/member/expenses', label: 'Expenses', icon: Receipt },
-        { href: '/member/profile', label: 'Profile', icon: Settings },
+        { href: '/member/dashboard', label: t('myDashboard'), icon: LayoutDashboard },
+        { href: '/member/history', label: t('mealHistory'), icon: FileText },
+        { href: '/member/expenses', label: t('expenses'), icon: Receipt },
+        { href: '/member/profile', label: t('profile'), icon: Settings },
     ];
 
     const superAdminLinks = [
-        { href: '/super-admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { href: '/super-admin/organizations', label: 'Organizations', icon: Users },
-        { href: '/super-admin/tickets', label: 'Support Tickets', icon: FileText },
+        { href: '/super-admin/dashboard', label: t('dashboard'), icon: LayoutDashboard },
+        { href: '/super-admin/organizations', label: t('organizations'), icon: Users },
+        { href: '/super-admin/tickets', label: t('supportTickets'), icon: FileText },
     ];
 
     const links = (role as any) === 'SUPER_ADMIN' ? superAdminLinks : (role === 'ADMIN' ? adminLinks : memberLinks);
@@ -55,15 +57,15 @@ export function Sidebar({ role }: SidebarProps) {
         <aside className="fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 hidden md:flex flex-col z-30">
             <div className="p-6 border-b border-gray-100">
                 <Link href="/" className="flex items-center gap-3">
-            <div className="relative w-10 h-10 shadow-lg shadow-blue-200">
-                <Image
-                    src="/icons/icon-512x512.png"
-                    alt="MealManager Logo"
-                    width={40}
-                    height={40}
-                    className="rounded-xl"
-                />
-            </div>
+                    <div className="relative w-10 h-10 shadow-lg shadow-blue-200">
+                        <Image
+                            src="/icons/icon-512x512.png"
+                            alt="MealManager Logo"
+                            width={40}
+                            height={40}
+                            className="rounded-xl"
+                        />
+                    </div>
                     <span className="text-xl font-bold text-gray-900 tracking-tight">MealManager</span>
                 </Link>
             </div>
@@ -83,11 +85,11 @@ export function Sidebar({ role }: SidebarProps) {
                             )}
                         >
                             <div className="flex items-center gap-3">
-                                <link.icon 
+                                <link.icon
                                     className={cn(
-                                        'w-5 h-5 transition-colors', 
+                                        'w-5 h-5 transition-colors',
                                         isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'
-                                    )} 
+                                    )}
                                 />
                                 {link.label}
                             </div>
@@ -103,12 +105,12 @@ export function Sidebar({ role }: SidebarProps) {
                     className="flex items-center gap-3 w-full px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 group"
                 >
                     <LogOut className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
-                    Sign Out
+                    {t('signOut')}
                 </button>
-                
+
                 <div className="pt-4 border-t border-gray-50 text-center">
                     <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
-                        Developed by
+                        {t('developedBy')}
                     </p>
                     <p className="text-xs font-bold text-gray-900 mt-1">Habibur Rahman</p>
                     <a
@@ -117,7 +119,7 @@ export function Sidebar({ role }: SidebarProps) {
                         rel="noopener noreferrer"
                         className="text-[10px] text-blue-500 hover:text-blue-600 font-medium mt-1 inline-block transition-colors"
                     >
-                        Facebook Profile
+                        {t('facebookProfile')}
                     </a>
                 </div>
             </div>
