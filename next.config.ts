@@ -5,9 +5,6 @@ const withNextIntl = createNextIntlPlugin('./i18n.ts');
 
 const nextConfig = {
   output: 'standalone' as const,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
 };
 
 export default withNextIntl(nextConfig);

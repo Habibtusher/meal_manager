@@ -20,7 +20,7 @@ export async function AdminLowBalanceAlerts({ organizationId, month, year }: Adm
                         <AlertCircle className="w-5 h-5 text-red-500" />
                         Low Balance Alerts
                     </CardTitle>
-                    <CardDescription>Users with balance below ৳200</CardDescription>
+                    <CardDescription>Users with monthly balance below ৳200</CardDescription>
                 </div>
             </CardHeader>
             <CardContent>

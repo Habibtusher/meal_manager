@@ -15,7 +15,7 @@ const intlMiddleware = createMiddleware({
 const authMiddleware = NextAuth(authConfig).auth;
 
 // Combine both middlewares
-export default async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   // Run auth middleware first
   const authResponse = await authMiddleware(request as any);
   

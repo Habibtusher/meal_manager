@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -17,6 +18,7 @@ function LoginContent() {
         email: '',
         password: '',
     });
+    const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isLoading, setIsLoading] = useState(false);
     const [generalError, setGeneralError] = useState('');
@@ -78,7 +80,7 @@ function LoginContent() {
 
                     <Input
                         label="Password"
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         value={formData.password}
                         onChange={(e) =>
                             setFormData({ ...formData, password: e.target.value })
@@ -86,6 +88,19 @@ function LoginContent() {
                         error={errors.password}
                         placeholder="••••••••"
                         required
+                        rightElement={
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="text-gray-400 hover:text-gray-600 focus:outline-none"
+                            >
+                                {showPassword ? (
+                                    <EyeOff className="w-5 h-5" />
+                                ) : (
+                                    <Eye className="w-5 h-5" />
+                                )}
+                            </button>
+                        }
                     />
 
                     <div className="flex items-center justify-between text-sm">

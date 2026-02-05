@@ -63,6 +63,8 @@ export default async function MemberDashboard({
                         <RecentExpenses
                             organizationId={organizationId}
                             viewAllLink="/member/expenses"
+                            month={selectedMonth}
+                            year={selectedYear}
                         />
                     </Suspense>
                 </div>

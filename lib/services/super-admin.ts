@@ -11,7 +11,7 @@ export const getPlatformStats = cache(async () => {
         prisma.organization.count(),
         prisma.user.count(),
         prisma.mealRecord.count(),
-        (prisma as any).supportTicket.count(),
+        prisma.supportTicket.count(),
     ]);
 
     return {

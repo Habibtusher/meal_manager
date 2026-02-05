@@ -50,7 +50,6 @@ export async function MembersContent({
                                     <th className="pb-4 font-medium px-4">Name & Email</th>
                                     <th className="pb-4 font-medium px-4">Role</th>
                                     <th className="pb-4 font-medium px-4">Joined Date</th>
-                                    <th className="pb-4 font-medium px-4">Wallet Balance</th>
                                     <th className="pb-4 font-medium px-4 text-center">Status</th>
                                     <th className="pb-4 font-medium text-right px-4">Actions</th>
                                 </tr>
@@ -77,11 +76,6 @@ export async function MembersContent({
                                         <td className="py-4 px-4 text-sm text-gray-500 whitespace-nowrap">
                                             {formatDate(member.createdAt)}
                                         </td>
-                                        <td className="py-4 px-4 text-sm font-bold whitespace-nowrap">
-                                            <span className={Number(member.walletBalance) < 200 ? 'text-red-600' : 'text-green-600'}>
-                                                {formatCurrency(member.walletBalance.toString())}
-                                            </span>
-                                        </td>
                                         <td className="py-4 px-4 text-center">
                                             <span className={cn(
                                                 'px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider',
@@ -103,7 +97,7 @@ export async function MembersContent({
                                 ))}
                                 {members.length === 0 && (
                                     <tr>
-                                        <td colSpan={6} className="py-12 text-center text-gray-500 italic">
+                                        <td colSpan={5} className="py-12 text-center text-gray-500 italic">
                                             No members found.
                                         </td>
                                     </tr>

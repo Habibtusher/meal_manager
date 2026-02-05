@@ -6,10 +6,11 @@ export interface InputProps
     label?: string;
     error?: string;
     helperText?: string;
+    rightElement?: React.ReactNode;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-    ({ className, label, error, helperText, type, id, ...props }, ref) => {
+    ({ className, label, error, helperText, type, id, rightElement, ...props }, ref) => {
         const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
 
         return (
@@ -22,22 +23,30 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         {label}
                     </label>
                 )}
-                <input
-                    type={type}
-                    id={inputId}
-                    className={cn(
-                        'w-full px-4 py-2.5 border rounded-lg transition-all duration-200',
-                        'text-gray-900 placeholder-gray-400',
-                        'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
-                        error
-                            ? 'border-red-500 focus:ring-red-500'
-                            : 'border-gray-300 hover:border-gray-400',
-                        'disabled:bg-gray-100 disabled:cursor-not-allowed',
-                        className
+                <div className="relative">
+                    <input
+                        type={type}
+                        id={inputId}
+                        className={cn(
+                            'w-full px-4 py-2.5 border rounded-lg transition-all duration-200',
+                            'text-gray-900 placeholder-gray-400',
+                            'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                            error
+                                ? 'border-red-500 focus:ring-red-500'
+                                : 'border-gray-300 hover:border-gray-400',
+                            'disabled:bg-gray-100 disabled:cursor-not-allowed',
+                            rightElement && 'pr-12',
+                            className
+                        )}
+                        ref={ref}
+                        {...props}
+                    />
+                    {rightElement && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
+                            {rightElement}
+                        </div>
                     )}
-                    ref={ref}
-                    {...props}
-                />
+                </div>
                 {error && (
                     <p className="mt-1.5 text-sm text-red-600 flex items-center gap-1">
                         <svg

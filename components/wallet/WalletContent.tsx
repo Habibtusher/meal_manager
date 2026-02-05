@@ -25,7 +25,7 @@ export async function WalletContent({
     itemsPerPage,
     searchQuery
 }: WalletContentProps) {
-    const { totalCount, transactions, members, totalDeposits, systemLiability } = await getWalletData(
+    const { totalCount, transactions, members, totalDeposits, systemLiability, netMonthlyChange, newerTransactionsSum } = await getWalletData(
         organizationId,
         startDate,
         endDate,
@@ -35,6 +35,16 @@ export async function WalletContent({
     );
 
     const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+    // Calculate monthly running balances for the current page
+    let currentMonthlyBalance = netMonthlyChange - newerTransactionsSum;
+    const transactionsWithMonthlyBalance = transactions.map((tx) => {
+        const balance = currentMonthlyBalance;
+        // Since transactions are DESC, we subtract for the next (older) one
+        const amount = Number(tx.amount);
+        currentMonthlyBalance -= (tx.type === 'CREDIT' ? amount : -amount);
+        return { ...tx, monthlyBalance: balance };
+    });
 
     return (
         <div className="space-y-6">
@@ -91,12 +101,12 @@ export async function WalletContent({
                                     <th className="pb-4 font-medium text-center">Type</th>
                                     <th className="pb-4 font-medium">Description</th>
                                     <th className="pb-4 font-medium text-right">Amount</th>
-                                    <th className="pb-4 font-medium text-right">Balance After</th>
+                                    <th className="pb-4 font-medium text-right">Monthly Balance</th>
                                     <th className="pb-4 font-medium text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
-                                {transactions.map((tx) => (
+                                {transactionsWithMonthlyBalance.map((tx) => (
                                     <tr key={tx.id} className="text-sm group">
                                         <td className="py-4">
                                             <div>
@@ -122,7 +132,7 @@ export async function WalletContent({
                                             {tx.type === 'CREDIT' ? '+' : '-'}{formatCurrency(tx.amount.toString())}
                                         </td>
                                         <td className="py-4 text-right font-medium text-gray-400">
-                                            {formatCurrency(tx.balanceAfter.toString())}
+                                            {formatCurrency(tx.monthlyBalance.toString())}
                                         </td>
                                         <td className="py-4 text-right">
                                             <div className="flex items-center justify-end gap-1">

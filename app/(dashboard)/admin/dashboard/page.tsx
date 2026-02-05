@@ -57,7 +57,12 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
                 </Suspense>
 
                 <Suspense fallback={<ListSkeleton />}>
-                    <RecentExpenses organizationId={organizationId} viewAllLink="/admin/expenses" />
+                    <RecentExpenses 
+                        organizationId={organizationId} 
+                        viewAllLink="/admin/expenses" 
+                        month={selectedMonth}
+                        year={selectedYear}
+                    />
                 </Suspense>
             </div>
         </div>

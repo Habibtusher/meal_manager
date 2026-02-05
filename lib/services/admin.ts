@@ -21,7 +21,7 @@ export const getAdminDashboardStats = cache(async (organizationId: string, month
             } 
         }),
         getMealParticipationStats(organizationId, getToday()),
-        getLowBalanceUsers(organizationId, 200),
+        getLowBalanceUsers(organizationId, 200, month, year),
         prisma.$transaction([
             prisma.expense.aggregate({
                 where: {
@@ -67,9 +67,20 @@ export const getAdminDashboardStats = cache(async (organizationId: string, month
     };
 });
 
-export const getLatestExpenses = cache(async (organizationId: string, limit = 10) => {
+export const getLatestExpenses = cache(async (organizationId: string, month?: number, year?: number, limit = 10) => {
+    let whereClause: any = { organizationId };
+
+    if (month && year) {
+        const startDate = new Date(Date.UTC(year, month - 1, 1));
+        const endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
+        whereClause.date = {
+            gte: startDate,
+            lte: endDate
+        };
+    }
+
     return prisma.expense.findMany({
-        where: { organizationId },
+        where: whereClause,
         orderBy: { date: 'desc' },
         take: limit
     });

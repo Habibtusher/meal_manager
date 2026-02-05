@@ -8,10 +8,12 @@ import { Button } from "@/components/ui/Button";
 interface RecentExpensesProps {
     organizationId: string;
     viewAllLink: string;
+    month?: number;
+    year?: number;
 }
 
-export async function RecentExpenses({ organizationId, viewAllLink }: RecentExpensesProps) {
-    const latestExpenses = await getLatestExpenses(organizationId);
+export async function RecentExpenses({ organizationId, viewAllLink, month, year }: RecentExpensesProps) {
+    const latestExpenses = await getLatestExpenses(organizationId, month, year);
 
     return (
         <Card className="h-full">

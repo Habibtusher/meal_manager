@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import {
@@ -26,6 +27,8 @@ export default function RegisterPage() {
         confirmPassword: '',
     });
 
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isLoading, setIsLoading] = useState(false);
     const [generalError, setGeneralError] = useState('');
@@ -151,7 +154,7 @@ export default function RegisterPage() {
                                                 organizationType: e.target.value as 'mess' | 'hostel' | 'restaurant',
                                             })
                                         }
-                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
                                         <option value="mess">Mess</option>
                                         <option value="hostel">Hostel</option>
@@ -172,7 +175,7 @@ export default function RegisterPage() {
                                             })
                                         }
                                         rows={3}
-                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder="Brief description of your organization"
                                     />
                                 </div>
@@ -209,7 +212,7 @@ export default function RegisterPage() {
 
                                 <Input
                                     label="Password"
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     value={formData.password}
                                     onChange={(e) =>
                                         setFormData({ ...formData, password: e.target.value })
@@ -218,11 +221,24 @@ export default function RegisterPage() {
                                     placeholder="••••••••"
                                     helperText="Minimum 6 characters"
                                     required
+                                    rightElement={
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="text-gray-400 hover:text-gray-600 focus:outline-none"
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff className="w-5 h-5" />
+                                            ) : (
+                                                <Eye className="w-5 h-5" />
+                                            )}
+                                        </button>
+                                    }
                                 />
 
                                 <Input
                                     label="Confirm Password"
-                                    type="password"
+                                    type={showConfirmPassword ? 'text' : 'password'}
                                     value={formData.confirmPassword}
                                     onChange={(e) =>
                                         setFormData({ ...formData, confirmPassword: e.target.value })
@@ -230,6 +246,19 @@ export default function RegisterPage() {
                                     error={errors.confirmPassword}
                                     placeholder="••••••••"
                                     required
+                                    rightElement={
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            className="text-gray-400 hover:text-gray-600 focus:outline-none"
+                                        >
+                                            {showConfirmPassword ? (
+                                                <EyeOff className="w-5 h-5" />
+                                            ) : (
+                                                <Eye className="w-5 h-5" />
+                                            )}
+                                        </button>
+                                    }
                                 />
                             </div>
 
