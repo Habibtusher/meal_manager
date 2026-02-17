@@ -49,35 +49,35 @@ export default function AddMemberModal() {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-                <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                    <h2 className="text-xl font-bold text-gray-900">Add New Member</h2>
-                    <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+            <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200 border border-border">
+                <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/50">
+                    <h2 className="text-xl font-bold text-foreground">Add New Member</h2>
+                    <button onClick={() => setIsOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
                         <UserPlus className="w-5 h-5 rotate-45" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">Full Name</label>
+                        <label className="text-sm font-semibold text-muted-foreground">Full Name</label>
                         <Input
                             required
                             placeholder="John Doe"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="bg-gray-50 border-gray-200 focus:bg-white transition-all"
+                            className="bg-muted border-border focus:bg-background transition-all"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">Email Address</label>
+                        <label className="text-sm font-semibold text-muted-foreground">Email Address</label>
                         <Input
                             required
                             type="email"
                             placeholder="john@example.com"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="bg-gray-50 border-gray-200 focus:bg-white transition-all"
+                            className="bg-muted border-border focus:bg-background transition-all"
                         />
                     </div>
 
@@ -86,20 +86,20 @@ export default function AddMemberModal() {
                             type="button"
                             variant="ghost"
                             onClick={() => setIsOpen(false)}
-                            className="flex-1 border border-gray-200 hover:bg-gray-50"
+                            className="flex-1 border border-border hover:bg-muted"
                         >
                             Cancel
                         </Button>
                         <Button
                             type="submit"
                             disabled={isPending}
-                            className="flex-1 bg-gray-900 hover:bg-gray-800 text-white"
+                            className="flex-1"
                         >
                             {isPending ? 'Adding...' : 'Add Member'}
                         </Button>
                     </div>
 
-                    <p className="text-xs text-center text-gray-500 mt-4">
+                    <p className="text-xs text-center text-muted-foreground mt-4">
                         Members will be created with default password <b>Member@123</b>
                     </p>
                 </form>

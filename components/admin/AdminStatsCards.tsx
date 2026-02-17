@@ -26,36 +26,36 @@ export async function AdminStatsCards({ organizationId, month, year }: AdminStat
             label: t('availableBalance'),
             value: formatCurrency(availableBalance),
             icon: Wallet,
-            color: availableBalance >= 0 ? 'text-green-600' : 'text-red-600',
-            bg: availableBalance >= 0 ? 'bg-green-50' : 'bg-red-50',
+            color: availableBalance >= 0 ? 'text-green-500' : 'text-red-500',
+            bg: availableBalance >= 0 ? 'bg-green-500/10' : 'bg-red-500/10',
         },
         {
             label: t('totalExpenses'),
             value: formatCurrency(totalExpenses),
             icon: Wallet,
-            color: 'text-red-600',
-            bg: 'bg-red-50',
+            color: 'text-red-500',
+            bg: 'bg-red-500/10',
         },
         {
             label: t('totalMeals'),
             value: totalMeals.toFixed(1),
             icon: Utensils,
-            color: 'text-blue-600',
-            bg: 'bg-blue-50',
+            color: 'text-blue-500',
+            bg: 'bg-blue-500/10',
         },
         {
             label: t('currentMealRate'),
             value: formatCurrency(mealRate),
             icon: TrendingUp,
-            color: 'text-purple-600',
-            bg: 'bg-purple-100',
+            color: 'text-purple-500',
+            bg: 'bg-purple-500/10',
         },
         {
             label: t('activeMembers'),
             value: memberCount,
             icon: Users,
-            color: 'text-gray-600',
-            bg: 'bg-gray-100',
+            color: 'text-muted-foreground',
+            bg: 'bg-muted',
         },
     ];
 
@@ -66,8 +66,8 @@ export async function AdminStatsCards({ organizationId, month, year }: AdminStat
                     <CardContent className="pt-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-500">{stat.label}</p>
-                                <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
+                                <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
+                                <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
                             </div>
                             <div className={cn('p-3 rounded-xl', stat.bg)}>
                                 <stat.icon className={cn('w-6 h-6', stat.color)} />

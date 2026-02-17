@@ -46,7 +46,7 @@ export async function AdminExpensesContent({
                             </div>
                             <div>
                                 <p className="text-xs text-gray-500 font-medium tracking-wide uppercase">Total Spent</p>
-                                <p className="text-xl font-bold text-gray-900">{formatCurrency(totalSpent)}</p>
+                                <p className="text-xl font-bold text-foreground">{formatCurrency(totalSpent)}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -71,7 +71,7 @@ export async function AdminExpensesContent({
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-gray-100 italic text-gray-400 text-xs">
+                                <tr className="border-b border-border italic text-muted-foreground text-xs">
                                     <th className="pb-4 font-medium uppercase tracking-widest px-4">Date</th>
                                     <th className="pb-4 font-medium uppercase tracking-widest px-4">Description</th>
                                     <th className="pb-4 font-medium uppercase tracking-widest px-4 text-center">Category</th>
@@ -79,26 +79,26 @@ export async function AdminExpensesContent({
                                     <th className="pb-4 font-medium uppercase tracking-widest px-4 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-50">
+                            <tbody className="divide-y divide-border/50">
                                 {expenses.map((expense) => (
-                                    <tr key={expense.id} className="group hover:bg-gray-50 transition-colors">
-                                        <td className="py-4 px-4 text-sm text-gray-500 whitespace-nowrap">
+                                    <tr key={expense.id} className="group hover:bg-muted/50 transition-colors">
+                                        <td className="py-4 px-4 text-sm text-muted-foreground whitespace-nowrap">
                                             {formatDate(expense.date)}
                                         </td>
                                         <td className="py-4 px-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors shrink-0">
+                                                <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center text-muted-foreground group-hover:bg-blue-500/10 group-hover:text-blue-500 transition-colors shrink-0">
                                                     {expense.category.toLowerCase().includes('food') ? <ShoppingCart className="w-4 h-4" /> : <Receipt className="w-4 h-4" />}
                                                 </div>
-                                                <p className="text-sm font-bold text-gray-900 line-clamp-1">{expense.description}</p>
+                                                <p className="text-sm font-bold text-foreground line-clamp-1">{expense.description}</p>
                                             </div>
                                         </td>
                                         <td className="py-4 px-4 text-center">
-                                            <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-blue-500 bg-blue-50 px-2 py-0.5 rounded">
+                                            <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded">
                                                 {expense.category}
                                             </span>
                                         </td>
-                                        <td className="py-4 px-4 text-right font-bold text-gray-900 whitespace-nowrap">
+                                        <td className="py-4 px-4 text-right font-bold text-foreground whitespace-nowrap">
                                             {formatCurrency(expense.amount.toString())}
                                         </td>
                                         <td className="py-4 px-4 text-right">
@@ -111,7 +111,7 @@ export async function AdminExpensesContent({
                                 ))}
                                 {expenses.length === 0 && (
                                     <tr>
-                                        <td colSpan={5} className="py-12 text-center text-gray-400 italic">
+                                        <td colSpan={5} className="py-12 text-center text-muted-foreground italic">
                                             No expenses logged yet.
                                         </td>
                                     </tr>

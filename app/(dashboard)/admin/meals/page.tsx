@@ -30,11 +30,11 @@ export default async function MealManagement({
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Meal Management</h1>
-                    <p className="text-gray-500 mt-1">Update daily meal counts (0-3) for members manually.</p>
+                    <h1 className="text-3xl font-bold text-foreground">Meal Management</h1>
+                    <p className="text-muted-foreground mt-1">Update daily meal counts (0-3) for members manually.</p>
                 </div>
-                <div className="flex items-center gap-3 bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
-                    <span className="text-sm font-bold text-gray-700 ml-2">Select Date:</span>
+                <div className="flex items-center gap-3 bg-card p-2 rounded-xl border border-border shadow-sm">
+                    <span className="text-sm font-bold text-foreground ml-2">Select Date:</span>
                     <DatePicker defaultValue={`${selectedDate.getUTCFullYear()}-${String(selectedDate.getUTCMonth() + 1).padStart(2, '0')}-${String(selectedDate.getUTCDate()).padStart(2, '0')}`} />
                 </div>
             </div>

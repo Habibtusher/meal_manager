@@ -26,7 +26,7 @@ export default function LanguageSwitcher() {
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-background border border-border hover:bg-accent hover:text-accent-foreground transition-all text-sm font-medium text-foreground shadow-sm"
                 disabled={isPending}
             >
                 <Languages className="w-4 h-4" />
@@ -34,17 +34,17 @@ export default function LanguageSwitcher() {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                <div className="absolute right-0 mt-2 w-40 bg-card rounded-lg shadow-xl border border-border py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
                     <button
                         onClick={() => switchLocale('en')}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${locale === 'en' ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-gray-700'
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors ${locale === 'en' ? 'bg-primary/10 text-primary font-semibold' : 'text-foreground'
                             }`}
                     >
                         English
                     </button>
                     <button
                         onClick={() => switchLocale('bn')}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${locale === 'bn' ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-gray-700'
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors ${locale === 'bn' ? 'bg-primary/10 text-primary font-semibold' : 'text-foreground'
                             }`}
                     >
                         বাংলা

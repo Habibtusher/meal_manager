@@ -19,12 +19,12 @@ export async function MemberNotifications({ userId, organizationId, month, year 
             </CardHeader>
             <CardContent className="space-y-4">
                 {userBalance < 200 && (
-                    <div className="flex items-start gap-3 p-3 bg-red-50 text-red-700 rounded-lg text-sm border border-red-100">
+                    <div className="flex items-start gap-3 p-3 bg-red-500/10 text-red-600 rounded-lg text-sm border border-red-500/20">
                         <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
                         <p>Your wallet balance is low. Please deposit cash to continue tracking meals smoothly.</p>
                     </div>
                 )}
-                <div className="p-3 bg-blue-50 text-blue-700 rounded-lg text-sm border border-blue-100">
+                <div className="p-3 bg-blue-500/10 text-blue-600 rounded-lg text-sm border border-blue-500/20">
                     Welcome to your new Meal Manager dashboard!
                 </div>
             </CardContent>

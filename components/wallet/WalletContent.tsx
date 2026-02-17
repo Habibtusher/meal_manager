@@ -68,11 +68,11 @@ export async function WalletContent({
                     <CardContent className="pt-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-500">System Liability</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-1">{formatCurrency(systemLiability)}</p>
-                                <p className="text-xs mt-2 text-gray-400">Sum of all active wallet balances</p>
+                                <p className="text-sm font-medium text-muted-foreground">System Liability</p>
+                                <p className="text-3xl font-bold text-foreground mt-1">{formatCurrency(systemLiability)}</p>
+                                <p className="text-xs mt-2 text-muted-foreground">Sum of all active wallet balances</p>
                             </div>
-                            <Wallet className="w-12 h-12 text-gray-100" />
+                            <Wallet className="w-12 h-12 text-muted" />
                         </div>
                     </CardContent>
                 </Card>
@@ -96,7 +96,7 @@ export async function WalletContent({
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-gray-100 italic text-gray-400 text-sm">
+                                <tr className="border-b border-border italic text-muted-foreground text-sm">
                                     <th className="pb-4 font-medium">User & Details</th>
                                     <th className="pb-4 font-medium text-center">Type</th>
                                     <th className="pb-4 font-medium">Description</th>
@@ -105,24 +105,24 @@ export async function WalletContent({
                                     <th className="pb-4 font-medium text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-50">
+                            <tbody className="divide-y divide-border/50">
                                 {transactionsWithMonthlyBalance.map((tx) => (
-                                    <tr key={tx.id} className="text-sm group">
+                                    <tr key={tx.id} className="text-sm group hover:bg-muted/50 transition-colors">
                                         <td className="py-4">
                                             <div>
-                                                <p className="font-bold text-gray-900">{tx.user.name}</p>
-                                                <p className="text-[10px] text-gray-400 font-mono">{formatDateTime(tx.createdAt)}</p>
+                                                <p className="font-bold text-foreground">{tx.user.name}</p>
+                                                <p className="text-[10px] text-muted-foreground font-mono">{formatDateTime(tx.createdAt)}</p>
                                             </div>
                                         </td>
                                         <td className="py-4 text-center">
                                             <span className={cn(
                                                 'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest',
-                                                tx.type === 'CREDIT' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                                                tx.type === 'CREDIT' ? 'bg-green-500/10 text-green-600' : 'bg-destructive/10 text-destructive'
                                             )}>
                                                 {tx.type}
                                             </span>
                                         </td>
-                                        <td className="py-4 italic text-gray-600">
+                                        <td className="py-4 italic text-muted-foreground">
                                             {tx.description}
                                         </td>
                                         <td className={cn(
@@ -131,7 +131,7 @@ export async function WalletContent({
                                         )}>
                                             {tx.type === 'CREDIT' ? '+' : '-'}{formatCurrency(tx.amount.toString())}
                                         </td>
-                                        <td className="py-4 text-right font-medium text-gray-400">
+                                        <td className="py-4 text-right font-medium text-muted-foreground">
                                             {formatCurrency(tx.monthlyBalance.toString())}
                                         </td>
                                         <td className="py-4 text-right">
@@ -144,7 +144,7 @@ export async function WalletContent({
                                 ))}
                                 {transactions.length === 0 && (
                                     <tr>
-                                        <td colSpan={6} className="py-12 text-center text-gray-500 italic">No transactions found.</td>
+                                        <td colSpan={6} className="py-12 text-center text-muted-foreground italic">No transactions found.</td>
                                     </tr>
                                 )}
                             </tbody>

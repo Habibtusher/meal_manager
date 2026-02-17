@@ -81,28 +81,28 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-                <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                    <h2 className="text-xl font-bold text-gray-900">Add Wallet Deposit</h2>
-                    <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+            <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200 border border-border">
+                <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/50">
+                    <h2 className="text-xl font-bold text-foreground">Add Wallet Deposit</h2>
+                    <button onClick={() => setIsOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                        <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
                             <User className="w-4 h-4" /> Select Member
                         </label>
                         <select
                             required
                             value={formData.userId}
                             onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
-                            className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-sm text-black"
+                            className="w-full h-11 px-4 rounded-xl border border-border bg-muted focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm text-foreground"
                         >
-                            <option value="">Choose a member...</option>
+                            <option value="" className="bg-card text-foreground">Choose a member...</option>
                             {members.map((member) => (
-                                <option key={member.id} value={member.id}>
+                                <option key={member.id} value={member.id} className="bg-card text-foreground">
                                     {member.name} ({member.email})
                                 </option>
                             ))}
@@ -110,7 +110,7 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                        <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
                             Date
                         </label>
                         <Input
@@ -118,12 +118,12 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
                             type="date"
                             value={formData.date}
                             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                            className="bg-gray-50 border-gray-200 focus:bg-white transition-all text-black"
+                            className="bg-muted border-border focus:bg-background transition-all text-foreground"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                        <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
                             <Banknote className="w-4 h-4" /> Amount (৳)
                         </label>
                         <Input
@@ -133,12 +133,12 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
                             placeholder="500"
                             value={formData.amount}
                             onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
-                            className="bg-gray-50 border-gray-200 focus:bg-white transition-all text-black"
+                            className="bg-muted border-border focus:bg-background transition-all text-foreground"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                        <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
                             <Info className="w-4 h-4" /> Description
                         </label>
                         <Input
@@ -146,7 +146,7 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
                             placeholder="Cash Payment / Deposit"
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            className="bg-gray-50 border-gray-200 focus:bg-white transition-all text-black"
+                            className="bg-muted border-border focus:bg-background transition-all text-foreground"
                         />
                     </div>
 
@@ -155,14 +155,14 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
                             type="button"
                             variant="ghost"
                             onClick={() => setIsOpen(false)}
-                            className="flex-1 border border-gray-200 hover:bg-gray-50"
+                            className="flex-1 border border-border hover:bg-muted"
                         >
                             Cancel
                         </Button>
                         <Button
                             type="submit"
                             disabled={isPending}
-                            className="flex-1 bg-gray-900 hover:bg-gray-800 text-white"
+                            className="flex-1"
                         >
                             {isPending ? 'Processing...' : 'Add Deposit'}
                         </Button>

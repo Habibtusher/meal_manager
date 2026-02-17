@@ -46,7 +46,7 @@ export async function MembersContent({
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-gray-100 italic text-gray-400 text-sm">
+                                <tr className="border-b border-border italic text-muted-foreground text-sm">
                                     <th className="pb-4 font-medium px-4">Name & Email</th>
                                     <th className="pb-4 font-medium px-4">Role</th>
                                     <th className="pb-4 font-medium px-4">Joined Date</th>
@@ -54,32 +54,32 @@ export async function MembersContent({
                                     <th className="pb-4 font-medium text-right px-4">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-50">
+                            <tbody className="divide-y divide-border/50">
                                 {members.map((member: User) => (
-                                    <tr key={member.id} className={cn("group hover:bg-gray-50 transition-colors", member.id === currentUserId && "bg-blue-50/30")}>
+                                    <tr key={member.id} className={cn("group hover:bg-muted/50 transition-colors", member.id === currentUserId && "bg-primary/5")}>
                                         <td className="py-4 px-4">
                                             <div>
-                                                <p className="font-bold text-gray-900">
-                                                    {member.name} {member.id === currentUserId && <span className="text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded ml-1">You</span>}
+                                                <p className="font-bold text-foreground">
+                                                    {member.name} {member.id === currentUserId && <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded ml-1">You</span>}
                                                 </p>
-                                                <p className="text-sm text-gray-500">{member.email}</p>
+                                                <p className="text-sm text-muted-foreground">{member.email}</p>
                                             </div>
                                         </td>
                                         <td className="py-4 px-4">
                                             <span className={cn(
                                                 "text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded",
-                                                member.role === 'ADMIN' ? "bg-purple-100 text-purple-700" : "bg-gray-100 text-gray-600"
+                                                member.role === 'ADMIN' ? "bg-purple-500/10 text-purple-600" : "bg-muted text-muted-foreground"
                                             )}>
                                                 {member.role}
                                             </span>
                                         </td>
-                                        <td className="py-4 px-4 text-sm text-gray-500 whitespace-nowrap">
+                                        <td className="py-4 px-4 text-sm text-muted-foreground whitespace-nowrap">
                                             {formatDate(member.createdAt)}
                                         </td>
                                         <td className="py-4 px-4 text-center">
                                             <span className={cn(
                                                 'px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider',
-                                                member.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                                                member.isActive ? 'bg-green-500/10 text-green-600' : 'bg-destructive/10 text-destructive'
                                             )}>
                                                 {member.isActive ? 'Active' : 'Inactive'}
                                             </span>
@@ -97,7 +97,7 @@ export async function MembersContent({
                                 ))}
                                 {members.length === 0 && (
                                     <tr>
-                                        <td colSpan={5} className="py-12 text-center text-gray-500 italic">
+                                        <td colSpan={5} className="py-12 text-center text-muted-foreground italic">
                                             No members found.
                                         </td>
                                     </tr>
@@ -108,7 +108,7 @@ export async function MembersContent({
                 </CardContent>
             </Card>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-2">
+            <div className="bg-card rounded-xl shadow-sm border border-border p-2 transition-colors duration-300">
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}

@@ -40,8 +40,8 @@ export default async function WalletManagement({ searchParams }: WalletManagemen
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Wallet Transactions</h1>
-                    <p className="text-gray-500 mt-1">Manage deposits and track system-wide transactions.</p>
+                    <h1 className="text-3xl font-bold text-foreground">Wallet Transactions</h1>
+                    <p className="text-muted-foreground mt-1">Manage deposits and track system-wide transactions.</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     <MonthPicker defaultMonth={selectedMonth} defaultYear={selectedYear} />

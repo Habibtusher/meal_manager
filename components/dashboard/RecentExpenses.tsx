@@ -31,21 +31,21 @@ export async function RecentExpenses({ organizationId, viewAllLink, month, year 
             <CardContent>
                 <div className="space-y-4">
                     {latestExpenses.map((expense) => (
-                        <div key={expense.id} className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-lg hover:border-blue-100 transition-colors">
+                        <div key={expense.id} className="flex items-center justify-between p-3 bg-background border border-border rounded-lg hover:border-primary/50 transition-colors">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
+                                <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center text-muted-foreground">
                                     <ShoppingCart className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold text-gray-900">{expense.description}</p>
-                                    <p className="text-[10px] text-gray-400">{formatDate(expense.date)}</p>
+                                    <p className="text-sm font-bold text-foreground">{expense.description}</p>
+                                    <p className="text-[10px] text-muted-foreground">{formatDate(expense.date)}</p>
                                 </div>
                             </div>
-                            <p className="text-sm font-bold text-gray-900">{formatCurrency(expense.amount)}</p>
+                            <p className="text-sm font-bold text-foreground">{formatCurrency(expense.amount)}</p>
                         </div>
                     ))}
                     {latestExpenses.length === 0 && (
-                        <p className="text-sm text-gray-500 text-center py-4">No recent expenses.</p>
+                        <p className="text-sm text-muted-foreground text-center py-4">No recent expenses.</p>
                     )}
                 </div>
             </CardContent>

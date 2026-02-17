@@ -132,10 +132,10 @@ export default function AddExpenseModal() {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overflow-y-auto">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200 my-8">
-                <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                    <h2 className="text-xl font-bold text-gray-900">Log New Cost</h2>
-                    <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600">
+            <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200 my-8 border border-border">
+                <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/30">
+                    <h2 className="text-xl font-bold text-foreground">Log New Cost</h2>
+                    <button onClick={() => setIsOpen(false)} className="text-muted-foreground hover:text-foreground">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -143,13 +143,13 @@ export default function AddExpenseModal() {
                 <form onSubmit={handleSubmit} className="flex flex-col max-h-[85vh]">
                     <div className="p-6 space-y-4 overflow-y-auto min-h-0 flex-1">
                         {/* Mode Selection */}
-                        <div className="flex p-1 bg-gray-100 rounded-lg">
+                        <div className="flex p-1 bg-muted rounded-lg">
                             <button
                                 type="button"
                                 onClick={() => setMode('MEAL')}
                                 className={cn(
                                     "flex-1 py-1.5 text-sm font-medium rounded-md transition-all",
-                                    mode === 'MEAL' ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700"
+                                    mode === 'MEAL' ? "bg-card shadow text-foreground" : "text-muted-foreground hover:text-foreground"
                                 )}
                             >
                                 Meal Expense
@@ -159,7 +159,7 @@ export default function AddExpenseModal() {
                                 onClick={() => { setMode('SHARED'); setFormData({ ...formData, category: 'Utility' }); }}
                                 className={cn(
                                     "flex-1 py-1.5 text-sm font-medium rounded-md transition-all",
-                                    mode === 'SHARED' ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700"
+                                    mode === 'SHARED' ? "bg-card shadow text-foreground" : "text-muted-foreground hover:text-foreground"
                                 )}
                             >
                                 Shared / Room Cost
@@ -168,7 +168,7 @@ export default function AddExpenseModal() {
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-semibold text-black block">Date</label>
+                                <label className="text-sm font-semibold text-foreground block">Date</label>
                                 <Input
                                     required
                                     type="date"
@@ -177,11 +177,11 @@ export default function AddExpenseModal() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-semibold text-black block">Category</label>
+                                <label className="text-sm font-semibold text-foreground block">Category</label>
                                 <select
                                     value={formData.category}
                                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                    className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-gray-50 text-sm text-black"
+                                    className="w-full h-11 px-4 rounded-xl border border-border bg-muted text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
                                 >
                                     {mode === 'MEAL' ? (
                                         <>
@@ -201,7 +201,7 @@ export default function AddExpenseModal() {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold text-black block">Description</label>
+                            <label className="text-sm font-semibold text-foreground block">Description</label>
                             <Input
                                 required
                                 placeholder={mode === 'MEAL' ? "e.g. Chicken, Rice" : "e.g. WiFi Bill, Monthly Rent"}
@@ -211,16 +211,16 @@ export default function AddExpenseModal() {
                         </div>
 
                         {mode === 'SHARED' && (
-                            <div className="space-y-4 pt-2 border-t border-gray-100">
+                            <div className="space-y-4 pt-2 border-t border-border">
                                 <div className="flex items-center justify-between">
-                                    <label className="text-sm font-semibold text-black">Distribution</label>
-                                    <div className="flex bg-gray-100 rounded-lg p-0.5">
+                                    <label className="text-sm font-semibold text-foreground">Distribution</label>
+                                    <div className="flex bg-muted rounded-lg p-0.5">
                                         <button
                                             type="button"
                                             onClick={() => setDistribution('EQUAL')}
                                             className={cn(
                                                 "px-3 py-1 text-xs font-medium rounded-md transition-all",
-                                                distribution === 'EQUAL' ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700"
+                                                distribution === 'EQUAL' ? "bg-card shadow text-foreground" : "text-muted-foreground hover:text-foreground"
                                             )}
                                         >
                                             Equal Split
@@ -230,7 +230,7 @@ export default function AddExpenseModal() {
                                             onClick={() => setDistribution('CUSTOM')}
                                             className={cn(
                                                 "px-3 py-1 text-xs font-medium rounded-md transition-all",
-                                                distribution === 'CUSTOM' ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700"
+                                                distribution === 'CUSTOM' ? "bg-card shadow text-foreground" : "text-muted-foreground hover:text-foreground"
                                             )}
                                         >
                                             Custom / Room
@@ -240,14 +240,14 @@ export default function AddExpenseModal() {
 
                                 {distribution === 'EQUAL' && (
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-black">Total Amount (৳)</label>
+                                        <label className="text-sm font-semibold text-foreground">Total Amount (৳)</label>
                                         <Input
                                             required
                                             type="number"
                                             value={formData.amount}
                                             onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
                                         />
-                                        <p className="text-xs text-gray-800">
+                                        <p className="text-xs text-muted-foreground">
                                             Will be split among {selectedMembers.length} members ({selectedMembers.length > 0 ? (Number(formData.amount) / selectedMembers.length).toFixed(2) : 0} each).
                                         </p>
                                     </div>
@@ -255,52 +255,54 @@ export default function AddExpenseModal() {
 
                                 {distribution === 'CUSTOM' && (
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-black">Total Amount (Calculated ৳)</label>
-                                        <div className="h-11 flex items-center px-4 rounded-xl border border-gray-200 bg-gray-50 text-base font-bold text-blue-700">
+                                        <label className="text-sm font-semibold text-foreground">Total Amount (Calculated ৳)</label>
+                                        <div className="h-11 flex items-center px-4 rounded-xl border border-border bg-muted text-base font-bold text-primary">
                                             ৳ {Object.entries(customAllocations)
                                                 .filter(([id]) => selectedMembers.includes(id))
                                                 .reduce((sum, [, val]) => sum + (Number(val) || 0), 0)}
                                         </div>
-                                        <p className="text-xs text-gray-500 italic">
+                                        <p className="text-xs text-muted-foreground italic">
                                             Automatically calculated based on individual entries below.
                                         </p>
                                     </div>
                                 )}
 
-                                <div className="space-y-2 max-h-48 overflow-y-auto border rounded-xl p-2">
-                                    <div className="flex items-center justify-between pb-2 border-b mb-2">
-                                        <span className="text-xs font-bold text-gray-800 uppercase">Select Members</span>
-                                        <button type="button" onClick={() => setSelectedMembers(members.map(m => m.id))} className="text-xs text-blue-600 hover:underline">Select All</button>
+                                <div className="space-y-2 max-h-48 overflow-y-auto border border-border rounded-xl p-2 bg-muted/30">
+                                    <div className="flex items-center justify-between pb-2 border-b border-border mb-2 sticky top-0 bg-muted/95 backdrop-blur-sm px-1">
+                                        <span className="text-xs font-bold text-muted-foreground uppercase">Select Members</span>
+                                        <button type="button" onClick={() => setSelectedMembers(members.map(m => m.id))} className="text-xs text-primary hover:underline font-medium">Select All</button>
                                     </div>
-                                    {members.map(member => (
-                                        <div key={member.id} className="flex items-center justify-between py-1">
-                                            <div className="flex items-center gap-2">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedMembers.includes(member.id)}
-                                                    onChange={() => toggleMember(member.id)}
-                                                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                                />
-                                                <span className="text-sm text-black font-medium">{member.name}</span>
+                                    <div className="px-1">
+                                        {members.map(member => (
+                                            <div key={member.id} className="flex items-center justify-between py-1.5 last:border-0 border-b border-border/50">
+                                                <div className="flex items-center gap-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedMembers.includes(member.id)}
+                                                        onChange={() => toggleMember(member.id)}
+                                                        className="rounded border-border bg-card text-primary focus:ring-primary/20"
+                                                    />
+                                                    <span className="text-sm text-foreground font-medium">{member.name}</span>
+                                                </div>
+                                                {distribution === 'CUSTOM' && selectedMembers.includes(member.id) && (
+                                                    <input
+                                                        type="number"
+                                                        className="w-24 px-2 py-1 text-right text-sm border border-border rounded bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                                        placeholder="0"
+                                                        value={customAllocations[member.id] || ''}
+                                                        onChange={(e) => setCustomAllocations({ ...customAllocations, [member.id]: Number(e.target.value) })}
+                                                    />
+                                                )}
                                             </div>
-                                            {distribution === 'CUSTOM' && selectedMembers.includes(member.id) && (
-                                                <input
-                                                    type="number"
-                                                    className="w-24 px-2 py-1 text-right text-sm border rounded bg-gray-50 text-black"
-                                                    placeholder="0"
-                                                    value={customAllocations[member.id] || ''}
-                                                    onChange={(e) => setCustomAllocations({ ...customAllocations, [member.id]: Number(e.target.value) })}
-                                                />
-                                            )}
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         )}
 
                         {mode === 'MEAL' && (
                             <div className="space-y-2">
-                                <label className="text-sm font-semibold text-black block">Amount (৳)</label>
+                                <label className="text-sm font-semibold text-foreground block">Amount (৳)</label>
                                 <Input
                                     required
                                     type="number"
@@ -312,9 +314,9 @@ export default function AddExpenseModal() {
 
                     </div>
 
-                    <div className="p-6 flex gap-3 border-t border-gray-100 bg-gray-50/50">
-                        <Button type="button" variant="ghost" onClick={() => setIsOpen(false)} className="flex-1">Cancel</Button>
-                        <Button type="submit" disabled={isPending} className="flex-1 bg-gray-900 text-white hover:bg-gray-800">
+                    <div className="p-6 flex gap-3 border-t border-border bg-muted/30">
+                        <Button type="button" variant="ghost" onClick={() => setIsOpen(false)} className="flex-1 border border-border">Cancel</Button>
+                        <Button type="submit" disabled={isPending} className="flex-1">
                             {isPending ? 'Saving...' : 'Save'}
                         </Button>
                     </div>

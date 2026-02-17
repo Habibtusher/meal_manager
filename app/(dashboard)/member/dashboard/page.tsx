@@ -33,8 +33,8 @@ export default async function MemberDashboard({
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">My Dashboard</h1>
-                    <p className="text-gray-500 mt-1">Hello, {session?.user.name}! Track your meals and balance here.</p>
+                    <h1 className="text-3xl font-bold text-foreground">My Dashboard</h1>
+                    <p className="text-muted-foreground mt-1">Hello, {session?.user.name}! Track your meals and balance here.</p>
                 </div>
                 <MonthPicker defaultMonth={selectedMonth} defaultYear={selectedYear} />
             </div>

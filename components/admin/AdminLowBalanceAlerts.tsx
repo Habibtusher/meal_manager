@@ -27,10 +27,10 @@ export async function AdminLowBalanceAlerts({ organizationId, month, year }: Adm
                 <div className="space-y-4">
                     {lowBalanceUsers.length > 0 ? (
                         lowBalanceUsers.map((user) => (
-                            <div key={user.id} className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                            <div key={user.id} className="flex items-center justify-between p-3 bg-red-500/10 rounded-lg border border-red-500/20">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                                    <p className="text-xs text-gray-500">{user.email}</p>
+                                    <p className="text-sm font-medium text-foreground">{user.name}</p>
+                                    <p className="text-xs text-muted-foreground">{user.email}</p>
                                 </div>
                                 <div className="text-right">
                                     <p className="text-sm font-bold text-red-600">{formatCurrency(user.walletBalance)}</p>
@@ -39,7 +39,7 @@ export async function AdminLowBalanceAlerts({ organizationId, month, year }: Adm
                             </div>
                         ))
                     ) : (
-                        <p className="text-sm text-gray-500 text-center py-4">No users with low balance.</p>
+                        <p className="text-sm text-muted-foreground text-center py-4">No users with low balance.</p>
                     )}
                 </div>
             </CardContent>

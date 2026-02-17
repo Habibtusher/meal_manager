@@ -47,7 +47,7 @@ export default function DebouncedSearch({
 
     return (
         <div className={`relative ${className}`}>
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                 {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
@@ -58,7 +58,7 @@ export default function DebouncedSearch({
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 placeholder={placeholder}
-                className="pl-10 h-11 bg-gray-50/50 border-gray-200 focus:bg-white transition-all rounded-xl"
+                className="pl-10 h-11 bg-background border-border focus:bg-card transition-all rounded-xl"
             />
         </div>
     );

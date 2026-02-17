@@ -34,8 +34,8 @@ export default async function ExpenseManagement({ searchParams }: ExpenseManagem
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Expense Tracking</h1>
-                    <p className="text-gray-500 mt-1">Track daily mess costs and shared expenses.</p>
+                    <h1 className="text-3xl font-bold text-foreground">Expense Tracking</h1>
+                    <p className="text-muted-foreground mt-1">Track daily mess costs and shared expenses.</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                     <MonthPicker defaultMonth={selectedMonth} defaultYear={selectedYear} />
@@ -44,14 +44,14 @@ export default async function ExpenseManagement({ searchParams }: ExpenseManagem
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-2 border-b border-gray-200">
+            <div className="flex gap-2 border-b border-border">
                 <Link
                     href={`?month=${selectedMonth}&year=${selectedYear}&tab=meal`}
                     className={cn(
                         "px-4 py-2 text-sm font-medium border-b-2 transition-colors",
                         activeTab === 'meal'
-                            ? "border-blue-600 text-blue-600"
-                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            ? "border-primary text-primary"
+                            : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                     )}
                 >
                     Meal Expenses
@@ -61,8 +61,8 @@ export default async function ExpenseManagement({ searchParams }: ExpenseManagem
                     className={cn(
                         "px-4 py-2 text-sm font-medium border-b-2 transition-colors",
                         activeTab === 'shared'
-                            ? "border-purple-600 text-purple-600"
-                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            ? "border-primary text-primary"
+                            : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                     )}
                 >
                     Shared Costs

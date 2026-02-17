@@ -77,7 +77,7 @@ export default function AttendanceBoard({ members, initialCounts, date }: Attend
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-wrap items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md py-4 z-10 border-b border-gray-100 gap-4">
+            <div className="flex flex-wrap items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md py-4 z-10 border-b border-border gap-4 transition-colors">
                 <div className="flex items-center gap-2 md:gap-6 overflow-x-auto">
                     {['BREAKFAST', 'LUNCH', 'DINNER'].map((type) => {
                         const total = Object.entries(counts).reduce((acc, [key, count]) => {
@@ -85,9 +85,9 @@ export default function AttendanceBoard({ members, initialCounts, date }: Attend
                         }, 0);
 
                         return (
-                            <div key={type} className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-100">
-                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{type}</span>
-                                <span className="text-lg font-black text-gray-900">{total}</span>
+                            <div key={type} className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-lg border border-border">
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{type}</span>
+                                <span className="text-lg font-black text-foreground">{total}</span>
                             </div>
                         );
                     })}
@@ -95,7 +95,8 @@ export default function AttendanceBoard({ members, initialCounts, date }: Attend
                 <Button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="bg-gray-900 hover:bg-gray-800 text-white min-w-[140px] shadow-lg shadow-gray-200"
+                    variant="primary"
+                    className="min-w-[140px] shadow-lg shadow-primary/20"
                 >
                     {isSaving ? 'Saving...' : (
                         <span className="flex items-center gap-2">
@@ -113,18 +114,18 @@ export default function AttendanceBoard({ members, initialCounts, date }: Attend
                     const total = b + l + d;
 
                     return (
-                        <div key={member.id} className="bg-white border border-gray-100 rounded-xl p-4 hover:shadow-md transition-all group">
+                        <div key={member.id} className="bg-card border border-border rounded-xl p-4 hover:shadow-md transition-all group">
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
+                                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                                         <UserIcon className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-gray-900">{member.name}</p>
-                                        <p className="text-xs text-gray-500">{member.email}</p>
+                                        <p className="font-bold text-foreground">{member.name}</p>
+                                        <p className="text-xs text-muted-foreground">{member.email}</p>
                                     </div>
                                 </div>
-                                <div className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase transition-all ${total > 0 ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
+                                <div className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase transition-all ${total > 0 ? 'bg-green-500/10 text-green-600' : 'bg-muted text-muted-foreground'}`}>
                                     {total.toFixed(1)} Meals
                                 </div>
                             </div>
@@ -134,21 +135,21 @@ export default function AttendanceBoard({ members, initialCounts, date }: Attend
                                     const key = `${member.id}_${type}`;
                                     const count = counts[key] || 0;
                                     return (
-                                        <div key={type} className="flex flex-col items-center gap-2 p-2 rounded-lg bg-gray-50/50 border border-gray-100/50">
-                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{type[0]}</span>
+                                        <div key={type} className="flex flex-col items-center gap-2 p-2 rounded-lg bg-muted/30 border border-border/50">
+                                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{type[0]}</span>
                                             <div className="flex items-center gap-1">
                                                 <button
                                                     onClick={() => updateCount(member.id, type as MealType, -0.5)}
-                                                    className="w-6 h-6 rounded bg-white border border-gray-200 text-gray-400 hover:border-blue-200 hover:text-blue-600 flex items-center justify-center transition-all disabled:opacity-50"
+                                                    className="w-6 h-6 rounded bg-background border border-border text-muted-foreground hover:border-primary/50 hover:text-primary flex items-center justify-center transition-all disabled:opacity-50"
                                                 >
                                                     <Minus className="w-3 h-3" />
                                                 </button>
-                                                <span className={`w-6 text-center text-sm font-bold ${count > 0 ? 'text-blue-600' : 'text-gray-300'}`}>
+                                                <span className={`w-6 text-center text-sm font-bold ${count > 0 ? 'text-primary' : 'text-muted-foreground/30'}`}>
                                                     {count}
                                                 </span>
                                                 <button
                                                     onClick={() => updateCount(member.id, type as MealType, 0.5)}
-                                                    className="w-6 h-6 rounded bg-white border border-gray-200 text-gray-400 hover:border-blue-200 hover:text-blue-600 flex items-center justify-center transition-all"
+                                                    className="w-6 h-6 rounded bg-background border border-border text-muted-foreground hover:border-primary/50 hover:text-primary flex items-center justify-center transition-all"
                                                 >
                                                     <Plus className="w-3 h-3" />
                                                 </button>

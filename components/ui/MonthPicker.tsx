@@ -48,15 +48,15 @@ export function MonthPicker({ defaultMonth, defaultYear }: MonthPickerProps) {
                 <select
                     value={String(defaultMonth || new Date().getMonth() + 1)}
                     onChange={(e) => handleMonthChange(e.target.value)}
-                    className="appearance-none w-[120px] bg-white border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-blue-500 text-sm"
+                    className="appearance-none w-[120px] bg-background border border-border text-foreground py-2 px-3 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-card focus:border-primary text-sm transition-colors"
                 >
                     {months.map((m) => (
-                        <option key={m.value} value={m.value}>
+                        <option key={m.value} value={m.value} className="bg-card text-foreground">
                             {m.label}
                         </option>
                     ))}
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-muted-foreground">
                     <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
                 </div>
             </div>
@@ -65,15 +65,15 @@ export function MonthPicker({ defaultMonth, defaultYear }: MonthPickerProps) {
                 <select
                     value={String(defaultYear || currentYear)}
                     onChange={(e) => handleYearChange(e.target.value)}
-                    className="appearance-none w-[100px] bg-white border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-blue-500 text-sm"
+                    className="appearance-none w-[100px] bg-background border border-border text-foreground py-2 px-3 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-card focus:border-primary text-sm transition-colors"
                 >
                     {years.map((y) => (
-                        <option key={y} value={String(y)}>
+                        <option key={y} value={String(y)} className="bg-card text-foreground">
                             {y}
                         </option>
                     ))}
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-muted-foreground">
                     <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
                 </div>
             </div>
