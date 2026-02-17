@@ -192,35 +192,75 @@ export async function canAffordMeal(
 }
 
 /**
- * Get list of users with low balance (below threshold)
+ * Get list of users with low balance (below threshold) for a specific month
  */
 export async function getLowBalanceUsers(
   organizationId: string,
-  threshold: number = 100
+  threshold: number = 100,
+  month?: number,
+  year?: number
 ): Promise<Array<{ id: string; name: string; email: string; walletBalance: number }>> {
+  // 1. Get all active users in the organization
   const users = await prisma.user.findMany({
     where: {
       organizationId,
       isActive: true,
-      walletBalance: {
-        lt: threshold,
-      },
+      role: { in: ['MEMBER', 'ADMIN'] }
     },
     select: {
       id: true,
       name: true,
       email: true,
-      walletBalance: true,
-    },
-    orderBy: {
-      walletBalance: 'desc',
     },
   });
 
-  return users.map((user) => ({
-    ...user,
-    walletBalance: Number(user.walletBalance),
-  }));
+  // 2. Prepare transaction filters
+  let txWhere: any = { 
+    organizationId,
+  };
+
+  if (month && year) {
+    const startDate = new Date(Date.UTC(year, month - 1, 1));
+    const endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
+    txWhere.createdAt = {
+      gte: startDate,
+      lte: endDate
+    };
+  }
+
+  // 3. Aggregate transactions by user and type in ONE query
+  const txStats = await prisma.walletTransaction.groupBy({
+    by: ['userId', 'type'],
+    where: txWhere,
+    _sum: { amount: true },
+  });
+
+  // 4. Map stats to a user-centric map
+  const userBalanceMap: Record<string, { credits: number, debits: number }> = {};
+  
+  txStats.forEach(stat => {
+    if (!userBalanceMap[stat.userId]) {
+      userBalanceMap[stat.userId] = { credits: 0, debits: 0 };
+    }
+    const amount = Number(stat._sum.amount || 0);
+    if (stat.type === TransactionType.CREDIT) {
+      userBalanceMap[stat.userId].credits += amount;
+    } else {
+      userBalanceMap[stat.userId].debits += amount;
+    }
+  });
+
+  // 5. Calculate net balance for each user and filter
+  const lowBalanceUsers = users.map(user => {
+    const balanceStats = userBalanceMap[user.id] || { credits: 0, debits: 0 };
+    const monthlyBalance = balanceStats.credits - balanceStats.debits;
+    return {
+      ...user,
+      walletBalance: monthlyBalance,
+    };
+  }).filter(user => user.walletBalance < threshold);
+
+  return lowBalanceUsers.sort((a, b) => a.walletBalance - b.walletBalance);
 }
 
 /**

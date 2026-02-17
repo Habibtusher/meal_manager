@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import {
@@ -12,6 +13,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/Card';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -26,6 +28,8 @@ export default function RegisterPage() {
         confirmPassword: '',
     });
 
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isLoading, setIsLoading] = useState(false);
     const [generalError, setGeneralError] = useState('');
@@ -98,13 +102,17 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 px-4 py-12">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground transition-colors duration-300 px-4 py-12 relative">
+            <div className="absolute top-4 right-4 animate-in fade-in slide-in-from-top-2 duration-700">
+                <ThemeToggle />
+            </div>
+
             <div className="w-full max-w-2xl">
                 <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
                         Meal Manager
                     </h1>
-                    <p className="text-gray-600 mt-2">Create your organization account</p>
+                    <p className="text-muted-foreground mt-2">Create your organization account</p>
                 </div>
 
                 <Card>
@@ -117,14 +125,14 @@ export default function RegisterPage() {
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {generalError && (
-                                <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-sm">
+                                <div className="bg-destructive/10 border border-destructive/20 text-destructive rounded-lg p-3 text-sm">
                                     {generalError}
                                 </div>
                             )}
 
                             {/* Organization Details */}
                             <div className="space-y-4">
-                                <h3 className="text-lg font-semibold text-gray-900">
+                                <h3 className="text-lg font-semibold text-foreground">
                                     Organization Details
                                 </h3>
 
@@ -140,7 +148,7 @@ export default function RegisterPage() {
                                 />
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                    <label className="block text-sm font-medium text-foreground mb-1.5">
                                         Organization Type
                                     </label>
                                     <select
@@ -151,16 +159,16 @@ export default function RegisterPage() {
                                                 organizationType: e.target.value as 'mess' | 'hostel' | 'restaurant',
                                             })
                                         }
-                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2.5 border border-input bg-background rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all"
                                     >
-                                        <option value="mess">Mess</option>
-                                        <option value="hostel">Hostel</option>
-                                        <option value="restaurant">Restaurant</option>
+                                        <option value="mess" className="bg-card">Mess</option>
+                                        <option value="hostel" className="bg-card">Hostel</option>
+                                        <option value="restaurant" className="bg-card">Restaurant</option>
                                     </select>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                    <label className="block text-sm font-medium text-foreground mb-1.5">
                                         Description (Optional)
                                     </label>
                                     <textarea
@@ -172,15 +180,15 @@ export default function RegisterPage() {
                                             })
                                         }
                                         rows={3}
-                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2.5 border border-input bg-background rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all"
                                         placeholder="Brief description of your organization"
                                     />
                                 </div>
                             </div>
 
                             {/* Admin Details */}
-                            <div className="space-y-4 pt-4 border-t">
-                                <h3 className="text-lg font-semibold text-gray-900">
+                            <div className="space-y-4 pt-4 border-t border-border">
+                                <h3 className="text-lg font-semibold text-foreground">
                                     Admin Account
                                 </h3>
 
@@ -209,7 +217,7 @@ export default function RegisterPage() {
 
                                 <Input
                                     label="Password"
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     value={formData.password}
                                     onChange={(e) =>
                                         setFormData({ ...formData, password: e.target.value })
@@ -218,11 +226,24 @@ export default function RegisterPage() {
                                     placeholder="••••••••"
                                     helperText="Minimum 6 characters"
                                     required
+                                    rightElement={
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="text-gray-400 hover:text-gray-600 focus:outline-none"
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff className="w-5 h-5" />
+                                            ) : (
+                                                <Eye className="w-5 h-5" />
+                                            )}
+                                        </button>
+                                    }
                                 />
 
                                 <Input
                                     label="Confirm Password"
-                                    type="password"
+                                    type={showConfirmPassword ? 'text' : 'password'}
                                     value={formData.confirmPassword}
                                     onChange={(e) =>
                                         setFormData({ ...formData, confirmPassword: e.target.value })
@@ -230,6 +251,19 @@ export default function RegisterPage() {
                                     error={errors.confirmPassword}
                                     placeholder="••••••••"
                                     required
+                                    rightElement={
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            className="text-gray-400 hover:text-gray-600 focus:outline-none"
+                                        >
+                                            {showConfirmPassword ? (
+                                                <EyeOff className="w-5 h-5" />
+                                            ) : (
+                                                <Eye className="w-5 h-5" />
+                                            )}
+                                        </button>
+                                    }
                                 />
                             </div>
 
@@ -237,11 +271,11 @@ export default function RegisterPage() {
                                 Create Organization & Account
                             </Button>
 
-                            <p className="text-center text-sm text-gray-600">
+                            <p className="text-center text-sm text-muted-foreground">
                                 Already have an account?{' '}
                                 <Link
                                     href="/login"
-                                    className="text-blue-600 hover:text-blue-700 font-medium"
+                                    className="text-primary hover:text-primary/80 font-medium"
                                 >
                                     Sign in
                                 </Link>

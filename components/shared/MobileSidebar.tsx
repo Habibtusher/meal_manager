@@ -22,6 +22,7 @@ import {
 import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
+import { ThemeToggle } from '../ui/ThemeToggle';
 
 interface MobileSidebarProps {
     role: string;
@@ -60,14 +61,15 @@ export function MobileSidebar({ role }: MobileSidebarProps) {
     const links = (role as any) === 'SUPER_ADMIN' ? superAdminLinks : (role === 'ADMIN' ? adminLinks : memberLinks);
 
     return (
-        <div className="md:hidden">
+        <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
             <Button
                 variant="ghost"
-                size="sm"
+                size="icon"
                 className="p-2"
                 onClick={() => setIsOpen(true)}
             >
-                <Menu className="w-6 h-6 text-gray-700" />
+                <Menu className="w-6 h-6 text-foreground" />
             </Button>
 
             {/* Overlay */}
@@ -81,11 +83,11 @@ export function MobileSidebar({ role }: MobileSidebarProps) {
             {/* Sidebar Drawer */}
             <div
                 className={cn(
-                    "fixed inset-y-0 left-0 w-64 bg-white z-50 shadow-xl transform transition-transform duration-300 ease-in-out border-r border-gray-200 flex flex-col",
+                    "fixed inset-y-0 left-0 w-64 bg-card z-50 shadow-xl transform transition-transform duration-300 ease-in-out border-r border-border flex flex-col transition-colors",
                     isOpen ? "translate-x-0" : "-translate-x-full"
                 )}
             >
-                <div className="p-4 flex items-center justify-between border-b border-gray-100">
+                <div className="p-4 flex items-center justify-between border-b border-border">
                     <Link href="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
                         <div className="relative w-8 h-8">
                             <Image
@@ -96,7 +98,7 @@ export function MobileSidebar({ role }: MobileSidebarProps) {
                                 className="rounded-lg"
                             />
                         </div>
-                        <span className="text-xl font-bold text-gray-900">MealManager</span>
+                        <span className="text-xl font-bold text-foreground">MealManager</span>
                     </Link>
                     <button
                         onClick={() => setIsOpen(false)}
@@ -117,8 +119,8 @@ export function MobileSidebar({ role }: MobileSidebarProps) {
                                 className={cn(
                                     'flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                                     isActive
-                                        ? 'bg-blue-50 text-blue-700'
-                                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        ? 'bg-primary/10 text-primary'
+                                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                                 )}
                             >
                                 <div className="flex items-center gap-3">
@@ -131,17 +133,17 @@ export function MobileSidebar({ role }: MobileSidebarProps) {
                     })}
                 </nav>
 
-                <div className="p-4 border-t border-gray-200 mb-safe">
+                <div className="p-4 border-t border-border mb-safe">
                     <button
                         onClick={() => signOut({ callbackUrl: '/login' })}
                         className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     >
-                        <LogOut className="w-5 h-5" />
+                        <LogOut className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
                         {t('signOut')}
                     </button>
-                    <div className="mt-4 pt-4 border-t border-gray-100 text-center">
-                        <p className="text-xs text-gray-400">
-                            {t('developedBy')} <span className="font-semibold text-gray-500">Habibur Rahman</span>
+                    <div className="mt-4 pt-4 border-t border-border text-center">
+                        <p className="text-xs text-muted-foreground">
+                            {t('developedBy')} <span className="font-semibold text-foreground">Habibur Rahman</span>
                         </p>
                         <a
                             href="https://www.facebook.com/habibur00.rahman/"

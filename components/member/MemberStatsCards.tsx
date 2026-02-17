@@ -23,29 +23,29 @@ export async function MemberStatsCards({ userId, organizationId, month, year }: 
             label: 'Wallet Balance',
             value: formatCurrency(userBalance),
             icon: Wallet,
-            color: userBalance < 200 ? 'text-red-600' : 'text-green-600',
-            bg: userBalance < 200 ? 'bg-red-50' : 'bg-green-50',
+            color: userBalance < 200 ? 'text-red-500' : 'text-green-500',
+            bg: userBalance < 200 ? 'bg-red-500/10' : 'bg-green-500/10',
         },
         {
             label: 'This Month Cost',
             value: formatCurrency(monthlyCost),
             icon: CreditCard,
-            color: 'text-blue-600',
-            bg: 'bg-blue-50',
+            color: 'text-blue-500',
+            bg: 'bg-blue-500/10',
         },
         {
             label: 'Total Meals',
             value: userTotalMeals.toFixed(1),
             icon: Utensils,
-            color: 'text-orange-600',
-            bg: 'bg-orange-50',
+            color: 'text-orange-500',
+            bg: 'bg-orange-500/10',
         },
         {
             label: 'Current Meal Rate',
             value: formatCurrency(mealRate),
             icon: History,
-            color: 'text-purple-600',
-            bg: 'bg-purple-50',
+            color: 'text-purple-500',
+            bg: 'bg-purple-500/10',
         },
     ];
 
@@ -59,8 +59,8 @@ export async function MemberStatsCards({ userId, organizationId, month, year }: 
                                 <stat.icon className={cn('w-8 h-8', stat.color)} />
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-gray-500">{stat.label}</p>
-                                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                                <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
+                                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                             </div>
                         </div>
                     </CardContent>

@@ -33,8 +33,8 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
-                    <p className="text-gray-500 mt-1">Welcome back, Admin! Here is what is happening today.</p>
+                    <h1 className="text-3xl font-bold text-foreground">Dashboard Overview</h1>
+                    <p className="text-muted-foreground mt-1">Welcome back, Admin! Here is what is happening today.</p>
                 </div>
                 <MonthPicker defaultMonth={selectedMonth} defaultYear={selectedYear} />
             </div>
@@ -57,7 +57,12 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
                 </Suspense>
 
                 <Suspense fallback={<ListSkeleton />}>
-                    <RecentExpenses organizationId={organizationId} viewAllLink="/admin/expenses" />
+                    <RecentExpenses 
+                        organizationId={organizationId} 
+                        viewAllLink="/admin/expenses" 
+                        month={selectedMonth}
+                        year={selectedYear}
+                    />
                 </Suspense>
             </div>
         </div>

@@ -62,13 +62,13 @@ export async function HistoryContent({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                     <CardContent className="pt-6">
-                        <p className="text-xs text-gray-500 font-bold uppercase tracking-widest">Total Meals</p>
+                        <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Total Meals</p>
                         <p className="text-3xl font-extrabold text-blue-600 mt-1">{totalMonthlyConsumed.toFixed(1)}</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="pt-6">
-                        <p className="text-xs text-gray-500 font-bold uppercase tracking-widest">Total Monthly Cost</p>
+                        <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Total Monthly Cost</p>
                         <p className="text-3xl font-extrabold text-red-600 mt-1">{formatCurrency(totalMonthlyCost)}</p>
                     </CardContent>
                 </Card>
@@ -83,7 +83,7 @@ export async function HistoryContent({
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-gray-100 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                <tr className="border-b border-border text-xs font-bold text-muted-foreground uppercase tracking-wider">
                                     <th className="py-4 font-medium min-w-[120px]">Date</th>
                                     <th className="py-4 font-medium text-center">Breakfast</th>
                                     <th className="py-4 font-medium text-center">Lunch</th>
@@ -91,15 +91,15 @@ export async function HistoryContent({
                                     <th className="py-4 font-medium text-right">Daily Total</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-50">
+                            <tbody className="divide-y divide-border/50">
                                 {historyData.map((day) => (
-                                    <tr key={day.dateString} className={cn("text-sm hover:bg-gray-50 transition-colors", day.total > 0 ? "bg-white" : "bg-gray-50/30")}>
+                                    <tr key={day.dateString} className={cn("text-sm hover:bg-muted/50 transition-colors", day.total > 0 ? "bg-card" : "bg-muted/10")}>
                                         <td className="py-3">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 font-bold text-xs">
+                                                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground font-bold text-xs">
                                                     {day.dayNumber}
                                                 </div>
-                                                <span className="text-gray-600 font-medium">{day.dayName}</span>
+                                                <span className="text-muted-foreground font-medium">{day.dayName}</span>
                                             </div>
                                         </td>
 
@@ -111,12 +111,12 @@ export async function HistoryContent({
                                                         {count > 0 ? (
                                                             <span className={cn(
                                                                 "inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold",
-                                                                count >= 1 ? "bg-blue-100 text-blue-700" : "bg-blue-50 text-blue-600"
+                                                                count >= 1 ? "bg-blue-500/10 text-blue-500" : "bg-blue-500/5 text-blue-500/80"
                                                             )}>
                                                                 {count}
                                                             </span>
                                                         ) : (
-                                                            <span className="text-gray-300">-</span>
+                                                            <span className="text-muted-foreground/30">-</span>
                                                         )}
                                                     </div>
                                                 </td>
@@ -126,15 +126,15 @@ export async function HistoryContent({
                                         <td className="py-3 text-right">
                                             {day.total > 0 ? (
                                                 <div className="inline-block">
-                                                    <span className="bg-gray-100 text-gray-900 px-3 py-1 rounded-full text-xs font-bold">
+                                                    <span className="bg-muted text-foreground px-3 py-1 rounded-full text-xs font-bold">
                                                         {day.total.toFixed(1)} Meals
                                                     </span>
-                                                    <div className="text-[10px] text-gray-400 text-right mt-1">
+                                                    <div className="text-[10px] text-muted-foreground text-right mt-1">
                                                         {formatCurrency(day.cost)}
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <span className="text-gray-300 text-sm">-</span>
+                                                <span className="text-muted-foreground/30 text-sm">-</span>
                                             )}
                                         </td>
                                     </tr>

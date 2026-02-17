@@ -33,23 +33,23 @@ export async function ReportsContent({
         <div className="space-y-6">
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="bg-white border-blue-100">
+                <Card className="bg-card border-blue-100 dark:border-blue-900/30">
                     <CardHeader className="pb-2">
-                        <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{t('totalExpenses')}</CardDescription>
+                        <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('totalExpenses')}</CardDescription>
                         <CardTitle className="text-2xl font-black text-red-600">
                             {formatCurrency(totalExpenses)}
                         </CardTitle>
                     </CardHeader>
                 </Card>
-                <Card className="bg-white border-blue-100">
+                <Card className="bg-card border-blue-100 dark:border-blue-900/30">
                     <CardHeader className="pb-2">
-                        <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{t('totalConsumption')}</CardDescription>
+                        <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('totalConsumption')}</CardDescription>
                         <CardTitle className="text-2xl font-black text-blue-600">
-                            {totalMeals} <span className="text-sm font-normal text-gray-400">{tCommon('meals')}</span>
+                            {totalMeals} <span className="text-sm font-normal text-muted-foreground">{tCommon('meals')}</span>
                         </CardTitle>
                     </CardHeader>
                 </Card>
-                <Card className="bg-blue-600 text-white shadow-xl shadow-blue-100">
+                <Card className="bg-blue-600 text-white shadow-xl shadow-blue-100 dark:shadow-blue-900/20">
                     <CardHeader className="pb-2">
                         <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-blue-100">{t('currentMealRate')}</CardDescription>
                         <CardTitle className="text-2xl font-black">
@@ -57,10 +57,10 @@ export async function ReportsContent({
                         </CardTitle>
                     </CardHeader>
                 </Card>
-                <Card className="bg-white border-blue-100">
+                <Card className="bg-card border-blue-100 dark:border-blue-900/30">
                     <CardHeader className="pb-2">
-                        <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{t('activeMembers')}</CardDescription>
-                        <CardTitle className="text-2xl font-black text-gray-900">
+                        <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('activeMembers')}</CardDescription>
+                        <CardTitle className="text-2xl font-black text-foreground">
                             {memberCount}
                         </CardTitle>
                     </CardHeader>
@@ -81,7 +81,7 @@ export async function ReportsContent({
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead className="relative z-0">
-                                <tr className="border-b border-gray-100 italic text-gray-400 text-xs">
+                                <tr className="border-b border-border italic text-muted-foreground text-xs">
                                     <th className="pb-4 font-medium uppercase tracking-widest px-4">{t('user')}</th>
                                     <th className="pb-4 font-medium text-center uppercase tracking-widest px-4">{t('meals')}</th>
                                     <th className="pb-4 font-medium text-right uppercase tracking-widest px-4">{t('mealCost')}</th>
@@ -91,15 +91,15 @@ export async function ReportsContent({
                                     <th className="pb-4 font-medium text-right uppercase tracking-widest px-4">{t('adjustedBalance')}</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-50 text-sm">
+                            <tbody className="divide-y divide-border/50 text-sm">
                                 {reportData.map((data: any) => {
                                     const adjustedBalance = data.totalDeposited - data.totalCost;
                                     return (
-                                        <tr key={data.id} className="hover:bg-blue-50/30 transition-colors relative">
-                                            <td className="py-4 px-4 font-bold text-gray-900 whitespace-nowrap">{data.name}</td>
-                                            <td className="py-4 px-4 text-center font-medium text-gray-600">{data.mealsConsumed}</td>
-                                            <td className="py-4 px-4 text-right font-medium text-gray-600 whitespace-nowrap">{formatCurrency(data.totalMealCost)}</td>
-                                            <td className="py-4 px-4 text-right font-medium text-gray-600 whitespace-nowrap">
+                                        <tr key={data.id} className="hover:bg-muted/50 transition-colors relative">
+                                            <td className="py-4 px-4 font-bold text-foreground whitespace-nowrap">{data.name}</td>
+                                            <td className="py-4 px-4 text-center font-medium text-muted-foreground">{data.mealsConsumed}</td>
+                                            <td className="py-4 px-4 text-right font-medium text-muted-foreground whitespace-nowrap">{formatCurrency(data.totalMealCost)}</td>
+                                            <td className="py-4 px-4 text-right font-medium text-muted-foreground whitespace-nowrap">
                                                 <SharedCostTooltip
                                                     totalAmount={data.totalSharedCost}
                                                     details={data.sharedCostDetails || []}
@@ -110,7 +110,7 @@ export async function ReportsContent({
                                             <td className="py-4 px-4 text-right whitespace-nowrap">
                                                 <span className={cn(
                                                     'font-black',
-                                                    adjustedBalance < 0 ? 'text-red-600 underline' : 'text-gray-900'
+                                                    adjustedBalance < 0 ? 'text-red-600 underline' : 'text-foreground'
                                                 )}>
                                                     {formatCurrency(adjustedBalance)}
                                                 </span>

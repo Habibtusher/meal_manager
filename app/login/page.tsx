@@ -4,9 +4,11 @@ import { Suspense, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 function LoginContent() {
     const router = useRouter();
@@ -17,6 +19,7 @@ function LoginContent() {
         email: '',
         password: '',
     });
+    const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isLoading, setIsLoading] = useState(false);
     const [generalError, setGeneralError] = useState('');
@@ -59,7 +62,7 @@ function LoginContent() {
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {generalError && (
-                        <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-sm">
+                        <div className="bg-destructive/10 border border-destructive/20 text-destructive rounded-lg p-3 text-sm">
                             {generalError}
                         </div>
                     )}
@@ -78,7 +81,7 @@ function LoginContent() {
 
                     <Input
                         label="Password"
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         value={formData.password}
                         onChange={(e) =>
                             setFormData({ ...formData, password: e.target.value })
@@ -86,18 +89,31 @@ function LoginContent() {
                         error={errors.password}
                         placeholder="••••••••"
                         required
+                        rightElement={
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="text-gray-400 hover:text-gray-600 focus:outline-none"
+                            >
+                                {showPassword ? (
+                                    <EyeOff className="w-5 h-5" />
+                                ) : (
+                                    <Eye className="w-5 h-5" />
+                                )}
+                            </button>
+                        }
                     />
 
                     <div className="flex items-center justify-between text-sm">
                         <Link
                             href="/register"
-                            className="text-blue-600 hover:text-blue-700 font-medium"
+                            className="text-primary hover:text-primary/80 font-medium"
                         >
                             Create an account
                         </Link>
                         <Link
                             href="/forgot-password"
-                            className="text-gray-600 hover:text-gray-700"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
                         >
                             Forgot password?
                         </Link>
@@ -114,24 +130,27 @@ function LoginContent() {
 
 export default function LoginPage() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 px-4">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground transition-colors duration-300 px-4 relative">
+            <div className="absolute top-4 right-4 animate-in fade-in slide-in-from-top-2 duration-700">
+                <ThemeToggle />
+            </div>
+
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
                         Meal Manager
                     </h1>
-                    <p className="text-gray-600 mt-2">Sign in to your account</p>
+                    <p className="text-muted-foreground mt-2">Sign in to your account</p>
                 </div>
-
                 <Suspense fallback={<div>Loading...</div>}>
                     <LoginContent />
                 </Suspense>
 
-                <p className="text-center text-sm text-gray-600 mt-6">
+                <p className="text-center text-sm text-muted-foreground mt-6">
                     Don&apos;t have an organization?{' '}
                     <Link
                         href="/register"
-                        className="text-blue-600 hover:text-blue-700 font-medium"
+                        className="text-primary hover:text-primary/80 font-medium"
                     >
                         Register your mess/hostel
                     </Link>

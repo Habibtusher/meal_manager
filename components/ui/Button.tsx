@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 export interface ButtonProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost';
-    size?: 'sm' | 'md' | 'lg';
+    size?: 'sm' | 'md' | 'lg' | 'icon';
     isLoading?: boolean;
 }
 
@@ -26,20 +26,21 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
         const variants = {
             primary:
-                'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 focus:ring-blue-500 shadow-md hover:shadow-lg',
+                'bg-primary text-primary-foreground hover:opacity-90 focus:ring-ring shadow-md hover:shadow-lg',
             secondary:
-                'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-900 hover:from-gray-200 hover:to-gray-300 focus:ring-gray-400 border border-gray-300',
+                'bg-secondary text-secondary-foreground hover:bg-secondary/80 focus:ring-ring border border-border',
             danger:
-                'bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 focus:ring-red-500 shadow-md hover:shadow-lg',
+                'bg-destructive text-destructive-foreground hover:opacity-90 focus:ring-red-500 shadow-md hover:shadow-lg',
             outline:
-                'border-2 border-blue-600 text-blue-600 hover:bg-blue-50 focus:ring-blue-500',
-            ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-400',
+                'border-2 border-primary text-primary hover:bg-accent focus:ring-ring',
+            ghost: 'text-foreground hover:bg-accent hover:text-accent-foreground focus:ring-ring',
         };
 
         const sizes = {
             sm: 'text-sm px-3 py-1.5',
             md: 'text-base px-4 py-2',
             lg: 'text-lg px-6 py-3',
+            icon: 'p-2 w-10 h-10',
         };
 
         return (

@@ -49,7 +49,7 @@ export default function ProfileForm({ user }: ProfileFormProps) {
                     label="Email Address"
                     defaultValue={user.email}
                     disabled
-                    className="bg-gray-50 text-gray-500"
+                    className="bg-muted text-muted-foreground"
                 />
             </div>
             <div className="pt-4">
