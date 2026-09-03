@@ -35,7 +35,7 @@ export const getRecentOrganizations = cache(async (take = 5) => {
 });
 
 export const getAllOrganizations = cache(async () => {
-    return prisma.organization.findMany({
+    const organizations = await prisma.organization.findMany({
         orderBy: { createdAt: 'desc' },
         include: {
             _count: {
@@ -57,5 +57,65 @@ export const getAllOrganizations = cache(async () => {
             }
         }
     });
+
+    const orgsWithMeals = await Promise.all(
+        organizations.map(async (org) => {
+            const mealAgg = await prisma.mealRecord.aggregate({
+                where: {
+                    user: { organizationId: org.id },
+                    status: { not: 'CANCELLED' }
+                },
+                _sum: {
+                    count: true
+                }
+            });
+
+            return {
+                ...org,
+                totalMeals: mealAgg._sum.count ?? 0,
+            };
+        })
+    );
+
+    return orgsWithMeals;
 });
+
+export const getAllSupportTickets = cache(async () => {
+    return prisma.supportTicket.findMany({
+        orderBy: { createdAt: 'desc' },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    role: true,
+                    organization: {
+                        select: {
+                            id: true,
+                            name: true,
+                            type: true,
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+
+export const getUserSupportTickets = cache(async (userId: string) => {
+    return prisma.supportTicket.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        include: {
+            user: {
+                select: {
+                    name: true,
+                    email: true,
+                }
+            }
+        }
+    });
+});
+
 

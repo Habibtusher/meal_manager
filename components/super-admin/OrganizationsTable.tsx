@@ -29,6 +29,7 @@ export interface OrganizationItem {
     description: string | null;
     type: string;
     createdAt: Date | string;
+    totalMeals?: number;
     _count: {
         users: number;
         mealSchedules: number;
@@ -85,7 +86,7 @@ export function OrganizationsTable({ initialOrganizations }: OrganizationsTableP
     const stats = useMemo(() => {
         const totalOrgs = organizations.length;
         const totalUsers = organizations.reduce((acc, curr) => acc + (curr._count.users || 0), 0);
-        const totalMeals = organizations.reduce((acc, curr) => acc + (curr._count.mealSchedules || 0), 0);
+        const totalMeals = organizations.reduce((acc, curr) => acc + (curr.totalMeals !== undefined ? curr.totalMeals : (curr._count.mealSchedules || 0)), 0);
         const totalExpenses = organizations.reduce((acc, curr) => acc + (curr._count.expenses || 0), 0);
         return { totalOrgs, totalUsers, totalMeals, totalExpenses };
     }, [organizations]);
@@ -223,7 +224,7 @@ export function OrganizationsTable({ initialOrganizations }: OrganizationsTableP
                         <Utensils className="w-6 h-6" />
                     </div>
                     <div>
-                        <p className="text-xs text-muted-foreground uppercase font-semibold">Meal Schedules</p>
+                        <p className="text-xs text-muted-foreground uppercase font-semibold">Total Meals</p>
                         <p className="text-2xl font-bold text-foreground mt-0.5">{stats.totalMeals}</p>
                     </div>
                 </div>
@@ -355,9 +356,13 @@ export function OrganizationsTable({ initialOrganizations }: OrganizationsTableP
 
                                             {/* Meals & Expenses */}
                                             <td className="py-4 px-6 text-center">
-                                                <div className="text-xs text-muted-foreground space-y-0.5">
-                                                    <div>{org._count.mealSchedules} meals</div>
-                                                    <div>{org._count.expenses} expenses</div>
+                                                <div className="text-xs space-y-0.5">
+                                                    <div className="font-semibold text-foreground">
+                                                        {org.totalMeals !== undefined ? org.totalMeals : org._count.mealSchedules} meals
+                                                    </div>
+                                                    <div className="text-muted-foreground">
+                                                        {org._count.expenses} expenses
+                                                    </div>
                                                 </div>
                                             </td>
 
