@@ -218,26 +218,43 @@ export async function createMealSchedule(data: {
 
 /**
  * Admin: Add an expense
+ * Optionally auto-credits a member's wallet if they paid out of pocket
  */
 export async function addExpense(data: {
   date: Date;
   category: string;
   description: string;
   amount: number;
+  paidByUserId?: string;
 }) {
   const session = await auth();
   if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
 
   try {
+    const { paidByUserId, ...expenseData } = data;
+
     await prisma.expense.create({
       data: {
-        ...data,
-        amount: data.amount,
+        ...expenseData,
+        amount: expenseData.amount,
         organizationId: session.user.organizationId,
       },
     });
+
+    // Auto-credit wallet if a member paid out of pocket
+    if (paidByUserId) {
+      await creditWallet(
+        paidByUserId,
+        data.amount,
+        `Expense deposit: ${data.description}`,
+        session.user.organizationId,
+        data.date
+      );
+    }
+
     revalidatePath('/admin/expenses');
     revalidatePath('/admin/dashboard');
+    revalidatePath('/admin/wallet');
     revalidatePath('/member/dashboard');
     return { success: true };
   } catch (error) {
