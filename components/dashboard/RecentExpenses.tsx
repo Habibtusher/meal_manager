@@ -23,7 +23,7 @@ export async function RecentExpenses({ organizationId, viewAllLink, month, year 
                     <CardDescription>Recent organization expenditures</CardDescription>
                 </div>
                 <Link href={viewAllLink}>
-                    <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 font-bold">
+                    <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 font-bold">
                         View More
                     </Button>
                 </Link>
