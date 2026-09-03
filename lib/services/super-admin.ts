@@ -33,3 +33,29 @@ export const getRecentOrganizations = cache(async (take = 5) => {
         }
     });
 });
+
+export const getAllOrganizations = cache(async () => {
+    return prisma.organization.findMany({
+        orderBy: { createdAt: 'desc' },
+        include: {
+            _count: {
+                select: {
+                    users: true,
+                    mealSchedules: true,
+                    expenses: true,
+                    walletTransactions: true,
+                }
+            },
+            users: {
+                where: { role: 'ADMIN' },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true
+                },
+                take: 1
+            }
+        }
+    });
+});
+
