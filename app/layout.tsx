@@ -106,24 +106,48 @@ export default async function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              "name": "MealManager",
-              "operatingSystem": "Web, Android, iOS",
-              "applicationCategory": "BusinessApplication, Productivity",
-              "description": "বাংলাদেশের সেরা মেস, হোস্টেল ও ব্যাচেলর মিল ম্যানেজমেন্ট এবং দৈনিক বাজার হিসাবের সফটওয়্যার।",
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "BDT",
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                "name": "MealManager",
+                "operatingSystem": "Web, Android, iOS",
+                "applicationCategory": "BusinessApplication, Productivity",
+                "description": "বাংলাদেশের সেরা মেস, হোস্টেল ও ব্যাচেলর মিল ম্যানেজমেন্ট এবং দৈনিক বাজার হিসাবের সফটওয়্যার।",
+                "offers": {
+                  "@type": "Offer",
+                  "price": "0",
+                  "priceCurrency": "BDT",
+                },
+                "aggregateRating": {
+                  "@type": "AggregateRating",
+                  "ratingValue": "4.9",
+                  "ratingCount": "128",
+                },
               },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.9",
-                "ratingCount": "128",
+              {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": [
+                  {
+                    "@type": "Question",
+                    "name": "মেস মিল ম্যানেজমেন্ট সফটওয়্যার কিভাবে কাজ করে?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "MealManager এর মাধ্যমে দৈনিক বাজারের খরচ ও সদস্যের মিল সংখ্যা ইনপুট দিলে সিস্টেম স্বয়ংক্রিয়ভাবে মিল রেট, সদস্যের মাসিক খরচ ও ব্যালেন্স হিসেব করে।",
+                    },
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "MealManager কি সম্পূর্ণ ফ্রিতে ব্যবহার করা যায়?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "হ্যাঁ, ব্যাচেলর মেস ও হোস্টেলের জন্য মৌলিক সেবাগুলো সম্পূর্ণ বিনামূল্যে ব্যবহার করা যায়।",
+                    },
+                  },
+                ],
               },
-            }),
+            ]),
           }}
         />
       </head>
