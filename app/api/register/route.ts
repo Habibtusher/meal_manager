@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
+import { sendWelcomeEmail } from '@/lib/email';
 
 const registerSchema = z.object({
   // Organization details
@@ -62,6 +63,13 @@ export async function POST(request: Request) {
 
       return { organization, user };
     });
+
+    // Send welcome email (fire-and-forget)
+    sendWelcomeEmail(
+      result.user.name,
+      result.user.email,
+      result.organization.name
+    ).catch((err) => console.error('[Email] Registration welcome email failed:', err));
 
     // Return success (excluding password)
     return NextResponse.json({

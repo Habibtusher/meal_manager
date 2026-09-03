@@ -6,6 +6,7 @@ import { MealStatus, MealType } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { creditWallet } from './calculations';
 import bcrypt from 'bcryptjs';
+import { sendMemberAddedWelcomeEmail, sendLowBalanceAlertEmail } from './email';
 
 /**
  * Mark meal participation for a user
@@ -308,8 +309,14 @@ export async function createMember(data: {
 
   try {
     // Generate a default password for the new member
-    const defaultPassword = 'Member@123'; // In a real app, this should be sent via email or changed on first login
+    const defaultPassword = 'Member@123';
     const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+
+    // Get organization name for the email
+    const organization = await prisma.organization.findUnique({
+      where: { id: session.user.organizationId },
+      select: { name: true },
+    });
 
     const user = await prisma.user.create({
       data: {
@@ -320,6 +327,14 @@ export async function createMember(data: {
         role: 'MEMBER',
       },
     });
+
+    // Send welcome email with credentials (fire-and-forget)
+    sendMemberAddedWelcomeEmail(
+      data.name,
+      data.email,
+      defaultPassword,
+      organization?.name || 'Meal Manager'
+    ).catch((err) => console.error('[Email] Welcome email failed:', err));
 
     revalidatePath('/admin/members');
     return { success: true, user: { id: user.id, email: user.email } };
@@ -654,5 +669,45 @@ export async function getActiveMembers() {
   } catch (error) {
     console.error('Failed to fetch active members:', error);
     return [];
+  }
+}
+
+/**
+ * Admin: Send low balance alert email to a member
+ */
+export async function sendLowBalanceAlert(userId: string): Promise<{ success: boolean; error?: string }> {
+  const session = await auth();
+  if (!session?.user?.organizationId || session.user.role !== 'ADMIN') {
+    throw new Error('Unauthorized');
+  }
+
+  try {
+    const [user, organization] = await Promise.all([
+      prisma.user.findFirst({
+        where: {
+          id: userId,
+          organizationId: session.user.organizationId,
+        },
+        select: { name: true, email: true, walletBalance: true },
+      }),
+      prisma.organization.findUnique({
+        where: { id: session.user.organizationId },
+        select: { name: true },
+      }),
+    ]);
+
+    if (!user) return { success: false, error: 'Member not found' };
+
+    const result = await sendLowBalanceAlertEmail(
+      user.name,
+      user.email,
+      user.walletBalance,
+      organization?.name || 'Meal Manager'
+    );
+
+    return result;
+  } catch (error) {
+    console.error('Failed to send low balance alert:', error);
+    return { success: false, error: 'Failed to send alert email' };
   }
 }

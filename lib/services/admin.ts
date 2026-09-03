@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma';
 import { getToday } from '@/lib/utils';
-import { getMealParticipationStats, getLowBalanceUsers } from '@/lib/calculations';
+import { getMealParticipationStats, getMembersWithBalance } from '@/lib/calculations';
 import { cache } from 'react';
 
 export const getAdminDashboardStats = cache(async (organizationId: string, month: number, year: number) => {
@@ -10,7 +10,7 @@ export const getAdminDashboardStats = cache(async (organizationId: string, month
     const [
         memberCount,
         participationStats,
-        lowBalanceUsers,
+        membersWithBalance,
         totalStats
     ] = await Promise.all([
         prisma.user.count({ 
@@ -21,7 +21,7 @@ export const getAdminDashboardStats = cache(async (organizationId: string, month
             } 
         }),
         getMealParticipationStats(organizationId, getToday()),
-        getLowBalanceUsers(organizationId, 200, month, year),
+        getMembersWithBalance(organizationId, month, year),
         prisma.$transaction([
             prisma.expense.aggregate({
                 where: {
@@ -59,7 +59,7 @@ export const getAdminDashboardStats = cache(async (organizationId: string, month
     return {
         memberCount,
         participationStats,
-        lowBalanceUsers,
+        membersWithBalance,
         availableBalance,
         totalExpenses,
         totalMeals,

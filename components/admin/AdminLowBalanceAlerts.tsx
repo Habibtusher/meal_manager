@@ -2,6 +2,9 @@ import { getAdminDashboardStats } from "@/lib/services/admin";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { AlertCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { LowBalanceAlertButton } from "./LowBalanceAlertButton";
+
+const LOW_BALANCE_THRESHOLD = 200;
 
 interface AdminLowBalanceAlertsProps {
     organizationId: string;
@@ -10,7 +13,7 @@ interface AdminLowBalanceAlertsProps {
 }
 
 export async function AdminLowBalanceAlerts({ organizationId, month, year }: AdminLowBalanceAlertsProps) {
-    const { lowBalanceUsers } = await getAdminDashboardStats(organizationId, month, year);
+    const { membersWithBalance } = await getAdminDashboardStats(organizationId, month, year);
 
     return (
         <Card>
@@ -18,30 +21,59 @@ export async function AdminLowBalanceAlerts({ organizationId, month, year }: Adm
                 <div>
                     <CardTitle className="flex items-center gap-2">
                         <AlertCircle className="w-5 h-5 text-red-500" />
-                        Low Balance Alerts
+                        Member Balance Overview
                     </CardTitle>
-                    <CardDescription>Users with monthly balance below ৳200</CardDescription>
+                    <CardDescription>All members — alert for adjusted balance below ৳{LOW_BALANCE_THRESHOLD}</CardDescription>
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="space-y-4">
-                    {lowBalanceUsers.length > 0 ? (
-                        lowBalanceUsers.map((user) => (
-                            <div key={user.id} className="flex items-center justify-between p-3 bg-red-500/10 rounded-lg border border-red-500/20">
-                                <div>
-                                    <p className="text-sm font-medium text-foreground">{user.name}</p>
-                                    <p className="text-xs text-muted-foreground">{user.email}</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-sm font-bold text-red-600">{formatCurrency(user.walletBalance)}</p>
-                                    <button className="text-[10px] text-blue-600 hover:underline font-medium">Inform User</button>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-sm text-muted-foreground text-center py-4">No users with low balance.</p>
-                    )}
-                </div>
+                {membersWithBalance.length > 0 ? (
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead>
+                                <tr className="border-b border-border">
+                                    <th className="text-left py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Member</th>
+                                    <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Total Deposit</th>
+                                    <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Total Cost</th>
+                                    <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Adjusted Balance</th>
+                                    <th className="text-center py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {membersWithBalance.map((user) => {
+                                    const isLowBalance = user.adjustedBalance < LOW_BALANCE_THRESHOLD;
+                                    return (
+                                        <tr
+                                            key={user.id}
+                                            className={`border-b border-border/50 last:border-0 ${isLowBalance ? 'bg-red-500/10' : ''}`}
+                                        >
+                                            <td className="py-3 px-3">
+                                                <p className="font-medium text-foreground">{user.name}</p>
+                                                <p className="text-xs text-muted-foreground">{user.email}</p>
+                                            </td>
+                                            <td className="py-3 px-3 text-right text-foreground">
+                                                {formatCurrency(user.totalDeposited)}
+                                            </td>
+                                            <td className="py-3 px-3 text-right text-red-500">
+                                                {formatCurrency(user.totalCost)}
+                                            </td>
+                                            <td className={`py-3 px-3 text-right font-bold ${isLowBalance ? 'text-red-600' : 'text-green-600'}`}>
+                                                {formatCurrency(user.adjustedBalance)}
+                                            </td>
+                                            <td className="py-3 px-3 text-center">
+                                                {isLowBalance && (
+                                                    <LowBalanceAlertButton userId={user.id} userName={user.name} />
+                                                )}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <p className="text-sm text-muted-foreground text-center py-4">No members found.</p>
+                )}
             </CardContent>
         </Card>
     );
