@@ -35,6 +35,7 @@ export function Sidebar({ role }: SidebarProps) {
         { href: '/admin/expenses', label: t('expenses'), icon: Receipt },
         { href: '/admin/wallet', label: t('walletTransactions'), icon: Wallet },
         { href: '/admin/reports', label: t('reports'), icon: FileText },
+        { href: '/admin/tickets', label: t('supportTickets'), icon: FileText },
         { href: '/member/history', label: t('mealHistory'), icon: History },
         { href: '/member/profile', label: t('profile'), icon: Settings },
     ];

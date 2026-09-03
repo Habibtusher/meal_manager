@@ -28,15 +28,18 @@ export default function AddExpenseModal() {
         amount: 0,
     });
 
+    // Paid By: optional member who paid out of pocket (Meal mode only)
+    const [paidByUserId, setPaidByUserId] = useState<string>('');
+
     // For Shared Costs
     const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
     const [customAllocations, setCustomAllocations] = useState<Record<string, number>>({});
 
     useEffect(() => {
-        if (isOpen && mode === 'SHARED') {
+        if (isOpen) {
             getActiveMembers().then(setMembers);
         }
-    }, [isOpen, mode]);
+    }, [isOpen]);
 
     // Initialize allocations when members load or mode changes
     useEffect(() => {
@@ -65,6 +68,7 @@ export default function AddExpenseModal() {
                     ...formData,
                     date: new Date(formData.date),
                     amount: Number(formData.amount),
+                    ...(paidByUserId ? { paidByUserId } : {}),
                 });
             } else {
                 // Shared Cost Logic
@@ -104,6 +108,7 @@ export default function AddExpenseModal() {
                     description: '',
                     amount: 0,
                 });
+                setPaidByUserId('');
                 setMode('MEAL');
             } else {
                 toast.error(result.error || 'Failed to log');
@@ -301,15 +306,42 @@ export default function AddExpenseModal() {
                         )}
 
                         {mode === 'MEAL' && (
-                            <div className="space-y-2">
-                                <label className="text-sm font-semibold text-foreground block">Amount (৳)</label>
-                                <Input
-                                    required
-                                    type="number"
-                                    value={formData.amount}
-                                    onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
-                                />
-                            </div>
+                            <>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-semibold text-foreground block">Amount (৳)</label>
+                                    <Input
+                                        required
+                                        type="number"
+                                        value={formData.amount}
+                                        onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
+                                    />
+                                </div>
+
+                                <div className="space-y-2 pt-2 border-t border-border">
+                                    <label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                                        <Banknote className="w-4 h-4 text-green-500" />
+                                        Paid By <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+                                    </label>
+                                    <select
+                                        value={paidByUserId}
+                                        onChange={(e) => setPaidByUserId(e.target.value)}
+                                        className="w-full h-11 px-4 rounded-xl border border-border bg-muted text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                    >
+                                        <option value="">-- None --</option>
+                                        {members.map((member) => (
+                                            <option key={member.id} value={member.id}>
+                                                {member.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {paidByUserId && (
+                                        <p className="text-xs text-muted-foreground flex items-start gap-1.5">
+                                            <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-blue-500" />
+                                            A deposit of <strong>৳{formData.amount || 0}</strong> will be auto-added to this member&apos;s wallet.
+                                        </p>
+                                    )}
+                                </div>
+                            </>
                         )}
 
                     </div>

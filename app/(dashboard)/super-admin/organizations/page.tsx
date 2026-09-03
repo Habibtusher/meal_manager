@@ -1,10 +1,23 @@
-export default function OrganizationsPage() {
+import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import { getAllOrganizations } from '@/lib/services/super-admin';
+import { OrganizationsTable } from '@/components/super-admin/OrganizationsTable';
+
+export const dynamic = 'force-dynamic';
+
+export default async function OrganizationsPage() {
+  const session = await auth();
+
+  if (!session?.user || (session.user.role as any) !== 'SUPER_ADMIN') {
+    redirect('/login');
+  }
+
+  const rawOrganizations = await getAllOrganizations();
+  const organizations = JSON.parse(JSON.stringify(rawOrganizations));
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Organization Management</h1>
-      <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center">
-        <p className="text-gray-500">Organization management features are coming soon.</p>
-      </div>
+    <div className="max-w-7xl mx-auto space-y-6">
+      <OrganizationsTable initialOrganizations={organizations} />
     </div>
   );
 }

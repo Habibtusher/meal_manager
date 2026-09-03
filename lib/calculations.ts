@@ -192,76 +192,102 @@ export async function canAffordMeal(
 }
 
 /**
- * Get list of users with low balance (below threshold) for a specific month
+ * Get all members with their adjusted balance for a specific month.
+ * Adjusted balance = Total Deposited - Total Cost (meal cost + shared costs),
+ * using the same formula as the settlement summary in reports.
  */
-export async function getLowBalanceUsers(
+export async function getMembersWithBalance(
   organizationId: string,
-  threshold: number = 100,
   month?: number,
   year?: number
-): Promise<Array<{ id: string; name: string; email: string; walletBalance: number }>> {
-  // 1. Get all active users in the organization
-  const users = await prisma.user.findMany({
+): Promise<Array<{ id: string; name: string; email: string; totalDeposited: number; totalCost: number; adjustedBalance: number }>> {
+  // Default to current month if not provided
+  const now = new Date();
+  const m = month || (now.getMonth() + 1);
+  const y = year || now.getFullYear();
+  const startDate = new Date(Date.UTC(y, m - 1, 1));
+  const endDate = new Date(Date.UTC(y, m, 0, 23, 59, 59, 999));
+
+  // 1. Fetch all active users with their meal records, wallet credits, and shared cost allocations
+  const members = await prisma.user.findMany({
     where: {
       organizationId,
       isActive: true,
-      role: { in: ['MEMBER', 'ADMIN'] }
+      role: { in: ['MEMBER', 'ADMIN'] },
     },
     select: {
       id: true,
       name: true,
       email: true,
+      mealRecords: {
+        where: {
+          status: 'CONFIRMED',
+          date: { gte: startDate, lte: endDate },
+        },
+        select: { count: true },
+      },
+      walletTransactions: {
+        where: {
+          type: 'CREDIT',
+          createdAt: { gte: startDate, lte: endDate },
+        },
+        select: { amount: true },
+      },
+      sharedCostAllocations: {
+        where: {
+          sharedCost: {
+            date: { gte: startDate, lte: endDate },
+          },
+        },
+        select: { amount: true },
+      },
     },
   });
 
-  // 2. Prepare transaction filters
-  let txWhere: any = { 
-    organizationId,
-  };
-
-  if (month && year) {
-    const startDate = new Date(Date.UTC(year, month - 1, 1));
-    const endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
-    txWhere.createdAt = {
-      gte: startDate,
-      lte: endDate
-    };
-  }
-
-  // 3. Aggregate transactions by user and type in ONE query
-  const txStats = await prisma.walletTransaction.groupBy({
-    by: ['userId', 'type'],
-    where: txWhere,
+  // 2. Calculate the meal rate for this period (same as reports)
+  const totalExpensesAgg = await prisma.expense.aggregate({
+    where: {
+      organizationId,
+      date: { gte: startDate, lte: endDate },
+    },
     _sum: { amount: true },
   });
 
-  // 4. Map stats to a user-centric map
-  const userBalanceMap: Record<string, { credits: number, debits: number }> = {};
-  
-  txStats.forEach(stat => {
-    if (!userBalanceMap[stat.userId]) {
-      userBalanceMap[stat.userId] = { credits: 0, debits: 0 };
-    }
-    const amount = Number(stat._sum.amount || 0);
-    if (stat.type === TransactionType.CREDIT) {
-      userBalanceMap[stat.userId].credits += amount;
-    } else {
-      userBalanceMap[stat.userId].debits += amount;
-    }
+  const totalExpenses = totalExpensesAgg._sum.amount || 0;
+  const totalMeals = members.reduce(
+    (sum, member) => sum + member.mealRecords.reduce((mSum, r) => mSum + (r.count || 0), 0),
+    0
+  );
+  const mealRate = totalMeals > 0 ? totalExpenses / totalMeals : 0;
+
+  // 3. Calculate financial data for each user
+  const allMembers = members.map((member) => {
+    const mealsConsumed = member.mealRecords.reduce((sum, r) => sum + (r.count || 0), 0);
+    const totalMealCost = mealsConsumed * mealRate;
+    const totalSharedCost = member.sharedCostAllocations.reduce(
+      (sum, alloc) => sum + Number(alloc.amount),
+      0
+    );
+    const totalCost = totalMealCost + totalSharedCost;
+    const totalDeposited = member.walletTransactions.reduce(
+      (sum, t) => sum + Number(t.amount),
+      0
+    );
+    const adjustedBalance = totalDeposited - totalCost;
+
+    return {
+      id: member.id,
+      name: member.name,
+      email: member.email,
+      totalDeposited,
+      totalCost,
+      adjustedBalance,
+    };
   });
 
-  // 5. Calculate net balance for each user and filter
-  const lowBalanceUsers = users.map(user => {
-    const balanceStats = userBalanceMap[user.id] || { credits: 0, debits: 0 };
-    const monthlyBalance = balanceStats.credits - balanceStats.debits;
-    return {
-      ...user,
-      walletBalance: monthlyBalance,
-    };
-  }).filter(user => user.walletBalance < threshold);
-
-  return lowBalanceUsers.sort((a, b) => a.walletBalance - b.walletBalance);
+  return allMembers.sort((a, b) => a.adjustedBalance - b.adjustedBalance);
 }
+
 
 /**
  * Get meal participation statistics for an organization

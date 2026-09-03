@@ -9,7 +9,9 @@ export const getMemberDashboardStats = cache(async (userId: string, organization
     const [
         userBalance,
         orgStats,
-        userStats
+        userStats,
+        userDeposits,
+        userSharedCosts
     ] = await Promise.all([
         getRemainingBalance(userId),
         prisma.$transaction([
@@ -36,6 +38,24 @@ export const getMemberDashboardStats = cache(async (userId: string, organization
                 date: { gte: startDate, lte: endDate }
             },
             _sum: { count: true }
+        }),
+        prisma.walletTransaction.aggregate({
+            where: {
+                userId,
+                organizationId,
+                type: 'CREDIT',
+                createdAt: { gte: startDate, lte: endDate }
+            },
+            _sum: { amount: true }
+        }),
+        prisma.sharedCostAllocation.aggregate({
+            where: {
+                userId,
+                sharedCost: {
+                    date: { gte: startDate, lte: endDate }
+                }
+            },
+            _sum: { amount: true }
         })
     ]);
 
@@ -46,10 +66,20 @@ export const getMemberDashboardStats = cache(async (userId: string, organization
     const mealRate = totalOrgMeals > 0 ? totalOrgExpenses / totalOrgMeals : 0;
     const monthlyCost = userTotalMeals * mealRate;
 
+    const totalDeposited = userDeposits._sum.amount || 0;
+    const totalSharedCost = userSharedCosts._sum.amount || 0;
+    const totalCost = monthlyCost + totalSharedCost;
+    const adjustedBalance = totalDeposited - totalCost;
+
     return {
         userBalance,
         userTotalMeals,
         mealRate,
-        monthlyCost
+        monthlyCost,
+        totalDeposited,
+        totalSharedCost,
+        totalCost,
+        adjustedBalance
     };
 });
+
