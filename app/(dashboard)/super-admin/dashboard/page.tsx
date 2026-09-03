@@ -46,9 +46,9 @@ export default async function SuperAdminDashboard() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl text-white shadow-lg shadow-blue-500/10">
+          <div className="bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 p-6 rounded-2xl text-white shadow-xl shadow-emerald-500/15">
             <h3 className="font-bold mb-2">Quick Actions</h3>
-            <p className="text-blue-100 text-sm mb-4">Speed up your administrative tasks with these shortcuts.</p>
+            <p className="text-emerald-100 text-sm mb-4">Speed up your administrative tasks with these shortcuts.</p>
             <div className="grid grid-cols-2 gap-3">
               <Link
                 href="/super-admin/organizations"

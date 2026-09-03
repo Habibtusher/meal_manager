@@ -176,7 +176,7 @@ export default function LandingPage() {
 
           <div className="container px-4 md:px-8 mx-auto">
             <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-14">
-              
+
               {/* Left Column: Copy & CTAs */}
               <div className="flex-1 text-center lg:text-left space-y-6 max-w-2xl mx-auto lg:mx-0">
                 {/* Localized Tag Badge */}
@@ -340,7 +340,7 @@ export default function LandingPage() {
                 <ul className="space-y-3.5 text-sm text-slate-300">
                   <li className="flex items-start gap-2.5">
                     <XCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-                    <span>খাতার পাতা হারিয়ে যাওয়া বা বাজারে ভিজে নষ্ট হয়ে যাওয়ার ঝুঁকি।</span>
+                    <span>খাতার পাতা হারিয়ে যাওয়া বা নষ্ট হয়ে যাওয়ার ঝুঁকি।</span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <XCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
@@ -514,9 +514,8 @@ export default function LandingPage() {
                     >
                       <span className="text-base md:text-lg">{faq.q}</span>
                       <ChevronDown
-                        className={`w-5 h-5 text-slate-400 transition-transform duration-200 flex-shrink-0 ${
-                          isOpen ? 'rotate-180 text-emerald-400' : ''
-                        }`}
+                        className={`w-5 h-5 text-slate-400 transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180 text-emerald-400' : ''
+                          }`}
                       />
                     </button>
                     {isOpen && (
