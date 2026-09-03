@@ -42,16 +42,16 @@ export default function LandingPage() {
       a: 'না! আপনি সম্পূর্ণ বিনামূল্যে মেস বা হোস্টেল রেজিস্টার করতে পারবেন এবং সাথে সাথেই মেম্বার যুক্ত করে মিল ও বাজার হিসাব শুরু করতে পারবেন।'
     },
     {
-      q: 'মেম্বাররা কি নিজেদের মোবাইল ফোন থেকে মিল অন/অফ করতে পারবে?',
-      a: 'হ্যাঁ, প্রতিটি মেম্বারের জন্য আলাদা লগইন থাকে। তারা তাদের মোবাইল থেকে প্রতিদিনের মিল অন/অফ করতে পারবে এবং বর্তমান ব্যালেন্স ও মিল রেট লাইভ দেখতে পারবে।'
+      q: 'মেম্বাররা কি তাদের নিজস্ব হিসাব ও মিল হিস্ট্রি দেখতে পারবে?',
+      a: 'হ্যাঁ, প্রতিটি মেম্বারের জন্য আলাদা ড্যাশবোর্ড রয়েছে। মেম্বাররা নিজেদের লগইন থেকে পুরো মাসের মিল হিস্ট্রি, প্রতিদিনের মিল সংখ্যা, বর্তমান মিল রেট এবং তাদের চলতি ব্যালেন্স দেখতে পারে।'
     },
     {
       q: 'বুয়া, গ্যাস, ওয়াইফাই ও রুম ভাড়ার মতো শেয়ার্ড খরচ কিভাবে হিসাব হয়?',
       a: 'MealManager-এ বিশেষ শেয়ার্ড কস্ট ফিচার রয়েছে। এখানে গ্যাস, বুয়া বা ওয়াইফাই বিল এন্ট্রি করলে তা স্বয়ংক্রিয়ভাবে সব মেম্বারদের মাঝে সমানভাবে বন্টন হয়ে যায়।'
     },
     {
-      q: 'বিকাশ বা নগদ দিয়ে কি ডিপোজিট ব্যালেন্স ট্র্যাক করা যায়?',
-      a: 'হ্যাঁ, মেম্বাররা মেস ম্যানেজারকে বিকাশ, নগদ বা ক্যাশে যে টাকা জমা দেয়, ম্যানেজার তা ওয়ালেটে এন্ট্রি করে রাখতে পারেন এবং মেম্বার নিজের স্টেটমেন্টে তা দেখতে পারেন।'
+      q: 'মেম্বারদের অগ্রিম জমার হিসাব কিভাবে রাখা হয়?',
+      a: 'মেম্বাররা মেস ম্যানেজারকে যে টাকা অগ্রিম দেয়, ম্যানেজার তা মেম্বারের ওয়ালেটে ডিপোজিট হিসেবে এন্ট্রি করে রাখেন। মিল খাওয়া ও খরচের সাথে সাথে সেই ব্যালেন্স স্বয়ংক্রিয়ভাবে সমন্বয় হয়।'
     },
     {
       q: 'মাস শেষে কি মেসের ফুল স্টেটমেন্ট ডাউনলোড বা প্রিন্ট করা যাবে?',
@@ -200,7 +200,7 @@ export default function LandingPage() {
                 {/* Description */}
                 <p className="text-base md:text-lg text-slate-300 leading-relaxed font-normal">
                   বাংলাদেশের ব্যাচেলর মেস, ছাত্রাবাস ও হোস্টেলের জন্য অল-ইন-ওয়ান ক্লাউড সফটওয়্যার।
-                  বাজারের হিসাব, মিল অন/অফ এবং মাস শেষে মিল রেট হিসাব এখন কাটাকাটি ছাড়া সবার ফোনে লাইভ!
+                  দৈনিক বাজার, মিল শিডিউল এবং মাস শেষে নিখুঁত মিল রেট হিসাব এখন কাটাকাটি ছাড়া সবার কাছে স্বচ্ছ!
                 </p>
 
                 {/* Feature Highlights Pills */}
@@ -215,7 +215,7 @@ export default function LandingPage() {
                   </div>
                   <div className="flex items-center gap-2 bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-800">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span>মেম্বার ওয়ালেট ব্যালেন্স</span>
+                    <span>অগ্রিম ডিপোজিট ট্র্যাকিং</span>
                   </div>
                   <div className="flex items-center gap-2 bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-800">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
@@ -223,7 +223,7 @@ export default function LandingPage() {
                   </div>
                   <div className="flex items-center gap-2 bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-800">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span>মোবাইল থেকেই মিল অন/অফ</span>
+                    <span>মেম্বার মিল হিস্ট্রি</span>
                   </div>
                   <div className="flex items-center gap-2 bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-800">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
@@ -290,8 +290,8 @@ export default function LandingPage() {
                       <Wallet className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="text-[10px] text-slate-400 uppercase font-semibold">বিকাশ ওয়ালেট জমা</p>
-                      <p className="text-sm font-bold text-white">৳ ৩,৫০০ (তানভীর)</p>
+                      <p className="text-[10px] text-slate-400 uppercase font-semibold">অগ্রিম মেম্বার জমা</p>
+                      <p className="text-sm font-bold text-white">৳ ৩,৫০০ (তানভীর আহমেদ)</p>
                     </div>
                   </div>
                 </div>
@@ -376,11 +376,11 @@ export default function LandingPage() {
                   </li>
                   <li className="flex items-start gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                    <span>মেম্বাররা নিজেরাই মোবাইল দিয়ে আগের রাতে মিল অন/অফ করতে পারে।</span>
+                    <span>অ্যাডমিন কর্তৃক দৈনিক সকাল, দুপুর ও রাতের মিল শিডিউল ও নির্ভুল কাউন্টিং।</span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                    <span>বিকাশ/নগদ ডিপোজিট ও শেয়ার্ড খরচের নিখুঁত পার্সোনাল ব্যালেন্স।</span>
+                    <span>মেম্বারদের অগ্রিম ডিপোজিট জমা ও লো-ব্যালেন্স অ্যালার্টের স্বচ্ছ ব্যবস্থা।</span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
@@ -408,8 +408,8 @@ export default function LandingPage() {
             <div className="grid gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3">
               <BanglaFeatureCard
                 icon={<Utensils className="h-6 w-6 text-emerald-400" />}
-                title="দৈনিক মিল অন/অফ ট্র্যাকিং"
-                description="সকাল, দুপুর ও রাতের মিল সহজে এন্ট্রি করুন। মেম্বাররা নিজেদের ফোন থেকেই মিল আপডেট করতে পারে।"
+                title="দৈনিক মিল শিডিউল ও এন্ট্রি"
+                description="অ্যাডমিন খুব সহজে প্রতিদিনের মেনু ও মেম্বারদের মিল সংখ্যা সংরক্ষণ করতে পারেন। কোনো কাটাকাটি বা হিসাব হারানোর ভয় নেই।"
               />
               <BanglaFeatureCard
                 icon={<Receipt className="h-6 w-6 text-blue-400" />}
@@ -423,8 +423,8 @@ export default function LandingPage() {
               />
               <BanglaFeatureCard
                 icon={<Wallet className="h-6 w-6 text-purple-400" />}
-                title="মেম্বার ওয়ালেট ও ডিপোজিট"
-                description="বিকাশ, নগদ বা ক্যাশে দেওয়া অগ্রিম টাকা ম্যানেজ করুন। মিল খাবার সাথে সাথে ব্যালেন্স সমন্বয় হয়।"
+                title="অগ্রিম ডিপোজিট ও ওয়ালেট ট্র্যাকিং"
+                description="মেম্বারদের দেওয়া অগ্রিম জমার নিখুঁত হিসাব রাখুন। মিল খাওয়া ও অন্যান্য খরচের সাথে সাথে ব্যালেন্স স্বয়ংক্রিয়ভাবে সমন্বয় হয়।"
               />
               <BanglaFeatureCard
                 icon={<Building2 className="h-6 w-6 text-rose-400" />}
@@ -477,12 +477,12 @@ export default function LandingPage() {
                 role="মেস ম্যানেজার, ইন্দিরা রোড, ফার্মগেট"
               />
               <TestimonialCard
-                quote="আমাদের ১০ জনের ব্যাচেলর মেসে বাজার ও বুয়ার বিল নিয়ে প্রায়ই কথা কাটাকাটি হতো। এখন বিকাশ থেকে টাকা দিলে ম্যানেজার ওয়ালেটে অ্যাড করে দেয়, সবার ব্যালেন্স ট্রান্সপারেন্ট।"
+                quote="আমাদের ১০ জনের ব্যাচেলর মেসে বাজার ও বুয়ার বিল নিয়ে প্রায়ই কথা কাটাকাটি হতো। এখন অগ্রিম টাকা জমা দিলে ম্যানেজার ওয়ালেটে অ্যাড করে দেয় এবং মাস শেষে সবার পরিষ্কার হিসাব পাওয়া যায়।"
                 name="রাকিবুল হাসান"
                 role="ব্যাচেলর মেম্বার, মিরপুর-১০"
               />
               <TestimonialCard
-                quote="ছাত্রাবাসে অনেক ছাত্রের খাবারের মিল ট্র্যাকিং করা কঠিন ছিল। এই সফটওয়্যারে মিল অন/অফ এবং গ্যাস-কারেন্ট বিলের ভাগ স্বয়ংক্রিয়ভাবে হয়ে যায়। দারুণ উদ্যোগ!"
+                quote="ছাত্রাবাসে অনেক ছাত্রের খাবারের মিল ট্র্যাকিং করা কঠিন ছিল। এই সফটওয়্যারে দৈনিক মিল শিডিউল এবং গ্যাস-কারেন্ট ও বুয়ার বিলের ভাগ স্বয়ংক্রিয়ভাবে হয়ে যায়। দারুণ উদ্যোগ!"
                 name="আব্দুর রহিম"
                 role="হোস্টেল সুপার, রাজশাহী"
               />

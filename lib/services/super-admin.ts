@@ -5,19 +5,22 @@ export const getPlatformStats = cache(async () => {
     const [
         orgCount,
         userCount,
-        mealCount,
+        mealAggregate,
         ticketCount
     ] = await Promise.all([
         prisma.organization.count(),
         prisma.user.count(),
-        prisma.mealRecord.count(),
+        prisma.mealRecord.aggregate({
+            where: { status: { not: 'CANCELLED' } },
+            _sum: { count: true }
+        }),
         prisma.supportTicket.count(),
     ]);
 
     return {
         orgCount,
         userCount,
-        mealCount,
+        mealCount: mealAggregate._sum.count ?? 0,
         ticketCount
     };
 });
