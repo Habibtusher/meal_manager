@@ -7,6 +7,8 @@ import { AdminStatsCards } from '@/components/admin/AdminStatsCards';
 import { AdminLowBalanceAlerts } from '@/components/admin/AdminLowBalanceAlerts';
 import { RecentExpenses } from '@/components/dashboard/RecentExpenses';
 
+import { getTranslations } from 'next-intl/server';
+
 interface DashboardProps {
     searchParams: Promise<{ month?: string; year?: string }>;
 }
@@ -15,6 +17,7 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
     const session = await auth();
     if (!session?.user?.organizationId) return null;
     const organizationId = session.user.organizationId;
+    const t = await getTranslations('dashboard');
 
     const params = await searchParams;
     const now = getToday();
@@ -33,8 +36,8 @@ export default async function AdminDashboard({ searchParams }: DashboardProps) {
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-foreground">Dashboard Overview</h1>
-                    <p className="text-muted-foreground mt-1">Welcome back, Admin! Here is what is happening today.</p>
+                    <h1 className="text-3xl font-bold text-foreground">{t('dashboardOverview')}</h1>
+                    <p className="text-muted-foreground mt-1">{t('welcomeMessage')}</p>
                 </div>
                 <MonthPicker defaultMonth={selectedMonth} defaultYear={selectedYear} />
             </div>

@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 interface MonthPickerProps {
     defaultMonth?: number; // 1-12
@@ -11,24 +12,12 @@ interface MonthPickerProps {
 export function MonthPicker({ defaultMonth, defaultYear }: MonthPickerProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const t = useTranslations('months');
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 5 }, (_, i) => currentYear - 2 + i); // 2 years back, 2 years forward
 
-    const months = [
-        { value: '1', label: 'January' },
-        { value: '2', label: 'February' },
-        { value: '3', label: 'March' },
-        { value: '4', label: 'April' },
-        { value: '5', label: 'May' },
-        { value: '6', label: 'June' },
-        { value: '7', label: 'July' },
-        { value: '8', label: 'August' },
-        { value: '9', label: 'September' },
-        { value: '10', label: 'October' },
-        { value: '11', label: 'November' },
-        { value: '12', label: 'December' },
-    ];
+    const monthKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
     const handleMonthChange = (val: string) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -48,11 +37,11 @@ export function MonthPicker({ defaultMonth, defaultYear }: MonthPickerProps) {
                 <select
                     value={String(defaultMonth || new Date().getMonth() + 1)}
                     onChange={(e) => handleMonthChange(e.target.value)}
-                    className="appearance-none w-[120px] bg-background border border-border text-foreground py-2 px-3 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-card focus:border-primary text-sm transition-colors"
+                    className="appearance-none w-[130px] bg-background border border-border text-foreground py-2 px-3 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-card focus:border-primary text-sm transition-colors"
                 >
-                    {months.map((m) => (
-                        <option key={m.value} value={m.value} className="bg-card text-foreground">
-                            {m.label}
+                    {monthKeys.map((key) => (
+                        <option key={key} value={key} className="bg-card text-foreground">
+                            {t(key)}
                         </option>
                     ))}
                 </select>

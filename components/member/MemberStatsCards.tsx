@@ -2,6 +2,7 @@ import { getMemberDashboardStats } from "@/lib/services/member";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Wallet, Utensils, History, CreditCard } from "lucide-react";
 import { formatCurrency, cn } from "@/lib/utils";
+import { getTranslations } from 'next-intl/server';
 
 interface MemberStatsCardsProps {
     userId: string;
@@ -18,30 +19,32 @@ export async function MemberStatsCards({ userId, organizationId, month, year }: 
         monthlyCost
     } = await getMemberDashboardStats(userId, organizationId, month, year);
 
+    const t = await getTranslations('member');
+
     const stats = [
         {
-            label: 'Wallet Balance',
+            label: t('walletBalance'),
             value: formatCurrency(userBalance),
             icon: Wallet,
             color: userBalance < 200 ? 'text-red-500' : 'text-green-500',
             bg: userBalance < 200 ? 'bg-red-500/10' : 'bg-green-500/10',
         },
         {
-            label: 'This Month Cost',
+            label: t('thisMonthCost'),
             value: formatCurrency(monthlyCost),
             icon: CreditCard,
             color: 'text-blue-500',
             bg: 'bg-blue-500/10',
         },
         {
-            label: 'Total Meals',
+            label: t('totalMeals'),
             value: userTotalMeals.toFixed(1),
             icon: Utensils,
             color: 'text-orange-500',
             bg: 'bg-orange-500/10',
         },
         {
-            label: 'Current Meal Rate',
+            label: t('currentMealRate'),
             value: formatCurrency(mealRate),
             icon: History,
             color: 'text-purple-500',

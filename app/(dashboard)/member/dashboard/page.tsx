@@ -5,6 +5,7 @@ import { StatsSkeleton, ListSkeleton } from '@/components/dashboard/DashboardSke
 import { MemberStatsCards } from '@/components/member/MemberStatsCards';
 import { MemberNotifications } from '@/components/member/MemberNotifications';
 import { RecentExpenses } from '@/components/dashboard/RecentExpenses';
+import { getTranslations } from 'next-intl/server';
 
 export default async function MemberDashboard({
     searchParams,
@@ -15,6 +16,7 @@ export default async function MemberDashboard({
     if (!session?.user?.id || !session?.user?.organizationId) return null;
     const userId = session.user.id;
     const organizationId = session.user.organizationId;
+    const t = await getTranslations('member');
 
     const params = await searchParams;
     const now = new Date();
@@ -33,8 +35,8 @@ export default async function MemberDashboard({
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-foreground">My Dashboard</h1>
-                    <p className="text-muted-foreground mt-1">Hello, {session?.user.name}! Track your meals and balance here.</p>
+                    <h1 className="text-3xl font-bold text-foreground">{t('myDashboard')}</h1>
+                    <p className="text-muted-foreground mt-1">{t('welcomeMember', { name: session?.user.name || '' })}</p>
                 </div>
                 <MonthPicker defaultMonth={selectedMonth} defaultYear={selectedYear} />
             </div>

@@ -4,6 +4,7 @@ import { ShoppingCart } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { getTranslations } from 'next-intl/server';
 
 interface RecentExpensesProps {
     organizationId: string;
@@ -14,17 +15,18 @@ interface RecentExpensesProps {
 
 export async function RecentExpenses({ organizationId, viewAllLink, month, year }: RecentExpensesProps) {
     const latestExpenses = await getLatestExpenses(organizationId, month, year);
+    const t = await getTranslations('dashboard');
 
     return (
         <Card className="h-full">
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                    <CardTitle className="text-lg">Latest Expenses</CardTitle>
-                    <CardDescription>Recent organization expenditures</CardDescription>
+                    <CardTitle className="text-lg">{t('latestExpenses')}</CardTitle>
+                    <CardDescription>{t('recentExpenditures')}</CardDescription>
                 </div>
                 <Link href={viewAllLink}>
                     <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 font-bold">
-                        View More
+                        {t('viewMore')}
                     </Button>
                 </Link>
             </CardHeader>
@@ -45,7 +47,7 @@ export async function RecentExpenses({ organizationId, viewAllLink, month, year 
                         </div>
                     ))}
                     {latestExpenses.length === 0 && (
-                        <p className="text-sm text-muted-foreground text-center py-4">No recent expenses.</p>
+                        <p className="text-sm text-muted-foreground text-center py-4">{t('noRecentExpenses')}</p>
                     )}
                 </div>
             </CardContent>

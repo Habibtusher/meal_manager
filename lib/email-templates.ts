@@ -192,15 +192,14 @@ export function memberWelcomeEmailTemplate(
 /**
  * Low balance alert email
  */
+import { formatCurrency } from '@/lib/utils';
+
 export function lowBalanceAlertTemplate(
   name: string,
   balance: number,
   organizationName: string
 ): string {
-  const formattedBalance = new Intl.NumberFormat('en-BD', {
-    style: 'currency',
-    currency: 'BDT',
-  }).format(balance);
+  const formattedBalance = formatCurrency(balance);
 
   const headerContent = `
     <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">

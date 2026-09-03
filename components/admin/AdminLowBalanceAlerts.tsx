@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { AlertCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { LowBalanceAlertButton } from "./LowBalanceAlertButton";
+import { getTranslations } from 'next-intl/server';
 
 const LOW_BALANCE_THRESHOLD = 200;
 
@@ -14,6 +15,7 @@ interface AdminLowBalanceAlertsProps {
 
 export async function AdminLowBalanceAlerts({ organizationId, month, year }: AdminLowBalanceAlertsProps) {
     const { membersWithBalance } = await getAdminDashboardStats(organizationId, month, year);
+    const t = await getTranslations('dashboard');
 
     return (
         <Card>
@@ -21,9 +23,9 @@ export async function AdminLowBalanceAlerts({ organizationId, month, year }: Adm
                 <div>
                     <CardTitle className="flex items-center gap-2">
                         <AlertCircle className="w-5 h-5 text-red-500" />
-                        Member Balance Overview
+                        {t('memberBalanceOverview')}
                     </CardTitle>
-                    <CardDescription>All members — alert for adjusted balance below ৳{LOW_BALANCE_THRESHOLD}</CardDescription>
+                    <CardDescription>{t('balanceAlertDescription', { threshold: LOW_BALANCE_THRESHOLD })}</CardDescription>
                 </div>
             </CardHeader>
             <CardContent>
@@ -32,11 +34,11 @@ export async function AdminLowBalanceAlerts({ organizationId, month, year }: Adm
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="border-b border-border">
-                                    <th className="text-left py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Member</th>
-                                    <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Total Deposit</th>
-                                    <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Total Cost</th>
-                                    <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Adjusted Balance</th>
-                                    <th className="text-center py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Action</th>
+                                    <th className="text-left py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('tableMember')}</th>
+                                    <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('tableTotalDeposit')}</th>
+                                    <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('tableTotalCost')}</th>
+                                    <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('tableAdjustedBalance')}</th>
+                                    <th className="text-center py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('tableAction')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,7 +74,7 @@ export async function AdminLowBalanceAlerts({ organizationId, month, year }: Adm
                         </table>
                     </div>
                 ) : (
-                    <p className="text-sm text-muted-foreground text-center py-4">No members found.</p>
+                    <p className="text-sm text-muted-foreground text-center py-4">{t('noMembersFound')}</p>
                 )}
             </CardContent>
         </Card>

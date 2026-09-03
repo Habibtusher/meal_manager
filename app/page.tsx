@@ -112,8 +112,6 @@ export default function LandingPage() {
           <Link className="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors" href="#faq">
             প্রশ্নোত্তর
           </Link>
-          <LanguageSwitcher />
-          <div className="h-4 w-[1px] bg-slate-800"></div>
           <Link className="text-sm font-semibold text-slate-300 hover:text-white transition-colors" href="/login">
             লগইন (Sign In)
           </Link>

@@ -7,10 +7,13 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatCurrency(amount: number | string): string {
   const num = typeof amount === 'string' ? parseFloat(amount) : amount;
-  return new Intl.NumberFormat('en-BD', {
-    style: 'currency',
-    currency: 'BDT',
-  }).format(num);
+  if (isNaN(num)) return '৳ 0.00';
+  const absNum = Math.abs(num);
+  const formattedNum = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(absNum);
+  return num < 0 ? `-৳ ${formattedNum}` : `৳ ${formattedNum}`;
 }
 
 export function formatDate(date: Date | string): string {
