@@ -62,14 +62,14 @@ export function Sidebar({ role }: SidebarProps) {
                     <div className="relative w-10 h-10 shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
                         <Image
                             src="/icons/icon-512x512.png"
-                            alt="MealManager Logo"
+                            alt="Meal Manager Logo"
                             width={40}
                             height={40}
                             className="rounded-xl"
                         />
                     </div>
                     <span className="text-xl font-bold text-foreground tracking-tight flex items-center gap-1.5">
-                        MealManager
+                        Meal Manager
                         <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
                             BD
                         </span>

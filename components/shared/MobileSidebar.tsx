@@ -62,13 +62,13 @@ export function MobileSidebar({ role }: MobileSidebarProps) {
     const links = (role as any) === 'SUPER_ADMIN' ? superAdminLinks : (role === 'ADMIN' ? adminLinks : memberLinks);
 
     return (
-        <div className="md:hidden flex items-center gap-2">
-            <ThemeToggle />
+        <div className="md:hidden flex items-center">
             <Button
                 variant="ghost"
                 size="icon"
                 className="p-2"
                 onClick={() => setIsOpen(true)}
+                aria-label="Open menu"
             >
                 <Menu className="w-6 h-6 text-foreground" />
             </Button>
@@ -89,24 +89,27 @@ export function MobileSidebar({ role }: MobileSidebarProps) {
                 )}
             >
                 <div className="p-4 flex items-center justify-between border-b border-border">
-                    <Link href="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
+                    <Link href="/" className="flex items-center" onClick={() => setIsOpen(false)} aria-label="Meal Manager Home">
                         <div className="relative w-8 h-8">
                             <Image
                                 src="/icons/icon-512x512.png"
-                                alt="MealManager Logo"
+                                alt="Meal Manager Logo"
                                 width={32}
                                 height={32}
                                 className="rounded-lg"
                             />
                         </div>
-                        <span className="text-xl font-bold text-foreground">MealManager</span>
                     </Link>
-                    <button
-                        onClick={() => setIsOpen(false)}
-                        className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
-                    >
-                        <X className="w-6 h-6" />
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                        <ThemeToggle />
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="p-1 text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-colors"
+                            aria-label="Close menu"
+                        >
+                            <X className="w-6 h-6" />
+                        </button>
+                    </div>
                 </div>
 
                 <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">

@@ -1,5 +1,5 @@
 ---
-description: Plan to improve landing page responsiveness for the MealManager application.
+description: Plan to improve landing page responsiveness for the Meal Manager application.
 ---
 
 # Landing Page Responsiveness Implementation Plan

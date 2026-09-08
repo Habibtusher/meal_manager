@@ -204,14 +204,14 @@ export default function LoginPage() {
             <div className="relative w-8 h-8 rounded-xl overflow-hidden shadow-md shadow-emerald-500/20">
               <Image
                 src="/icons/icon-512x512.png"
-                alt="MealManager Logo"
+                alt="Meal Manager Logo"
                 width={32}
                 height={32}
                 className="object-cover"
               />
             </div>
             <span className="font-bold text-lg tracking-tight text-foreground flex items-center gap-1.5">
-              MealManager
+              Meal Manager
               <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
                 BD
               </span>
@@ -227,7 +227,7 @@ export default function LoginPage() {
       {/* Main Content Area */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-10 my-auto">
         <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
+
           {/* Left Column: Value Proposition & Branding Showcase */}
           <div className="lg:col-span-5 space-y-6 hidden lg:block">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
@@ -308,7 +308,7 @@ export default function LoginPage() {
 
       {/* Footer copyright */}
       <footer className="w-full py-4 text-center text-xs text-muted-foreground border-t border-border/40">
-        © {new Date().getFullYear()} MealManager BD — বাংলাদেশের সেরা মেস ও হোস্টেল মিল ম্যানেজমেন্ট সিস্টেম
+        © {new Date().getFullYear()} Meal Manager BD — বাংলাদেশের সেরা মেস ও হোস্টেল মিল ম্যানেজমেন্ট সিস্টেম
       </footer>
     </div>
   );

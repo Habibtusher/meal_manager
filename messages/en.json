@@ -142,6 +142,8 @@
     "facebookProfile": "Facebook Profile",
     "superAdminPanel": "Super Admin Panel",
     "adminDashboard": "Admin Dashboard",
-    "memberDashboard": "Member Dashboard"
+    "memberDashboard": "Member Dashboard",
+    "addMeal": "Add Meal",
+    "addCost": "Add Cost"
   }
 }
