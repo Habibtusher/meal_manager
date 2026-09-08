@@ -154,14 +154,14 @@ export default function RegisterPage() {
             <div className="relative w-8 h-8 rounded-xl overflow-hidden shadow-md shadow-emerald-500/20">
               <Image
                 src="/icons/icon-512x512.png"
-                alt="MealManager Logo"
+                alt="Meal Manager Logo"
                 width={32}
                 height={32}
                 className="object-cover"
               />
             </div>
             <span className="font-bold text-lg tracking-tight text-foreground flex items-center gap-1.5">
-              MealManager
+              Meal Manager
               <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
                 BD
               </span>
@@ -177,7 +177,7 @@ export default function RegisterPage() {
       {/* Main Content Area */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-10 my-auto">
         <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
+
           {/* Left Column: Value Proposition & Visual Showcase */}
           <div className="lg:col-span-5 space-y-6 hidden lg:block">
             {/* Free Tag */}
@@ -196,7 +196,7 @@ export default function RegisterPage() {
               </h1>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 মাস শেষে ক্যালকুলেটর নিয়ে কাটাকাটি আর হিসাবের গরমিলের ঝামেলা চিরতরে বন্ধ করুন।
-                MealManager দিয়ে কয়েক সেকেন্ডেই আপনার মেস সম্পূর্ণ ক্লাউডে নিয়ে আসুন।
+                Meal Manager দিয়ে কয়েক সেকেন্ডেই আপনার মেস সম্পূর্ণ ক্লাউডে নিয়ে আসুন।
               </p>
             </div>
 
@@ -247,7 +247,7 @@ export default function RegisterPage() {
                 ))}
               </div>
               <p className="text-xs text-foreground italic leading-relaxed">
-                &ldquo;ফার্মগেটের মেসে আগে প্রতি মাসের শেষ ৩ দিন খাতা মেলাতে মাথা নষ্ট হতো। MealManager নেওয়ার পর এখন ১ ক্লিকেই সবার হিসাব পানির মতো পরিষ্কার!&rdquo;
+                &ldquo;ফার্মগেটের মেসে আগে প্রতি মাসের শেষ ৩ দিন খাতা মেলাতে মাথা নষ্ট হতো। Meal Manager নেওয়ার পর এখন ১ ক্লিকেই সবার হিসাব পানির মতো পরিষ্কার!&rdquo;
               </p>
               <div className="mt-2.5 flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full bg-emerald-500 text-slate-950 text-xs font-bold flex items-center justify-center">
@@ -262,7 +262,7 @@ export default function RegisterPage() {
           {/* Right Column: Registration Card */}
           <div className="lg:col-span-7">
             <div className="bg-card text-card-foreground border border-border shadow-xl shadow-emerald-500/5 rounded-3xl p-6 sm:p-8 md:p-10 relative">
-              
+
               {/* Card Header */}
               <div className="mb-6 space-y-1">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-2">
@@ -286,7 +286,7 @@ export default function RegisterPage() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                
+
                 {/* SECTION 1: ORGANIZATION DETAILS */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 pb-1 border-b border-border/60">
@@ -312,11 +312,10 @@ export default function RegisterPage() {
                             key={type.id}
                             type="button"
                             onClick={() => setFormData({ ...formData, organizationType: type.id })}
-                            className={`p-3 rounded-xl border text-left transition-all flex flex-col items-center sm:items-start text-center sm:text-left relative ${
-                              isSelected
+                            className={`p-3 rounded-xl border text-left transition-all flex flex-col items-center sm:items-start text-center sm:text-left relative ${isSelected
                                 ? 'border-primary bg-primary/10 text-primary ring-2 ring-primary/20 shadow-xs'
                                 : 'border-border bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground'
-                            }`}
+                              }`}
                           >
                             <IconComponent className={`w-5 h-5 mb-1.5 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
                             <span className="text-xs font-bold block">{type.title}</span>
@@ -463,7 +462,7 @@ export default function RegisterPage() {
 
       {/* Footer copyright */}
       <footer className="w-full py-4 text-center text-xs text-muted-foreground border-t border-border/40">
-        © {new Date().getFullYear()} MealManager BD — বাংলাদেশের সেরা মেস ও হোস্টেল মিল ম্যানেজমেন্ট সিস্টেম
+        © {new Date().getFullYear()} Meal Manager BD — বাংলাদেশের সেরা মেস ও হোস্টেল মিল ম্যানেজমেন্ট সিস্টেম
       </footer>
     </div>
   );

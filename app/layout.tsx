@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MealManager - বাংলাদেশের #১ মেস ও হোস্টেল মিল ম্যানেজমেন্ট সফটওয়্যার | Best Mess Management System BD",
+  title: "Meal Manager - বাংলাদেশের #১ মেস ও হোস্টেল মিল ম্যানেজমেন্ট সফটওয়্যার | Best Mess Management System BD",
   description: "মেসের খাতার হিসাব, দৈনিক বাজার, মিল রেট ও মেম্বারদের ব্যালেন্সের সেরা সফটওয়্যার। ঝামেলামুক্ত মেস পরিচালনার জন্য আজই ফ্রি ব্যবহার করুন। Calculate meal rates, track daily bazar, member deposits & monthly expenses effortlessly in Bangladesh.",
   keywords: [
     "মেস ম্যানেজমেন্ট সফটওয়্যার",
@@ -25,9 +25,9 @@ export const metadata: Metadata = {
     "meal rate hisab bangla",
     "student hostel software"
   ],
-  authors: [{ name: "MealManager BD" }],
-  creator: "MealManager",
-  publisher: "MealManager",
+  authors: [{ name: "Meal Manager BD" }],
+  creator: "Meal Manager",
+  publisher: "Meal Manager",
   formatDetection: {
     email: false,
     address: false,
@@ -38,32 +38,32 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "MealManager - বাংলাদেশের #১ মেস ও হোস্টেল মিল ম্যানেজমেন্ট সফটওয়্যার",
+    title: "Meal Manager - বাংলাদেশের #১ মেস ও হোস্টেল মিল ম্যানেজমেন্ট সফটওয়্যার",
     description: "খাতার ঝামেলা বন্ধ করুন! মেসের মিল, বাজার খরচ ও মিল রেট হিসাব করুন মুহূর্তেই।",
     url: "/",
-    siteName: "MealManager BD",
+    siteName: "Meal Manager BD",
     locale: "bn_BD",
     type: "website",
     images: [
       {
-        url: "/assets/admin-dashboard.png",
+        url: "/assets/dashboard-preview-v2.png",
         width: 1200,
         height: 630,
-        alt: "MealManager Dashboard - Best Mess Management System in Bangladesh",
+        alt: "Meal Manager Dashboard - Best Mess Management System in Bangladesh",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MealManager - মেস ম্যানেজমেন্ট সফটওয়্যার বাংলাদেশ",
+    title: "Meal Manager - মেস ম্যানেজমেন্ট সফটওয়্যার বাংলাদেশ",
     description: "খাতার ঝামেলা বন্ধ করুন! মেসের মিল, বাজার খরচ ও মিল রেট হিসাব করুন স্মার্টলি।",
-    images: ["/assets/admin-dashboard.png"],
+    images: ["/assets/dashboard-preview-v2.png"],
   },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "MealManager",
+    title: "Meal Manager",
   },
 };
 
@@ -110,7 +110,7 @@ export default async function RootLayout({
               {
                 "@context": "https://schema.org",
                 "@type": "SoftwareApplication",
-                "name": "MealManager",
+                "name": "Meal Manager",
                 "operatingSystem": "Web, Android, iOS",
                 "applicationCategory": "BusinessApplication, Productivity",
                 "description": "বাংলাদেশের সেরা মেস, হোস্টেল ও ব্যাচেলর মিল ম্যানেজমেন্ট এবং দৈনিক বাজার হিসাবের সফটওয়্যার।",
@@ -134,12 +134,12 @@ export default async function RootLayout({
                     "name": "মেস মিল ম্যানেজমেন্ট সফটওয়্যার কিভাবে কাজ করে?",
                     "acceptedAnswer": {
                       "@type": "Answer",
-                      "text": "MealManager এর মাধ্যমে দৈনিক বাজারের খরচ ও সদস্যের মিল সংখ্যা ইনপুট দিলে সিস্টেম স্বয়ংক্রিয়ভাবে মিল রেট, সদস্যের মাসিক খরচ ও ব্যালেন্স হিসেব করে।",
+                      "text": "Meal Manager এর মাধ্যমে দৈনিক বাজারের খরচ ও সদস্যের মিল সংখ্যা ইনপুট দিলে সিস্টেম স্বয়ংক্রিয়ভাবে মিল রেট, সদস্যের মাসিক খরচ ও ব্যালেন্স হিসেব করে।",
                     },
                   },
                   {
                     "@type": "Question",
-                    "name": "MealManager কি সম্পূর্ণ ফ্রিতে ব্যবহার করা যায়?",
+                    "name": "Meal Manager কি সম্পূর্ণ ফ্রিতে ব্যবহার করা যায়?",
                     "acceptedAnswer": {
                       "@type": "Answer",
                       "text": "হ্যাঁ, ব্যাচেলর মেস ও হোস্টেলের জন্য মৌলিক সেবাগুলো সম্পূর্ণ বিনামূল্যে ব্যবহার করা যায়।",
