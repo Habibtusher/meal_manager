@@ -59,7 +59,9 @@ export async function addSharedCost(data: AddSharedCostInput) {
     });
 
     revalidatePath('/admin/expenses');
+    revalidatePath('/admin/dashboard');
     revalidatePath('/admin/reports');
+    revalidatePath('/member/dashboard');
     return { success: true };
   } catch (error) {
     console.error('Failed to add shared cost:', error);
@@ -119,7 +121,9 @@ export async function updateSharedCost(
     });
 
     revalidatePath('/admin/expenses');
+    revalidatePath('/admin/dashboard');
     revalidatePath('/admin/reports');
+    revalidatePath('/member/dashboard');
     return { success: true };
   } catch (error) {
     console.error('Failed to update shared cost:', error);
@@ -138,7 +142,9 @@ export async function deleteSharedCost(id: string) {
     });
 
     revalidatePath('/admin/expenses');
+    revalidatePath('/admin/dashboard');
     revalidatePath('/admin/reports');
+    revalidatePath('/member/dashboard');
     return { success: true };
   } catch (error) {
     console.error('Failed to delete shared cost:', error);

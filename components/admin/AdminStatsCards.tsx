@@ -1,6 +1,6 @@
 import { getAdminDashboardStats } from "@/lib/services/admin";
 import { Card, CardContent } from "@/components/ui/Card";
-import { Wallet, Utensils, TrendingUp, Users } from "lucide-react";
+import { Wallet, Utensils, TrendingUp, Users, Receipt, ArrowDownRight } from "lucide-react";
 import { formatCurrency, cn } from "@/lib/utils";
 import { getTranslations } from 'next-intl/server';
 
@@ -14,7 +14,9 @@ export async function AdminStatsCards({ organizationId, month, year }: AdminStat
     const {
         memberCount,
         availableBalance,
+        totalDeposits,
         totalExpenses,
+        totalSharedCosts,
         totalMeals,
         mealRate
     } = await getAdminDashboardStats(organizationId, month, year);
@@ -30,11 +32,25 @@ export async function AdminStatsCards({ organizationId, month, year }: AdminStat
             bg: availableBalance >= 0 ? 'bg-green-500/10' : 'bg-red-500/10',
         },
         {
+            label: t('totalDeposits'),
+            value: formatCurrency(totalDeposits),
+            icon: ArrowDownRight,
+            color: 'text-emerald-500',
+            bg: 'bg-emerald-500/10',
+        },
+        {
             label: t('totalExpenses'),
             value: formatCurrency(totalExpenses),
             icon: Wallet,
             color: 'text-red-500',
             bg: 'bg-red-500/10',
+        },
+        {
+            label: t('totalSharedCosts'),
+            value: formatCurrency(totalSharedCosts),
+            icon: Receipt,
+            color: 'text-amber-500',
+            bg: 'bg-amber-500/10',
         },
         {
             label: t('totalMeals'),
@@ -60,7 +76,7 @@ export async function AdminStatsCards({ organizationId, month, year }: AdminStat
     ];
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
             {stats.map((stat) => (
                 <Card key={stat.label} hover>
                     <CardContent className="pt-6">

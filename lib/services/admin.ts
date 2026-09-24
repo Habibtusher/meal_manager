@@ -45,6 +45,13 @@ export const getAdminDashboardStats = cache(async (organizationId: string, month
                     createdAt: { gte: startDate, lte: endDate }
                 },
                 _sum: { amount: true }
+            }),
+            prisma.sharedCost.aggregate({
+                where: {
+                    organizationId,
+                    date: { gte: startDate, lte: endDate }
+                },
+                _sum: { amount: true }
             })
         ])
     ]);
@@ -52,8 +59,9 @@ export const getAdminDashboardStats = cache(async (organizationId: string, month
     const totalExpenses = totalStats[0]._sum.amount || 0;
     const totalMeals = totalStats[1]._sum.count || 0;
     const totalDeposits = totalStats[2]._sum.amount || 0;
+    const totalSharedCosts = totalStats[3]._sum.amount || 0;
 
-    const availableBalance = totalDeposits - totalExpenses;
+    const availableBalance = totalDeposits - (totalExpenses + totalSharedCosts);
     const mealRate = totalMeals > 0 ? totalExpenses / totalMeals : 0;
 
     return {
@@ -61,7 +69,9 @@ export const getAdminDashboardStats = cache(async (organizationId: string, month
         participationStats,
         membersWithBalance,
         availableBalance,
+        totalDeposits,
         totalExpenses,
+        totalSharedCosts,
         totalMeals,
         mealRate
     };

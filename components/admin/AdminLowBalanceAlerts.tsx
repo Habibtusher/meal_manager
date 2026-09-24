@@ -36,6 +36,8 @@ export async function AdminLowBalanceAlerts({ organizationId, month, year }: Adm
                                 <tr className="border-b border-border">
                                     <th className="text-left py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('tableMember')}</th>
                                     <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('tableTotalDeposit')}</th>
+                                    <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('tableMealCost')}</th>
+                                    <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('tableSharedCost')}</th>
                                     <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('tableTotalCost')}</th>
                                     <th className="text-right py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('tableAdjustedBalance')}</th>
                                     <th className="text-center py-2 px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('tableAction')}</th>
@@ -56,7 +58,13 @@ export async function AdminLowBalanceAlerts({ organizationId, month, year }: Adm
                                             <td className="py-3 px-3 text-right text-foreground">
                                                 {formatCurrency(user.totalDeposited)}
                                             </td>
-                                            <td className="py-3 px-3 text-right text-red-500">
+                                            <td className="py-3 px-3 text-right text-muted-foreground">
+                                                {formatCurrency(user.totalMealCost)}
+                                            </td>
+                                            <td className="py-3 px-3 text-right text-amber-500">
+                                                {formatCurrency(user.totalSharedCost)}
+                                            </td>
+                                            <td className="py-3 px-3 text-right text-red-500 font-medium">
                                                 {formatCurrency(user.totalCost)}
                                             </td>
                                             <td className={`py-3 px-3 text-right font-bold ${isLowBalance ? 'text-red-600' : 'text-green-600'}`}>

@@ -200,7 +200,7 @@ export async function getMembersWithBalance(
   organizationId: string,
   month?: number,
   year?: number
-): Promise<Array<{ id: string; name: string; email: string; totalDeposited: number; totalCost: number; adjustedBalance: number }>> {
+): Promise<Array<{ id: string; name: string; email: string; totalDeposited: number; totalMealCost: number; totalSharedCost: number; totalCost: number; adjustedBalance: number }>> {
   // Default to current month if not provided
   const now = new Date();
   const m = month || (now.getMonth() + 1);
@@ -280,6 +280,8 @@ export async function getMembersWithBalance(
       name: member.name,
       email: member.email,
       totalDeposited,
+      totalMealCost,
+      totalSharedCost,
       totalCost,
       adjustedBalance,
     };
