@@ -47,7 +47,7 @@ export default function LandingPage() {
     },
     {
       q: 'বুয়া, গ্যাস, ওয়াইফাই ও রুম ভাড়ার মতো শেয়ার্ড খরচ কিভাবে হিসাব হয়?',
-      a: 'MealManager-এ বিশেষ শেয়ার্ড কস্ট ফিচার রয়েছে। এখানে গ্যাস, বুয়া বা ওয়াইফাই বিল এন্ট্রি করলে তা স্বয়ংক্রিয়ভাবে সব মেম্বারদের মাঝে সমানভাবে বন্টন হয়ে যায়।'
+      a: 'Meal Manager-এ বিশেষ শেয়ার্ড কস্ট ফিচার রয়েছে। এখানে গ্যাস, বুয়া বা ওয়াইফাই বিল এন্ট্রি করলে তা স্বয়ংক্রিয়ভাবে সব মেম্বারদের মাঝে সমানভাবে বন্টন হয়ে যায়।'
     },
     {
       q: 'মেম্বারদের অগ্রিম জমার হিসাব কিভাবে রাখা হয়?',
@@ -76,7 +76,7 @@ export default function LandingPage() {
           <div className="relative h-10 w-10 md:h-11 md:w-11 group-hover:scale-105 transition-transform">
             <Image
               src="/icons/icon-512x512.png"
-              alt="MealManager Logo"
+              alt="Meal Manager Logo"
               width={48}
               height={48}
               className="rounded-xl shadow-lg shadow-emerald-500/20"
@@ -84,7 +84,7 @@ export default function LandingPage() {
           </div>
           <div className="flex flex-col">
             <span className="font-extrabold text-xl md:text-2xl tracking-tight text-white flex items-center gap-1.5">
-              MealManager
+              Meal Manager
               <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                 BD
               </span>
@@ -259,37 +259,37 @@ export default function LandingPage() {
               {/* Right Column: Interactive Visual Showcase */}
               <div className="flex-1 w-full max-w-xl lg:max-w-none relative">
                 <div className="relative p-2 bg-gradient-to-b from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/80 rounded-[28px] shadow-2xl overflow-hidden group">
-                  <div className="relative rounded-[22px] overflow-hidden aspect-[16/10] bg-slate-950">
+                  <div className="relative rounded-[22px] overflow-hidden aspect-[16/9] bg-slate-950">
                     <Image
-                      src="/assets/admin-dashboard.png"
-                      alt="MealManager Bengali Mess Dashboard"
-                      className="object-cover object-top w-full h-full transform transition-transform duration-700 group-hover:scale-105 opacity-90"
-                      width={1200}
-                      height={750}
+                      src="/assets/dashboard-preview-v2.png"
+                      alt="Meal Manager Bengali Mess Dashboard"
+                      className="object-cover object-top w-full h-full transform transition-transform duration-700 group-hover:scale-105 opacity-95"
+                      width={1280}
+                      height={720}
                       priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
                   </div>
 
                   {/* Floating Stat Badge 1: Meal Rate */}
-                  <div className="absolute top-6 -left-4 bg-slate-900/90 border border-emerald-500/40 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce duration-1000">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                  <div className="absolute top-4 sm:top-6 left-2 sm:-left-4 bg-slate-900/90 border border-emerald-500/40 backdrop-blur-md px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-2xl shadow-xl flex items-center gap-2.5 sm:gap-3 animate-bounce duration-1000">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm sm:text-base">
                       ৳
                     </div>
                     <div>
-                      <p className="text-[10px] text-slate-400 uppercase font-semibold">আজকের মিল রেট</p>
-                      <p className="text-base font-black text-emerald-400 font-mono">৳ ৫২.৫০</p>
+                      <p className="text-[9px] sm:text-[10px] text-slate-400 uppercase font-semibold">লাইভ মিল রেট</p>
+                      <p className="text-sm sm:text-base font-black text-emerald-400 font-mono">৳ ৫৯.১৬</p>
                     </div>
                   </div>
 
                   {/* Floating Stat Badge 2: Member Deposit */}
-                  <div className="absolute bottom-8 -right-4 bg-slate-900/90 border border-blue-500/40 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
+                  <div className="absolute bottom-4 sm:bottom-8 right-2 sm:-right-4 bg-slate-900/90 border border-blue-500/40 backdrop-blur-md px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-2xl shadow-xl flex items-center gap-2.5 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
                       <Wallet className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="text-[10px] text-slate-400 uppercase font-semibold">অগ্রিম মেম্বার জমা</p>
-                      <p className="text-sm font-bold text-white">৳ ৩,৫০০ (তানভীর আহমেদ)</p>
+                      <p className="text-[9px] sm:text-[10px] text-slate-400 uppercase font-semibold">অগ্রিম মেম্বার জমা</p>
+                      <p className="text-xs sm:text-sm font-bold text-white">৳ ৩,৫০০ (তানভীর আহমেদ)</p>
                     </div>
                   </div>
                 </div>
@@ -308,15 +308,15 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* SECTION: MANUAL KHATA VS MEALMANAGER COMPARISON */}
+        {/* SECTION: MANUAL KHATA VS Meal Manager COMPARISON */}
         <section id="comparison" className="w-full py-16 md:py-24 bg-slate-950 relative">
           <div className="container px-4 md:px-8 mx-auto">
             <div className="max-w-3xl mx-auto text-center mb-14 md:mb-18 space-y-3">
               <span className="text-emerald-400 font-bold uppercase tracking-widest text-xs">
-                কেন আপনি MealManager বেছে নেবেন?
+                কেন আপনি Meal Manager বেছে নেবেন?
               </span>
               <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">
-                পুরনো খাতা বনাম ডিজিটাল MealManager
+                পুরনো খাতা বনাম ডিজিটাল Meal Manager
               </h2>
               <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto">
                 মাসের শেষে খাতা নিয়ে ঘণ্টার পর ঘণ্টা তর্কাতর্কি আর হিসাব না মেলার দিন এখন অতীত।
@@ -355,7 +355,7 @@ export default function LandingPage() {
                 </ul>
               </div>
 
-              {/* MealManager Smart Way */}
+              {/* Meal Manager Smart Way */}
               <div className="bg-emerald-950/20 border border-emerald-500/30 rounded-3xl p-6 md:p-8 space-y-5 shadow-xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
                 <div className="flex items-center gap-3 border-b border-emerald-500/30 pb-4">
@@ -363,7 +363,7 @@ export default function LandingPage() {
                     <CheckCircle2 className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-white">MealManager স্মার্ট সমাধান</h3>
+                    <h3 className="text-lg font-bold text-white">Meal Manager স্মার্ট সমাধান</h3>
                     <p className="text-xs text-emerald-400">১০০% স্বচ্ছ, স্বয়ংক্রিয় ও নিখুঁত</p>
                   </div>
                 </div>
@@ -470,7 +470,7 @@ export default function LandingPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
               <TestimonialCard
-                quote="ফার্মগেটের মেসে আগে প্রতি মাসের শেষ ৩ দিন খাতা আর ভাউচার মেলাতে মেলাতে মাথা নষ্ট হতো। MealManager নেওয়ার পর এখন ১ ক্লিকেই সবার মিল রেট ও বকেয়া চোখের সামনে চলে আসে।"
+                quote="ফার্মগেটের মেসে আগে প্রতি মাসের শেষ ৩ দিন খাতা আর ভাউচার মেলাতে মেলাতে মাথা নষ্ট হতো। Meal Manager নেওয়ার পর এখন ১ ক্লিকেই সবার মিল রেট ও বকেয়া চোখের সামনে চলে আসে।"
                 name="তানভীর আহমেদ"
                 role="মেস ম্যানেজার, ইন্দিরা রোড, ফার্মগেট"
               />
@@ -571,12 +571,12 @@ export default function LandingPage() {
               <Link className="flex items-center gap-3" href="/">
                 <Image
                   src="/icons/icon-512x512.png"
-                  alt="MealManager Logo"
+                  alt="Meal Manager Logo"
                   width={36}
                   height={36}
                   className="rounded-xl shadow-md"
                 />
-                <span className="font-bold text-xl tracking-tight text-white">MealManager BD</span>
+                <span className="font-bold text-xl tracking-tight text-white">Meal Manager BD</span>
               </Link>
               <p className="text-slate-400 max-w-sm leading-relaxed text-sm">
                 বাংলাদেশের মেস, হোস্টেল ও ব্যাচেলরদের জন্য আধুনিক মিল ও বাজার হিসাবের সেরা সফটওয়্যার।
@@ -609,13 +609,13 @@ export default function LandingPage() {
               <ul className="space-y-2 text-xs md:text-sm">
                 <li><span className="text-slate-500">গোপনীয়তা নীতি (Privacy)</span></li>
                 <li><span className="text-slate-500">ব্যবহারের শর্তাবলী (Terms)</span></li>
-                <li><span className="text-slate-500">সহায়তা: support@mealmanager.app</span></li>
+                <li><span className="text-slate-500">সহায়তা: dev.habiburrahman@gmail.com</span></li>
               </ul>
             </div>
           </div>
 
           <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500 text-center sm:text-left">
-            <p>© {new Date().getFullYear()} MealManager BD. সর্বস্বত্ব সংরক্ষিত।</p>
+            <p>© {new Date().getFullYear()} Meal Manager BD. সর্বস্বত্ব সংরক্ষিত।</p>
             <p>Made with ❤️ for Bangladeshi bachelor messes & hostels.</p>
           </div>
         </div>

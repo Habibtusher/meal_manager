@@ -146,6 +146,8 @@
     "facebookProfile": "ফেসবুক প্রোফাইল",
     "superAdminPanel": "সুপার অ্যাডমিন প্যানেল",
     "adminDashboard": "অ্যাডমিন ড্যাশবোর্ড",
-    "memberDashboard": "সদস্য ড্যাশবোর্ড"
+    "memberDashboard": "সদস্য ড্যাশবোর্ড",
+    "addMeal": "মিল এন্ট্রি",
+    "addCost": "খরচ এন্ট্রি"
   }
 }

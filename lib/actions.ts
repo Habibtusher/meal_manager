@@ -4,7 +4,7 @@ import { auth } from './auth';
 import prisma from './prisma';
 import { MealStatus, MealType } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-import { creditWallet } from './calculations';
+import { creditWallet, getMembersWithBalance } from './calculations';
 import bcrypt from 'bcryptjs';
 import { sendMemberAddedWelcomeEmail, sendLowBalanceAlertEmail } from './email';
 
@@ -699,26 +699,27 @@ export async function sendLowBalanceAlert(userId: string): Promise<{ success: bo
   }
 
   try {
-    const [user, organization] = await Promise.all([
-      prisma.user.findFirst({
-        where: {
-          id: userId,
-          organizationId: session.user.organizationId,
-        },
-        select: { name: true, email: true, walletBalance: true },
-      }),
+    const now = new Date();
+    const [membersWithBalance, organization] = await Promise.all([
+      getMembersWithBalance(
+        session.user.organizationId,
+        now.getMonth() + 1,
+        now.getFullYear()
+      ),
       prisma.organization.findUnique({
         where: { id: session.user.organizationId },
         select: { name: true },
       }),
     ]);
 
-    if (!user) return { success: false, error: 'Member not found' };
+    const member = membersWithBalance.find((m) => m.id === userId);
+    if (!member) return { success: false, error: 'Member not found' };
 
+    // Use the actual adjusted balance (totalDeposited - totalCost), not the raw walletBalance field
     const result = await sendLowBalanceAlertEmail(
-      user.name,
-      user.email,
-      user.walletBalance,
+      member.name,
+      member.email,
+      member.adjustedBalance,
       organization?.name || 'Meal Manager'
     );
 
