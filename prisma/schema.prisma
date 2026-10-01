@@ -19,6 +19,7 @@ model Organization {
   sharedCosts        SharedCost[]
   users              User[]
   walletTransactions WalletTransaction[]
+  monthSettlements   MonthSettlement[]
 
   @@map("organizations")
 }
@@ -41,6 +42,7 @@ model User {
   supportTickets        SupportTicket[]
   organization          Organization?          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   walletTransactions    WalletTransaction[]
+  memberSettlements     MemberSettlement[]
 
   @@index([organizationId])
   @@index([email])
@@ -182,4 +184,49 @@ enum MealStatus {
 enum TransactionType {
   CREDIT
   DEBIT
+}
+
+model MonthSettlement {
+  id                String             @id @default(cuid())
+  organizationId    String
+  month             Int
+  year              Int
+  status            String             @default("CLOSED")
+  totalExpenses     Float
+  totalMeals        Float
+  mealRate          Float
+  closedAt          DateTime           @default(now())
+  closedById        String
+  notes             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  organization      Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  memberSettlements MemberSettlement[]
+
+  @@unique([organizationId, month, year])
+  @@index([organizationId, year, month])
+  @@map("month_settlements")
+}
+
+model MemberSettlement {
+  id              String          @id @default(cuid())
+  settlementId    String
+  userId          String
+  mealsConsumed   Float           @default(0)
+  totalMealCost   Float           @default(0)
+  totalSharedCost Float           @default(0)
+  totalCost       Float           @default(0)
+  totalDeposited  Float           @default(0)
+  netBalance      Float           @default(0)
+  actionTaken     String          // "CARRY_FORWARD", "REFUNDED", "DUE_PAID", "DUE_FORGIVEN", "BALANCED"
+  actionAmount    Float           @default(0)
+  isContinuing    Boolean         @default(true)
+  settledAt       DateTime        @default(now())
+  notes           String?
+  settlement      MonthSettlement @relation(fields: [settlementId], references: [id], onDelete: Cascade)
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([settlementId])
+  @@index([userId])
+  @@map("member_settlements")
 }

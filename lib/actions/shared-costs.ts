@@ -3,7 +3,7 @@
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
-
+import { isMonthClosed } from './settlement';
 
 interface SharedCostAllocationInput {
   userId: string;
@@ -24,6 +24,10 @@ export async function addSharedCost(data: AddSharedCostInput) {
     if (!session?.user?.organizationId) return { success: false, error: 'Unauthorized' };
 
     const { amount, description, date, category, allocations } = data;
+
+    if (await isMonthClosed(session.user.organizationId, date)) {
+      return { success: false, error: 'Cannot add shared costs to a closed & settled month.' };
+    }
 
     // Validate total matches allocations (optional, but good practice)
     const totalAllocated = allocations.reduce((sum, a) => sum + a.amount, 0);
@@ -85,6 +89,10 @@ export async function updateSharedCost(
     const { description, date, category, allocations } = data;
     const totalAmount = allocations.reduce((sum, a) => sum + a.amount, 0);
 
+    if (await isMonthClosed(session.user.organizationId, date)) {
+      return { success: false, error: 'Cannot update shared costs in a closed & settled month.' };
+    }
+
     await prisma.$transaction(async (tx) => {
       // Update shared cost
       // @ts-ignore: Stale Prisma types
@@ -135,6 +143,15 @@ export async function deleteSharedCost(id: string) {
   try {
     const session = await auth();
     if (!session?.user?.organizationId) return { success: false, error: 'Unauthorized' };
+
+    const existing = await prisma.sharedCost.findUnique({
+      where: { id, organizationId: session.user.organizationId as string },
+      select: { date: true },
+    });
+
+    if (existing && (await isMonthClosed(session.user.organizationId, existing.date))) {
+      return { success: false, error: 'Cannot delete shared costs from a closed & settled month.' };
+    }
 
     // @ts-ignore: Stale Prisma types
     await prisma.sharedCost.delete({

@@ -2,7 +2,10 @@ import prisma from '@/lib/prisma';
 import { cache } from 'react';
 
 export const getOrganizationReports = cache(async (organizationId: string, startDate: Date, endDate: Date) => {
-    const [expenses, members] = await Promise.all([
+    const month = startDate.getUTCMonth() + 1;
+    const year = startDate.getUTCFullYear();
+
+    const [expenses, members, settlement] = await Promise.all([
         prisma.expense.findMany({
             where: {
                 organizationId,
@@ -26,7 +29,6 @@ export const getOrganizationReports = cache(async (organizationId: string, start
                 },
                 walletTransactions: {
                     where: {
-                        type: 'CREDIT',
                         createdAt: {
                             gte: startDate,
                             lte: endDate
@@ -48,7 +50,19 @@ export const getOrganizationReports = cache(async (organizationId: string, start
                     }
                 }
             }
-        }) as unknown as any
+        }) as unknown as any,
+        prisma.monthSettlement.findUnique({
+            where: {
+                organizationId_month_year: {
+                    organizationId,
+                    month,
+                    year
+                }
+            },
+            include: {
+                memberSettlements: true
+            }
+        })
     ]);
 
     const totalExpenses = expenses.reduce((sum: number, exp: any) => sum + Number(exp.amount), 0);
@@ -73,18 +87,29 @@ export const getOrganizationReports = cache(async (organizationId: string, start
         }));
         
         const totalCost = totalMealCost + totalSharedCost;
-        const totalDeposited = member.walletTransactions.reduce((sum: number, t: any) => sum + Number(t.amount), 0);
+        const credits = member.walletTransactions
+            .filter((t: any) => t.type === 'CREDIT')
+            .reduce((sum: number, t: any) => sum + Number(t.amount), 0);
+        const debits = member.walletTransactions
+            .filter((t: any) => t.type === 'DEBIT')
+            .reduce((sum: number, t: any) => sum + Number(t.amount), 0);
+        const totalDeposited = credits - debits;
+
+        const memberSettlementRecord = settlement?.memberSettlements?.find((s: any) => s.userId === member.id);
 
         return {
             id: member.id,
             name: member.name,
+            isActive: member.isActive,
             mealsConsumed,
             totalMealCost,
             totalSharedCost,
             sharedCostDetails,
             totalCost,
             totalDeposited,
-            currentBalance: Number(member.walletBalance)
+            adjustedBalance: totalDeposited - totalCost,
+            currentBalance: Number(member.walletBalance),
+            settlementRecord: memberSettlementRecord || null
         };
     });
 
@@ -93,6 +118,8 @@ export const getOrganizationReports = cache(async (organizationId: string, start
         totalMeals,
         mealRate,
         reportData,
-        memberCount: members.length
+        memberCount: members.length,
+        isSettled: !!settlement,
+        settlement
     };
 });

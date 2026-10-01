@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { createMember } from '@/lib/actions';
 import { toast } from 'react-hot-toast';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, X } from 'lucide-react';
 
 export default function AddMemberModal() {
     const [isOpen, setIsOpen] = useState(false);
@@ -52,8 +52,8 @@ export default function AddMemberModal() {
             <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200 border border-border">
                 <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/50">
                     <h2 className="text-xl font-bold text-foreground">Add New Member</h2>
-                    <button onClick={() => setIsOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
-                        <UserPlus className="w-5 h-5 rotate-45" />
+                    <button onClick={() => setIsOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-lg hover:bg-muted" title="Close">
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 

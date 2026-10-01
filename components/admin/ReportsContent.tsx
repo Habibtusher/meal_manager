@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { formatCurrency, cn } from "@/lib/utils";
 import ExportReportsButton from "@/components/admin/ExportReportsButton";
 import SharedCostTooltip from "@/components/admin/SharedCostTooltip";
+import MonthSettlementBanner from "@/components/admin/settlement/MonthSettlementBanner";
 import { getTranslations } from 'next-intl/server';
 
 interface ReportsContentProps {
@@ -20,7 +21,7 @@ export async function ReportsContent({
     startDate,
     endDate
 }: ReportsContentProps) {
-    const { totalExpenses, totalMeals, mealRate, reportData, memberCount } = await getOrganizationReports(
+    const { totalExpenses, totalMeals, mealRate, reportData, memberCount, isSettled, settlement } = await getOrganizationReports(
         organizationId,
         startDate,
         endDate
@@ -31,6 +32,16 @@ export async function ReportsContent({
 
     return (
         <div className="space-y-6">
+            <MonthSettlementBanner
+                month={selectedMonth}
+                year={selectedYear}
+                isSettled={isSettled}
+                settlement={settlement}
+                totalExpenses={totalExpenses}
+                totalMeals={totalMeals}
+                mealRate={mealRate}
+                members={reportData}
+            />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card className="bg-card border-blue-100 dark:border-blue-900/30">

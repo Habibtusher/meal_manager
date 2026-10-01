@@ -144,12 +144,12 @@ export async function creditWallet(
   description: string,
   organizationId: string,
   date: Date
-): Promise<void> {
-  await prisma.$transaction(async (tx) => {
-    // Get current balance
+): Promise<{ previousBalance: number; newBalance: number; user: { name: string; email: string } }> {
+  return await prisma.$transaction(async (tx) => {
+    // Get current balance and user details
     const user = await tx.user.findUnique({
       where: { id: userId },
-      select: { walletBalance: true },
+      select: { walletBalance: true, name: true, email: true },
     });
 
     if (!user) {
@@ -162,7 +162,7 @@ export async function creditWallet(
     // Update user balance
     await tx.user.update({
       where: { id: userId },
-      data: { walletBalance:  newBalance  },
+      data: { walletBalance: newBalance },
     });
 
     // Create transaction record
@@ -174,9 +174,18 @@ export async function creditWallet(
         amount,
         description,
         balanceAfter: newBalance,
-        createdAt: date
+        createdAt: date,
       },
     });
+
+    return {
+      previousBalance: currentBalance,
+      newBalance,
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+    };
   });
 }
 
@@ -228,10 +237,9 @@ export async function getMembersWithBalance(
       },
       walletTransactions: {
         where: {
-          type: 'CREDIT',
           createdAt: { gte: startDate, lte: endDate },
         },
-        select: { amount: true },
+        select: { type: true, amount: true },
       },
       sharedCostAllocations: {
         where: {
@@ -269,10 +277,14 @@ export async function getMembersWithBalance(
       0
     );
     const totalCost = totalMealCost + totalSharedCost;
-    const totalDeposited = member.walletTransactions.reduce(
-      (sum, t) => sum + Number(t.amount),
-      0
-    );
+
+    const credits = member.walletTransactions
+      .filter((t) => t.type === 'CREDIT')
+      .reduce((sum, t) => sum + Number(t.amount), 0);
+    const debits = member.walletTransactions
+      .filter((t) => t.type === 'DEBIT')
+      .reduce((sum, t) => sum + Number(t.amount), 0);
+    const totalDeposited = credits - debits;
     const adjustedBalance = totalDeposited - totalCost;
 
     return {

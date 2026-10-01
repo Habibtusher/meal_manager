@@ -6,7 +6,8 @@ import { MealStatus, MealType } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { creditWallet, getMembersWithBalance } from './calculations';
 import bcrypt from 'bcryptjs';
-import { sendMemberAddedWelcomeEmail, sendLowBalanceAlertEmail } from './email';
+import { sendMemberAddedWelcomeEmail, sendLowBalanceAlertEmail, sendDepositConfirmationEmail } from './email';
+import { isMonthClosed } from './actions/settlement';
 
 /**
  * Mark meal participation for a user
@@ -88,6 +89,10 @@ export async function batchMarkAttendance(
   const organizationId = session.user.organizationId;
   const startOfDay = new Date(date);
   startOfDay.setUTCHours(0, 0, 0, 0);
+
+  if (await isMonthClosed(organizationId, startOfDay)) {
+    return { success: false, error: 'Cannot modify attendance for a month that has been closed & settled.' };
+  }
 
   try {
     // Optimization: Ensure all needed schedules exist efficiently
@@ -173,8 +178,34 @@ export async function addWalletCredit(userId: string, amount: number, descriptio
   const session = await auth();
   if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
 
+  if (await isMonthClosed(session.user.organizationId, date)) {
+    return { success: false, error: 'Cannot add transactions to a month that has been closed & settled.' };
+  }
+
   try {
-    await creditWallet(userId, amount, description, session.user.organizationId, date);
+    const [creditResult, organization] = await Promise.all([
+      creditWallet(userId, amount, description, session.user.organizationId, date),
+      prisma.organization.findUnique({
+        where: { id: session.user.organizationId },
+        select: { name: true },
+      }),
+    ]);
+
+    // Send deposit confirmation email to the user (fire-and-forget)
+    if (creditResult.user?.email) {
+      sendDepositConfirmationEmail({
+        name: creditResult.user.name,
+        organizationName: organization?.name || 'Meal Manager',
+        amount,
+        description,
+        previousBalance: creditResult.previousBalance,
+        newBalance: creditResult.newBalance,
+        date,
+      }, creditResult.user.email).catch((err) =>
+        console.error('[Email] Failed to send deposit confirmation email:', err)
+      );
+    }
+
     revalidatePath('/admin/wallet');
     revalidatePath('/admin/members');
     revalidatePath('/admin/dashboard');
@@ -230,6 +261,10 @@ export async function addExpense(data: {
   const session = await auth();
   if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
 
+  if (await isMonthClosed(session.user.organizationId, data.date)) {
+    return { success: false, error: 'Cannot add expenses to a month that has been closed & settled.' };
+  }
+
   try {
     const { paidByUserId, ...expenseData } = data;
 
@@ -243,13 +278,33 @@ export async function addExpense(data: {
 
     // Auto-credit wallet if a member paid out of pocket
     if (paidByUserId) {
-      await creditWallet(
-        paidByUserId,
-        data.amount,
-        `Expense deposit: ${data.description}`,
-        session.user.organizationId,
-        data.date
-      );
+      const [creditResult, organization] = await Promise.all([
+        creditWallet(
+          paidByUserId,
+          data.amount,
+          `Expense deposit: ${data.description}`,
+          session.user.organizationId,
+          data.date
+        ),
+        prisma.organization.findUnique({
+          where: { id: session.user.organizationId },
+          select: { name: true },
+        }),
+      ]);
+
+      if (creditResult.user?.email) {
+        sendDepositConfirmationEmail({
+          name: creditResult.user.name,
+          organizationName: organization?.name || 'Meal Manager',
+          amount: data.amount,
+          description: `Expense deposit: ${data.description}`,
+          previousBalance: creditResult.previousBalance,
+          newBalance: creditResult.newBalance,
+          date: data.date,
+        }, creditResult.user.email).catch((err) =>
+          console.error('[Email] Failed to send expense deposit confirmation email:', err)
+        );
+      }
     }
 
     revalidatePath('/admin/expenses');
@@ -274,6 +329,10 @@ export async function updateExpense(id: string, data: {
 }) {
   const session = await auth();
   if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
+
+  if (await isMonthClosed(session.user.organizationId, data.date)) {
+    return { success: false, error: 'Cannot update expenses in a month that has been closed & settled.' };
+  }
 
   try {
     await prisma.expense.update({
@@ -301,6 +360,14 @@ export async function deleteExpense(id: string): Promise<{ success: boolean; err
   if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
 
   try {
+    const existing = await prisma.expense.findFirst({
+      where: { id, organizationId: session.user.organizationId },
+      select: { date: true },
+    });
+    if (existing && (await isMonthClosed(session.user.organizationId, existing.date))) {
+      return { success: false, error: 'Cannot delete expense from a month that has been closed & settled.' };
+    }
+
     await prisma.expense.delete({
       where: { id, organizationId: session.user.organizationId },
     });
@@ -507,6 +574,10 @@ export async function updateWalletTransaction(id: string, data: {
   const session = await auth();
   if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
 
+  if (await isMonthClosed(session.user.organizationId as string, data.date)) {
+    return { success: false, error: 'Cannot modify transactions in a closed & settled month.' };
+  }
+
   try {
     const result = await prisma.$transaction(async (tx) => {
       const transaction = await tx.walletTransaction.findUnique({
@@ -514,6 +585,10 @@ export async function updateWalletTransaction(id: string, data: {
       });
 
       if (!transaction) throw new Error('Transaction not found');
+
+      if (await isMonthClosed(session.user.organizationId as string, transaction.createdAt)) {
+        throw new Error('Cannot modify transactions in a closed & settled month.');
+      }
 
       const user = await tx.user.findUnique({
         where: { id: transaction.userId },
@@ -570,6 +645,15 @@ export async function deleteWalletTransaction(id: string): Promise<{ success: bo
   if (!session?.user?.organizationId || session.user.role !== 'ADMIN') throw new Error('Unauthorized');
 
   try {
+    const existing = await prisma.walletTransaction.findUnique({
+      where: { id, organizationId: session.user.organizationId as string },
+      select: { createdAt: true },
+    });
+
+    if (existing && (await isMonthClosed(session.user.organizationId as string, existing.createdAt))) {
+      return { success: false, error: 'Cannot delete transactions from a closed & settled month.' };
+    }
+
     const result = await prisma.$transaction(async (tx) => {
       const transaction = await tx.walletTransaction.findUnique({
         where: { id, organizationId: session.user.organizationId as string },

@@ -3,7 +3,12 @@ import {
   welcomeEmailTemplate,
   memberWelcomeEmailTemplate,
   lowBalanceAlertTemplate,
+  monthSettlementEmailTemplate,
+  MonthSettlementEmailParams,
+  depositConfirmationEmailTemplate,
+  DepositConfirmationEmailParams,
 } from './email-templates';
+import { formatCurrency } from './utils';
 
 const APP_NAME = process.env.APP_NAME || 'Meal Manager';
 
@@ -98,3 +103,41 @@ export async function sendLowBalanceAlertEmail(
   const html = lowBalanceAlertTemplate(name, balance, organizationName);
   return sendEmail(email, `⚠️ Low Balance Alert — ${APP_NAME}`, html);
 }
+
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+/**
+ * Send month settlement statement email to a member
+ */
+export async function sendMonthSettlementEmail(
+  data: MonthSettlementEmailParams,
+  email: string
+): Promise<{ success: boolean; error?: string }> {
+  const monthName = MONTH_NAMES[data.month - 1];
+  const html = monthSettlementEmailTemplate(data);
+  return sendEmail(
+    email,
+    `📋 Month Settlement Statement: ${monthName} ${data.year} — ${data.organizationName}`,
+    html
+  );
+}
+
+/**
+ * Send deposit confirmation email to a member
+ */
+export async function sendDepositConfirmationEmail(
+  data: DepositConfirmationEmailParams,
+  email: string
+): Promise<{ success: boolean; error?: string }> {
+  const html = depositConfirmationEmailTemplate(data);
+  return sendEmail(
+    email,
+    `💰 Deposit Confirmed (+${formatCurrency(data.amount)}) — ${data.organizationName}`,
+    html
+  );
+}
+
+
