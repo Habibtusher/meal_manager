@@ -528,8 +528,8 @@ export function depositConfirmationEmailTemplate(data: DepositConfirmationEmailP
           <td style="padding: 10px 16px; color: #059669; text-align: right; font-weight: 700;">+${formatCurrency(data.amount)}</td>
         </tr>
         <tr style="background-color: #ffffff;">
-          <td style="padding: 12px 16px; color: #0f172a; font-weight: 700;">Updated Wallet Balance:</td>
-          <td style="padding: 12px 16px; color: #2563eb; text-align: right; font-weight: 800; font-size: 16px;">${formatCurrency(data.newBalance)}</td>
+          <td style="padding: 12px 16px; color: #0f172a; font-weight: 700;">Current Month Balance:</td>
+          <td style="padding: 12px 16px; color: ${data.newBalance < 0 ? '#dc2626' : '#2563eb'}; text-align: right; font-weight: 800; font-size: 16px;">${formatCurrency(data.newBalance)}</td>
         </tr>
       </table>
     </div>

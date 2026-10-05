@@ -39,10 +39,7 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
 
         try {
             const [year, month, day] = formData.date.split('-').map(Number);
-            const dateObj = new Date();
-            dateObj.setFullYear(year, month - 1, day);
-            // If it's not today, we might want to reset time to midnight or keep "now" time.
-            // Keeping "now" time is usually better for ordering even if it's a past date.
+            const dateObj = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
 
             const result = await addWalletCredit(
                 formData.userId,

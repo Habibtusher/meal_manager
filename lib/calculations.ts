@@ -145,7 +145,7 @@ export async function creditWallet(
   organizationId: string,
   date: Date
 ): Promise<{ previousBalance: number; newBalance: number; user: { name: string; email: string } }> {
-  return await prisma.$transaction(async (tx) => {
+  const userDetails = await prisma.$transaction(async (tx) => {
     // Get current balance and user details
     const user = await tx.user.findUnique({
       where: { id: userId },
@@ -179,14 +179,31 @@ export async function creditWallet(
     });
 
     return {
-      previousBalance: currentBalance,
-      newBalance,
-      user: {
-        name: user.name,
-        email: user.email,
-      },
+      name: user.name,
+      email: user.email,
     };
   });
+
+  // Calculate month-wise adjusted balance for the transaction's month
+  const targetDate = new Date(date);
+  const targetMonth = targetDate.getUTCMonth() + 1;
+  const targetYear = targetDate.getUTCFullYear();
+
+  const currentMonthBalance = await getMemberAdjustedBalance(
+    userId,
+    organizationId,
+    targetMonth,
+    targetYear
+  );
+
+  const roundedCurrentMonthBalance = Math.round(currentMonthBalance * 100) / 100;
+  const roundedPreviousMonthBalance = Math.round((currentMonthBalance - amount) * 100) / 100;
+
+  return {
+    previousBalance: roundedPreviousMonthBalance,
+    newBalance: roundedCurrentMonthBalance,
+    user: userDetails,
+  };
 }
 
 /**
@@ -209,25 +226,25 @@ export async function getMembersWithBalance(
   organizationId: string,
   month?: number,
   year?: number
-): Promise<Array<{ id: string; name: string; email: string; totalDeposited: number; totalMealCost: number; totalSharedCost: number; totalCost: number; adjustedBalance: number }>> {
+): Promise<Array<{ id: string; name: string; email: string; isActive?: boolean; totalDeposited: number; totalMealCost: number; totalSharedCost: number; totalCost: number; adjustedBalance: number }>> {
   // Default to current month if not provided
   const now = new Date();
-  const m = month || (now.getMonth() + 1);
-  const y = year || now.getFullYear();
+  const m = month || (now.getUTCMonth() + 1);
+  const y = year || now.getUTCFullYear();
   const startDate = new Date(Date.UTC(y, m - 1, 1));
   const endDate = new Date(Date.UTC(y, m, 0, 23, 59, 59, 999));
 
-  // 1. Fetch all active users with their meal records, wallet credits, and shared cost allocations
+  // 1. Fetch all users with their meal records, wallet credits, and shared cost allocations
   const members = await prisma.user.findMany({
     where: {
       organizationId,
-      isActive: true,
       role: { in: ['MEMBER', 'ADMIN'] },
     },
     select: {
       id: true,
       name: true,
       email: true,
+      isActive: true,
       mealRecords: {
         where: {
           status: 'CONFIRMED',
@@ -291,6 +308,7 @@ export async function getMembersWithBalance(
       id: member.id,
       name: member.name,
       email: member.email,
+      isActive: member.isActive,
       totalDeposited,
       totalMealCost,
       totalSharedCost,
@@ -300,6 +318,20 @@ export async function getMembersWithBalance(
   });
 
   return allMembers.sort((a, b) => a.adjustedBalance - b.adjustedBalance);
+}
+
+/**
+ * Get adjusted balance for a specific member in a specific month
+ */
+export async function getMemberAdjustedBalance(
+  userId: string,
+  organizationId: string,
+  month: number,
+  year: number
+): Promise<number> {
+  const members = await getMembersWithBalance(organizationId, month, year);
+  const member = members.find((m) => m.id === userId);
+  return member ? member.adjustedBalance : 0;
 }
 
 

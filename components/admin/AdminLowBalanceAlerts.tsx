@@ -44,7 +44,7 @@ export async function AdminLowBalanceAlerts({ organizationId, month, year }: Adm
                                 </tr>
                             </thead>
                             <tbody>
-                                {membersWithBalance.map((user) => {
+                                {membersWithBalance.filter((u) => u.isActive !== false).map((user) => {
                                     const isLowBalance = user.adjustedBalance < LOW_BALANCE_THRESHOLD;
                                     return (
                                         <tr
