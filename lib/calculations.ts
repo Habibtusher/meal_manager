@@ -144,7 +144,13 @@ export async function creditWallet(
   description: string,
   organizationId: string,
   date: Date
-): Promise<{ previousBalance: number; newBalance: number; user: { name: string; email: string } }> {
+): Promise<{
+  previousBalance: number;
+  newBalance: number;
+  totalDeposited: number;
+  totalCost: number;
+  user: { name: string; email: string };
+}> {
   const userDetails = await prisma.$transaction(async (tx) => {
     // Get current balance and user details
     const user = await tx.user.findUnique({
@@ -189,12 +195,16 @@ export async function creditWallet(
   const targetMonth = targetDate.getUTCMonth() + 1;
   const targetYear = targetDate.getUTCFullYear();
 
-  const currentMonthBalance = await getMemberAdjustedBalance(
-    userId,
+  const members = await getMembersWithBalance(
     organizationId,
     targetMonth,
     targetYear
   );
+  const member = members.find((m) => m.id === userId);
+
+  const currentMonthBalance = member ? member.adjustedBalance : 0;
+  const totalDeposited = member ? member.totalDeposited : 0;
+  const totalCost = member ? member.totalCost : 0;
 
   const roundedCurrentMonthBalance = Math.round(currentMonthBalance * 100) / 100;
   const roundedPreviousMonthBalance = Math.round((currentMonthBalance - amount) * 100) / 100;
@@ -202,6 +212,8 @@ export async function creditWallet(
   return {
     previousBalance: roundedPreviousMonthBalance,
     newBalance: roundedCurrentMonthBalance,
+    totalDeposited: Math.round(totalDeposited * 100) / 100,
+    totalCost: Math.round(totalCost * 100) / 100,
     user: userDetails,
   };
 }

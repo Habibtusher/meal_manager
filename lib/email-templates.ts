@@ -460,6 +460,8 @@ export interface DepositConfirmationEmailParams {
   description: string;
   previousBalance: number;
   newBalance: number;
+  totalDeposited?: number;
+  totalCost?: number;
   date: Date;
 }
 
@@ -520,12 +522,22 @@ export function depositConfirmationEmailTemplate(data: DepositConfirmationEmailP
           <td style="padding: 10px 16px; color: #0f172a; text-align: right; font-weight: 600;">${data.description}</td>
         </tr>
         <tr style="border-bottom: 1px solid #f1f5f9;">
-          <td style="padding: 10px 16px; color: #64748b;">Previous Balance:</td>
-          <td style="padding: 10px 16px; color: #64748b; text-align: right; font-weight: 600;">${formatCurrency(data.previousBalance)}</td>
-        </tr>
-        <tr style="border-bottom: 1px solid #f1f5f9;">
           <td style="padding: 10px 16px; color: #047857; font-weight: 600;">Credit Added:</td>
           <td style="padding: 10px 16px; color: #059669; text-align: right; font-weight: 700;">+${formatCurrency(data.amount)}</td>
+        </tr>
+        ${data.totalDeposited !== undefined ? `
+        <tr style="border-bottom: 1px solid #f1f5f9;">
+          <td style="padding: 10px 16px; color: #64748b;">Total Deposited (This Month):</td>
+          <td style="padding: 10px 16px; color: #0f172a; text-align: right; font-weight: 700;">${formatCurrency(data.totalDeposited)}</td>
+        </tr>` : ''}
+        ${data.totalCost !== undefined && data.totalCost > 0 ? `
+        <tr style="border-bottom: 1px solid #f1f5f9;">
+          <td style="padding: 10px 16px; color: #64748b;">Meals & Costs (To Date):</td>
+          <td style="padding: 10px 16px; color: #dc2626; text-align: right; font-weight: 600;">-${formatCurrency(data.totalCost)}</td>
+        </tr>` : ''}
+        <tr style="border-bottom: 1px solid #f1f5f9;">
+          <td style="padding: 10px 16px; color: #64748b;">Previous Balance:</td>
+          <td style="padding: 10px 16px; color: #64748b; text-align: right; font-weight: 600;">${formatCurrency(data.previousBalance)}</td>
         </tr>
         <tr style="background-color: #ffffff;">
           <td style="padding: 12px 16px; color: #0f172a; font-weight: 700;">Current Month Balance:</td>

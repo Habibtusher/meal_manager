@@ -200,6 +200,8 @@ export async function addWalletCredit(userId: string, amount: number, descriptio
         description,
         previousBalance: creditResult.previousBalance,
         newBalance: creditResult.newBalance,
+        totalDeposited: creditResult.totalDeposited,
+        totalCost: creditResult.totalCost,
         date,
       }, creditResult.user.email).catch((err) =>
         console.error('[Email] Failed to send deposit confirmation email:', err)
@@ -300,6 +302,8 @@ export async function addExpense(data: {
           description: `Expense deposit: ${data.description}`,
           previousBalance: creditResult.previousBalance,
           newBalance: creditResult.newBalance,
+          totalDeposited: creditResult.totalDeposited,
+          totalCost: creditResult.totalCost,
           date: data.date,
         }, creditResult.user.email).catch((err) =>
           console.error('[Email] Failed to send expense deposit confirmation email:', err)

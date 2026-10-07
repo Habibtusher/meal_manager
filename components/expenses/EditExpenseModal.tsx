@@ -24,11 +24,17 @@ export default function EditExpenseModal({ expense }: EditExpenseModalProps) {
         date: new Date(expense.date).toISOString().split('T')[0],
         category: expense.category,
         description: expense.description,
-        amount: Number(expense.amount),
+        amount: expense.amount ? Number(expense.amount) : ('' as number | string),
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!formData.amount || Number(formData.amount) <= 0) {
+            toast.error('Please enter a valid amount');
+            return;
+        }
+
         setIsPending(true);
 
         try {
@@ -111,10 +117,11 @@ export default function EditExpenseModal({ expense }: EditExpenseModalProps) {
                             <Input
                                 required
                                 type="number"
-                                min="0"
-                                placeholder="0"
+                                min="0.01"
+                                step="any"
+                                placeholder="0.00"
                                 value={formData.amount}
-                                onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
+                                onChange={(e) => setFormData({ ...formData, amount: e.target.value === '' ? '' : e.target.value })}
                                 className="bg-gray-50 border-gray-200 focus:bg-white transition-all text-black"
                             />
                         </div>

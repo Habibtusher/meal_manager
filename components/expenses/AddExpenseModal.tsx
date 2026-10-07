@@ -25,7 +25,7 @@ export default function AddExpenseModal() {
         date: new Date().toLocaleDateString('en-CA'),
         category: 'Food',
         description: '',
-        amount: 0,
+        amount: '' as number | string,
     });
 
     // Paid By: optional member who paid out of pocket (Meal mode only)
@@ -33,7 +33,7 @@ export default function AddExpenseModal() {
 
     // For Shared Costs
     const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
-    const [customAllocations, setCustomAllocations] = useState<Record<string, number>>({});
+    const [customAllocations, setCustomAllocations] = useState<Record<string, number | string>>({});
 
     useEffect(() => {
         if (isOpen) {
@@ -48,9 +48,9 @@ export default function AddExpenseModal() {
             setSelectedMembers(members.map(m => m.id));
 
             // Default Custom allocations
-            const initials: Record<string, number> = {};
+            const initials: Record<string, number | string> = {};
             members.forEach(m => {
-                initials[m.id] = 0;
+                initials[m.id] = '';
             });
             setCustomAllocations(initials);
         }
@@ -58,6 +58,17 @@ export default function AddExpenseModal() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const amountNum = Number(formData.amount);
+        if (mode === 'MEAL' && (!formData.amount || amountNum <= 0)) {
+            toast.error('Please enter a valid amount');
+            return;
+        }
+        if (mode === 'SHARED' && distribution === 'EQUAL' && (!formData.amount || amountNum <= 0)) {
+            toast.error('Please enter a valid amount');
+            return;
+        }
+
         setIsPending(true);
 
         try {
@@ -67,7 +78,7 @@ export default function AddExpenseModal() {
                 result = await addExpense({
                     ...formData,
                     date: new Date(formData.date),
-                    amount: Number(formData.amount),
+                    amount: amountNum,
                     ...(paidByUserId ? { paidByUserId } : {}),
                 });
             } else {
@@ -78,9 +89,9 @@ export default function AddExpenseModal() {
                 if (distribution === 'EQUAL') {
                     const count = selectedMembers.length;
                     if (count === 0) throw new Error("Select at least one member");
-                    const perPerson = Number(formData.amount) / count;
+                    const perPerson = amountNum / count;
                     allocations = selectedMembers.map(id => ({ userId: id, amount: perPerson }));
-                    totalAmount = Number(formData.amount);
+                    totalAmount = amountNum;
                 } else {
                     // Custom
                     allocations = members.filter(m => selectedMembers.includes(m.id)).map(m => {
@@ -106,7 +117,7 @@ export default function AddExpenseModal() {
                     date: new Date().toLocaleDateString('en-CA'),
                     category: 'Food',
                     description: '',
-                    amount: 0,
+                    amount: '',
                 });
                 setPaidByUserId('');
                 setMode('MEAL');
@@ -249,11 +260,14 @@ export default function AddExpenseModal() {
                                         <Input
                                             required
                                             type="number"
+                                            min="0.01"
+                                            step="any"
+                                            placeholder="0.00"
                                             value={formData.amount}
-                                            onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
+                                            onChange={(e) => setFormData({ ...formData, amount: e.target.value === '' ? '' : e.target.value })}
                                         />
                                         <p className="text-xs text-muted-foreground">
-                                            Will be split among {selectedMembers.length} members ({selectedMembers.length > 0 ? (Number(formData.amount) / selectedMembers.length).toFixed(2) : 0} each).
+                                            Will be split among {selectedMembers.length} members ({selectedMembers.length > 0 ? ((Number(formData.amount) || 0) / selectedMembers.length).toFixed(2) : 0} each).
                                         </p>
                                     </div>
                                 )}
@@ -292,10 +306,12 @@ export default function AddExpenseModal() {
                                                 {distribution === 'CUSTOM' && selectedMembers.includes(member.id) && (
                                                     <input
                                                         type="number"
+                                                        min="0"
+                                                        step="any"
                                                         className="w-24 px-2 py-1 text-right text-sm border border-border rounded bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                                        placeholder="0"
-                                                        value={customAllocations[member.id] || ''}
-                                                        onChange={(e) => setCustomAllocations({ ...customAllocations, [member.id]: Number(e.target.value) })}
+                                                        placeholder="0.00"
+                                                        value={customAllocations[member.id] ?? ''}
+                                                        onChange={(e) => setCustomAllocations({ ...customAllocations, [member.id]: e.target.value === '' ? '' : e.target.value })}
                                                     />
                                                 )}
                                             </div>
@@ -312,8 +328,11 @@ export default function AddExpenseModal() {
                                     <Input
                                         required
                                         type="number"
+                                        min="0.01"
+                                        step="any"
+                                        placeholder="0.00"
                                         value={formData.amount}
-                                        onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
+                                        onChange={(e) => setFormData({ ...formData, amount: e.target.value === '' ? '' : e.target.value })}
                                     />
                                 </div>
 

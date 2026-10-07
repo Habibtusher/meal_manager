@@ -23,13 +23,19 @@ export default function EditTransactionModal({ transaction }: EditTransactionMod
     const [isOpen, setIsOpen] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [formData, setFormData] = useState({
-        amount: Number(transaction.amount),
+        amount: transaction.amount ? Number(transaction.amount) : ('' as number | string),
         description: transaction.description,
         date: new Date(transaction.createdAt).toISOString().split('T')[0]
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!formData.amount || Number(formData.amount) <= 0) {
+            toast.error('Please enter a valid amount');
+            return;
+        }
+
         setIsPending(true);
 
         try {
@@ -105,9 +111,10 @@ export default function EditTransactionModal({ transaction }: EditTransactionMod
                             required
                             type="number"
                             min="1"
-                            placeholder="500"
+                            step="any"
+                            placeholder="e.g. 500"
                             value={formData.amount}
-                            onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
+                            onChange={(e) => setFormData({ ...formData, amount: e.target.value === '' ? '' : e.target.value })}
                             className="bg-gray-50 border-gray-200 focus:bg-white transition-all text-black"
                         />
                     </div>

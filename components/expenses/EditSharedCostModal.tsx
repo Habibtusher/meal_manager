@@ -23,11 +23,11 @@ export default function EditSharedCostModal({ sharedCost }: EditSharedCostModalP
         date: new Date(sharedCost.date).toLocaleDateString('en-CA'),
         category: sharedCost.category || 'Utility',
         description: sharedCost.description,
-        amount: sharedCost.amount,
+        amount: sharedCost.amount ? Number(sharedCost.amount) : ('' as number | string),
     });
 
     const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
-    const [customAllocations, setCustomAllocations] = useState<Record<string, number>>({});
+    const [customAllocations, setCustomAllocations] = useState<Record<string, number | string>>({});
 
     useEffect(() => {
         if (isOpen) {
@@ -35,7 +35,7 @@ export default function EditSharedCostModal({ sharedCost }: EditSharedCostModalP
                 setMembers(fetchedMembers);
 
                 // Initialize from existing allocations
-                const allocMap: Record<string, number> = {};
+                const allocMap: Record<string, number | string> = {};
                 const selected: string[] = [];
 
                 sharedCost.allocations?.forEach((alloc: any) => {
@@ -51,6 +51,12 @@ export default function EditSharedCostModal({ sharedCost }: EditSharedCostModalP
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (distribution === 'EQUAL' && (!formData.amount || Number(formData.amount) <= 0)) {
+            toast.error('Please enter a valid amount');
+            return;
+        }
+
         setIsPending(true);
 
         try {
@@ -185,11 +191,14 @@ export default function EditSharedCostModal({ sharedCost }: EditSharedCostModalP
                                     <Input
                                         required
                                         type="number"
+                                        min="0.01"
+                                        step="any"
+                                        placeholder="0.00"
                                         value={formData.amount}
-                                        onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
+                                        onChange={(e) => setFormData({ ...formData, amount: e.target.value === '' ? '' : e.target.value })}
                                     />
                                     <p className="text-xs text-gray-800">
-                                        Will be split among {selectedMembers.length} members ({selectedMembers.length > 0 ? (Number(formData.amount) / selectedMembers.length).toFixed(2) : 0} each).
+                                        Will be split among {selectedMembers.length} members ({selectedMembers.length > 0 ? ((Number(formData.amount) || 0) / selectedMembers.length).toFixed(2) : 0} each).
                                     </p>
                                 </div>
                             )}
@@ -227,10 +236,12 @@ export default function EditSharedCostModal({ sharedCost }: EditSharedCostModalP
                                         {distribution === 'CUSTOM' && selectedMembers.includes(member.id) && (
                                             <input
                                                 type="number"
+                                                min="0"
+                                                step="any"
                                                 className="w-24 px-2 py-1 text-right text-sm border rounded bg-gray-50 text-black"
-                                                placeholder="0"
-                                                value={customAllocations[member.id] || ''}
-                                                onChange={(e) => setCustomAllocations({ ...customAllocations, [member.id]: Number(e.target.value) })}
+                                                placeholder="0.00"
+                                                value={customAllocations[member.id] ?? ''}
+                                                onChange={(e) => setCustomAllocations({ ...customAllocations, [member.id]: e.target.value === '' ? '' : e.target.value })}
                                             />
                                         )}
                                     </div>

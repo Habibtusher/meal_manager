@@ -22,7 +22,7 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
     const [isPending, setIsPending] = useState(false);
     const [formData, setFormData] = useState({
         userId: '',
-        amount: 0,
+        amount: '' as number | string,
         description: 'Cash Deposit',
         date: new Date().toLocaleDateString('en-CA')
     });
@@ -32,6 +32,11 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
 
         if (!formData.userId) {
             toast.error('Please select a member');
+            return;
+        }
+
+        if (!formData.amount || Number(formData.amount) <= 0) {
+            toast.error('Please enter a valid deposit amount');
             return;
         }
 
@@ -53,7 +58,7 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
                 setIsOpen(false);
                 setFormData({
                     userId: '',
-                    amount: 0,
+                    amount: '',
                     description: 'Cash Deposit',
                     date: new Date().toLocaleDateString('en-CA')
                 });
@@ -127,9 +132,10 @@ export default function AddDepositModal({ members }: AddDepositModalProps) {
                             required
                             type="number"
                             min="1"
-                            placeholder="500"
+                            step="any"
+                            placeholder="e.g. 1000"
                             value={formData.amount}
-                            onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
+                            onChange={(e) => setFormData({ ...formData, amount: e.target.value === '' ? '' : e.target.value })}
                             className="bg-muted border-border focus:bg-background transition-all text-foreground"
                         />
                     </div>
